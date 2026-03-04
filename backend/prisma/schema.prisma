@@ -6,3 +6,113 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum UserRole {
+  CREATOR
+  AGENCY
+}
+
+enum CreatorCategory {
+  LIFESTYLE
+  TECH
+  FASHION
+  FOOD
+  TRAVEL
+  FITNESS
+  GAMING
+  BEAUTY
+  OTHER
+}
+
+enum SocialPlatform {
+  INSTAGRAM
+  YOUTUBE
+  FACEBOOK
+  TWITTER
+  TIKTOK
+}
+
+enum AgencyProductCategory {
+  BEAUTY
+  TECH
+  FOOD
+  FASHION
+  FITNESS
+  TRAVEL
+  SPORTS
+  GAMING
+  OTHER
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  phone        String?
+  role         UserRole
+  isVerified   Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  creatorProfile CreatorProfile?
+  agencyProfile  AgencyProfile?
+  refreshTokens  RefreshToken[]
+}
+
+model CreatorProfile {
+  id              String          @id @default(uuid())
+  userId          String          @unique
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName     String
+  age             Int?
+  bio             String?
+  profileImageUrl String?
+  category        CreatorCategory
+
+  socialAccounts SocialAccount[]
+}
+
+model SocialAccount {
+  id              String         @id @default(uuid())
+  creatorProfileId String
+  creatorProfile  CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  platform        SocialPlatform
+  handle          String
+  profileUrl      String?
+  followerCount   Int            @default(0)
+  isVerified      Boolean        @default(false)
+}
+
+model AgencyProfile {
+  id                   String                @id @default(uuid())
+  userId               String                @unique
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brandName            String
+  companyRegistration  String?
+  logoUrl              String?
+  website              String?
+  description          String?
+  productCategory      AgencyProductCategory
+
+  contact AgencyContact?
+}
+
+model AgencyContact {
+  id                String        @id @default(uuid())
+  agencyProfileId   String        @unique
+  agencyProfile     AgencyProfile @relation(fields: [agencyProfileId], references: [id], onDelete: Cascade)
+  contactPersonName String
+  contactEmail      String
+  contactPhone      String?
+  designation       String?
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+  revokedAt DateTime?
+}
