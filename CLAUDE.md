@@ -4,9 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Structure
 
-Monorepo with two sub-projects:
+Monorepo with three sub-projects:
+
 - `backend/` — NestJS REST API (Node 18+, npm, port 3000)
 - `frontend/` — React/Vite SPA (Node 18+, npm, port 5173)
+- `mobile/` — Flutter mobile app (Android + iOS, Flutter 3.16+)
 
 ---
 
@@ -71,3 +73,45 @@ npm run lint             # ESLint
 ### Environment Variables (frontend/.env)
 
 - `VITE_API_URL` — Backend base URL (default: `http://localhost:3000`)
+
+---
+
+## mobile
+
+### Commands
+
+```bash
+cd mobile
+
+flutter pub get                                          # Install dependencies
+flutter run                                             # Run on connected device/emulator
+flutter run -d ios                                      # iOS simulator
+flutter run -d android                                  # Android emulator
+dart run build_runner build --delete-conflicting-outputs  # Generate .g.dart files (models, env, providers)
+dart run build_runner watch --delete-conflicting-outputs  # Watch mode during development
+flutter analyze                                         # Dart static analysis
+```
+
+### Architecture
+
+- **Entry point** — `lib/main.dart`: `ProviderScope` wraps `CollabHubApp` (ConsumerWidget), uses `MaterialApp.router` with GoRouter and Material 3 theme.
+- **Routing** — `lib/config/router.dart`: GoRouter with `initialLocation: /splash`. Auth redirect guards all `/dashboard/*` routes — unauthenticated users redirected to `/login`.
+- **Auth state** — `lib/providers/auth_provider.dart`: `AuthNotifier` (`StateNotifier<AsyncValue<User?>>`). Exposes `checkAuth`, `login`, `signupCreator`, `signupAgency`, `logout`. Companion providers: `currentUserProvider`, `isAuthenticatedProvider`.
+- **API client** — `lib/services/api_client.dart`: Dio instance with JWT interceptor (reads token from `StorageService` on every request). On 401: clears token, fires `onUnauthorized` callback to reset auth state.
+- **Token storage** — `lib/services/storage_service.dart`: `flutter_secure_storage` wrapper (keychain/keystore). Key: `auth_token`.
+- **Models** — `lib/models/`: `User`, `AuthResponse`, `UserRole` enum, `CreatorProfile`, `AgencyProfile`, `SocialAccount`. All use `json_serializable` with generated `fromJson`/`toJson`. Mirror TypeScript interfaces in `frontend/src/types/`.
+- **Theme** — `lib/config/theme.dart`: Material 3, primary seed `#6C63FF`, Inter font via `google_fonts`, light + dark via `ColorScheme.fromSeed`.
+- **Env config** — `lib/config/app_config.dart`: `envied` reads `COLLABHUB_API_URL` from `mobile/.env` at build time.
+
+### Environment Variables (mobile/.env)
+
+- `COLLABHUB_API_URL` — Backend base URL (default: `http://localhost:3000`)
+  - For Android device testing use LAN IP: `http://192.168.x.x:3000`
+
+### Code Generation
+
+Required after modifying models, `.env`, or providers:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
