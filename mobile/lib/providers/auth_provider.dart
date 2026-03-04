@@ -4,15 +4,18 @@ import '../services/auth_service.dart';
 import '../services/api_client.dart';
 import 'service_providers.dart';
 
-class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
-  final AuthService _authService;
-  final ApiClient _apiClient;
+class AuthNotifier extends Notifier<AsyncValue<User?>> {
+  late final AuthService _authService;
+  late final ApiClient _apiClient;
 
-  AuthNotifier(this._authService, this._apiClient)
-      : super(const AsyncValue.data(null)) {
+  @override
+  AsyncValue<User?> build() {
+    _authService = ref.read(authServiceProvider);
+    _apiClient = ref.read(apiClientProvider);
     _apiClient.onUnauthorized = () {
       state = const AsyncValue.data(null);
     };
+    return const AsyncValue.data(null);
   }
 
   Future<void> checkAuth() async {
@@ -79,12 +82,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
 }
 
 final authNotifierProvider =
-    StateNotifierProvider<AuthNotifier, AsyncValue<User?>>((ref) {
-  return AuthNotifier(
-    ref.watch(authServiceProvider),
-    ref.watch(apiClientProvider),
-  );
-});
+    NotifierProvider<AuthNotifier, AsyncValue<User?>>(() => AuthNotifier());
 
 final currentUserProvider = Provider<User?>((ref) {
   return ref.watch(authNotifierProvider).value;
