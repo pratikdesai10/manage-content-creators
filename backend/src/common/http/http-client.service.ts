@@ -1,7 +1,7 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Request } from 'express';
+import type { Request } from 'express';
 import { HttpClientConfig } from './http-client.config';
 
 @Injectable()
