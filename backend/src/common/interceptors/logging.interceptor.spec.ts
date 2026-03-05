@@ -71,4 +71,18 @@ describe('LoggingInterceptor', () => {
       },
     });
   });
+
+  it('should re-throw errors after logging', (done) => {
+    const { throwError } = require('rxjs');
+    const error = new Error('something failed');
+    const ctx = makeContext();
+    const errorHandler: CallHandler = { handle: () => throwError(() => error) };
+
+    interceptor.intercept(ctx, errorHandler).subscribe({
+      error: (err) => {
+        expect(err).toBe(error);
+        done();
+      },
+    });
+  });
 });

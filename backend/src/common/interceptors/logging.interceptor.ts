@@ -14,8 +14,9 @@ export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger('HTTP');
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
-    const req = context.switchToHttp().getRequest<Request>();
-    const res = context.switchToHttp().getResponse<Response>();
+    const http = context.switchToHttp();
+    const req = http.getRequest<Request>();
+    const res = http.getResponse<Response>();
 
     const traceId: string =
       (req.headers?.['x-trace-id'] as string) ?? crypto.randomUUID();
@@ -34,7 +35,9 @@ export class LoggingInterceptor implements NestInterceptor {
       catchError((err: unknown) => {
         const durationMs = Date.now() - start;
         const statusCode =
-          err instanceof Error && 'status' in err ? (err as any).status : 500;
+          err instanceof Error && 'status' in err
+            ? (err as Error & { status: number }).status
+            : 500;
         const errorMessage = err instanceof Error ? err.message : String(err);
         this.logger.error({ traceId, method, url, statusCode, errorMessage, durationMs });
         throw err;
