@@ -42,11 +42,13 @@ export class HttpClientService {
     const traceId = this.request.traceId ?? '';
     const serviceName = this.config.getServiceName();
     const url = `${this.config.getBaseUrl()}${path}`;
+    const { headers: extraHeaders, timeout: extraTimeout, ...restConfig } =
+      extraConfig ?? {};
     const headers = {
       'Content-Type': 'application/json',
       ...this.config.getAdditionalHeaders(),
       'X-Trace-Id': traceId,
-      ...extraConfig?.headers,
+      ...extraHeaders,
     };
 
     const start = Date.now();
@@ -58,7 +60,8 @@ export class HttpClientService {
         url,
         data,
         headers,
-        ...extraConfig,
+        timeout: extraTimeout ?? 30_000,
+        ...restConfig,
       });
       const durationMs = Date.now() - start;
       this.logger.log({ traceId, serviceName, statusCode: response.status, durationMs });

@@ -4,6 +4,7 @@ import {
   ExecutionContext,
   CallHandler,
   Logger,
+  HttpException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
@@ -14,12 +15,18 @@ export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger('HTTP');
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    if (context.getType() !== 'http') {
+      return next.handle();
+    }
+
     const http = context.switchToHttp();
     const req = http.getRequest<Request>();
     const res = http.getResponse<Response>();
 
+    const rawTraceId = req.headers?.['x-trace-id'];
     const traceId: string =
-      (req.headers?.['x-trace-id'] as string) ?? crypto.randomUUID();
+      (Array.isArray(rawTraceId) ? rawTraceId[0] : rawTraceId) ??
+      crypto.randomUUID();
     req.traceId = traceId;
 
     const { method, url } = req;
@@ -35,9 +42,7 @@ export class LoggingInterceptor implements NestInterceptor {
       catchError((err: unknown) => {
         const durationMs = Date.now() - start;
         const statusCode =
-          err instanceof Error && 'status' in err
-            ? (err as Error & { status: number }).status
-            : 500;
+          err instanceof HttpException ? err.getStatus() : 500;
         const errorMessage = err instanceof Error ? err.message : String(err);
         this.logger.error({ traceId, method, url, statusCode, errorMessage, durationMs });
         throw err;

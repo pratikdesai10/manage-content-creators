@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
@@ -14,6 +14,9 @@ import { RegisterCreatorDto } from './dto/register-creator.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly DUMMY_HASH =
+    '$2b$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ01';
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
@@ -21,75 +24,131 @@ export class AuthService {
   ) {}
 
   async registerCreator(dto: RegisterCreatorDto) {
-    await this.assertEmailUnique(dto.email);
-
     const passwordHash = await bcrypt.hash(dto.password, 10);
 
     const user = await this.prisma.$transaction(async (tx) => {
-      const newUser = await tx.user.create({
+      const existing = await tx.user.findUnique({
+        where: { email: dto.email },
+      });
+      if (existing) {
+        throw new ConflictException('Email already in use');
+      }
+
+      const existingUsername = await tx.creatorProfile.findUnique({
+        where: { displayName: dto.displayName },
+      });
+      if (existingUsername) {
+        throw new ConflictException('Display name already taken');
+      }
+
+      return tx.user.create({
         data: {
           email: dto.email,
           passwordHash,
           phone: dto.phone,
+          firstName: dto.firstName,
+          lastName: dto.lastName,
           role: 'CREATOR',
           creatorProfile: {
             create: {
+              firstName: dto.firstName,
+              lastName: dto.lastName,
               displayName: dto.displayName,
-              age: dto.age,
-              bio: dto.bio,
+              dateOfBirth: new Date(dto.dateOfBirth),
+              gender: dto.gender,
               profileImageUrl: dto.profileImageUrl,
-              category: dto.category,
+              bio: dto.bio,
+              languages: dto.languages,
+              city: dto.city,
+              state: dto.state,
+              country: dto.country,
+              categories: dto.categories,
+              contentTypes: dto.contentTypes,
+              portfolioUrl: dto.portfolioUrl,
+              rateRange: dto.rateRange,
+              collaborationTypes: dto.collaborationTypes,
+              availability: dto.availability,
+              willingToTravel: dto.willingToTravel ?? false,
+              travelScope: dto.travelScope,
+              previousCollaborations: dto.previousCollaborations,
+              notableBrands: dto.notableBrands ?? [],
+              marketingEmails: dto.marketingEmails ?? true,
+              whatsappNotifications: dto.whatsappNotifications ?? false,
               socialAccounts: {
                 create: dto.socialAccounts.map((sa) => ({
                   platform: sa.platform,
                   handle: sa.handle,
                   profileUrl: sa.profileUrl,
                   followerCount: sa.followerCount ?? 0,
+                  accountType: sa.accountType,
                 })),
               },
             },
           },
         },
       });
-      return newUser;
     });
 
     return this.generateTokensAndPersist(user);
   }
 
   async registerAgency(dto: RegisterAgencyDto) {
-    await this.assertEmailUnique(dto.email);
-
     const passwordHash = await bcrypt.hash(dto.password, 10);
 
+    const nameParts = dto.fullName.trim().split(/\s+/);
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(' ') || '';
+
     const user = await this.prisma.$transaction(async (tx) => {
-      const newUser = await tx.user.create({
+      const existing = await tx.user.findUnique({
+        where: { email: dto.workEmail },
+      });
+      if (existing) {
+        throw new ConflictException('Email already in use');
+      }
+
+      return tx.user.create({
         data: {
-          email: dto.email,
+          email: dto.workEmail,
           passwordHash,
           phone: dto.phone,
+          firstName,
+          lastName,
           role: 'AGENCY',
           agencyProfile: {
             create: {
               brandName: dto.brandName,
-              companyRegistration: dto.companyRegistration,
+              companyLegalName: dto.companyLegalName,
+              industry: dto.industry,
+              companySize: dto.companySize,
+              yearFounded: dto.yearFounded,
+              gstin: dto.gstin,
               logoUrl: dto.logoUrl,
               website: dto.website,
               description: dto.description,
-              productCategory: dto.productCategory,
+              brandSocials: dto.brandSocials
+                ? (dto.brandSocials as any)
+                : undefined,
+              city: dto.city,
+              state: dto.state,
+              country: dto.country,
+              pinCode: dto.pinCode,
+              targetAudience: dto.targetAudience as any,
+              campaignPreferences: dto.campaignPreferences as any,
+              marketingEmails: dto.marketingEmails ?? true,
               contact: {
                 create: {
-                  contactPersonName: dto.contactPersonName,
-                  contactEmail: dto.contactEmail,
-                  contactPhone: dto.contactPhone,
+                  contactPersonName: dto.fullName,
+                  contactEmail: dto.workEmail,
+                  contactPhone: dto.phone,
                   designation: dto.designation,
+                  linkedinUrl: dto.linkedinUrl,
                 },
               },
             },
           },
         },
       });
-      return newUser;
     });
 
     return this.generateTokensAndPersist(user);
@@ -100,10 +159,12 @@ export class AuthService {
       where: { email: dto.email },
     });
 
-    const isValid =
-      user !== null && (await bcrypt.compare(dto.password, user.passwordHash));
+    const isValid = await bcrypt.compare(
+      dto.password,
+      user?.passwordHash ?? this.DUMMY_HASH,
+    );
 
-    if (!isValid) {
+    if (!user || !isValid) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
@@ -114,21 +175,27 @@ export class AuthService {
   }
 
   async refreshTokens(rawToken: string) {
-    const stored = await this.prisma.refreshToken.findUnique({
-      where: { token: rawToken },
-      include: { user: true },
+    return this.prisma.$transaction(async (tx) => {
+      const stored = await tx.refreshToken.findUnique({
+        where: { token: rawToken },
+        include: { user: true },
+      });
+
+      if (
+        !stored ||
+        stored.revokedAt !== null ||
+        stored.expiresAt < new Date()
+      ) {
+        throw new UnauthorizedException('Invalid or expired refresh token');
+      }
+
+      await tx.refreshToken.update({
+        where: { id: stored.id },
+        data: { revokedAt: new Date() },
+      });
+
+      return this.generateTokensAndPersistWithTx(tx, stored.user);
     });
-
-    if (!stored || stored.revokedAt !== null || stored.expiresAt < new Date()) {
-      throw new UnauthorizedException('Invalid or expired refresh token');
-    }
-
-    await this.prisma.refreshToken.update({
-      where: { id: stored.id },
-      data: { revokedAt: new Date() },
-    });
-
-    return this.generateTokensAndPersist(stored.user);
   }
 
   async logout(rawToken: string) {
@@ -144,7 +211,32 @@ export class AuthService {
     }
   }
 
+  async checkUsernameAvailability(
+    username: string,
+  ): Promise<{ available: boolean }> {
+    const existing = await this.prisma.creatorProfile.findUnique({
+      where: { displayName: username },
+    });
+    return { available: !existing };
+  }
+
+  async checkEmailAvailability(
+    email: string,
+  ): Promise<{ available: boolean }> {
+    const existing = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    return { available: !existing };
+  }
+
   private async generateTokensAndPersist(user: User) {
+    return this.generateTokensAndPersistWithTx(this.prisma, user);
+  }
+
+  private async generateTokensAndPersistWithTx(
+    tx: Prisma.TransactionClient | PrismaService,
+    user: User,
+  ) {
     const payload = { sub: user.id, email: user.email, role: user.role };
     const accessToken = this.jwtService.sign(payload);
 
@@ -156,7 +248,7 @@ export class AuthService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + this.parseDays(refreshExpiresIn));
 
-    await this.prisma.refreshToken.create({
+    await tx.refreshToken.create({
       data: {
         userId: user.id,
         token: rawRefreshToken,
@@ -167,17 +259,9 @@ export class AuthService {
     return { accessToken, refreshToken: rawRefreshToken };
   }
 
-  private async assertEmailUnique(email: string) {
-    const existing = await this.prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      throw new ConflictException('Email already in use');
-    }
-  }
-
   private parseDays(duration: string): number {
     const match = duration.match(/^(\d+)d$/);
     if (match) return parseInt(match[1], 10);
-    // fallback: 7 days
     return 7;
   }
 }

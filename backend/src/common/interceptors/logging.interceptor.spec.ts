@@ -9,6 +9,7 @@ function makeContext(overrides: Partial<{ traceId: string; method: string; url: 
     url: overrides.url ?? '/test',
   };
   return {
+    getType: () => 'http',
     switchToHttp: () => ({
       getRequest: () => req,
       getResponse: () => ({ statusCode: 200 }),
@@ -30,6 +31,7 @@ describe('LoggingInterceptor', () => {
   it('should generate a traceId if not present on req', (done) => {
     const req: any = { method: 'GET', url: '/test' };
     const ctx = {
+      getType: () => 'http',
       switchToHttp: () => ({
         getRequest: () => req,
         getResponse: () => ({ statusCode: 200 }),
@@ -48,6 +50,7 @@ describe('LoggingInterceptor', () => {
   it('should preserve existing traceId from request headers', (done) => {
     const req: any = { method: 'GET', url: '/test', headers: { 'x-trace-id': 'existing-id' } };
     const ctx = {
+      getType: () => 'http',
       switchToHttp: () => ({
         getRequest: () => req,
         getResponse: () => ({ statusCode: 200 }),

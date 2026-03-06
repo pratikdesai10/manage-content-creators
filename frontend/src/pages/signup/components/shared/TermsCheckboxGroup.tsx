@@ -1,0 +1,51 @@
+import type { UseFormReturn } from 'react-hook-form';
+import { cn } from '../../../../lib/utils';
+
+interface CheckboxItem {
+  name: string;
+  label: string;
+  required: boolean;
+}
+
+interface TermsCheckboxGroupProps {
+  items: CheckboxItem[];
+  form: UseFormReturn<any>;
+}
+
+export function TermsCheckboxGroup({ items, form }: TermsCheckboxGroupProps) {
+  const { register, formState: { errors } } = form;
+
+  return (
+    <div className="space-y-3">
+      {items.map((item) => {
+        const fieldError = errors[item.name] as { message?: string } | undefined;
+
+        return (
+          <div key={item.name}>
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                {...register(item.name)}
+                className={cn(
+                  'mt-0.5 h-4 w-4 rounded border-gray-300 accent-purple-600 cursor-pointer',
+                  'focus:ring-purple-500',
+                )}
+              />
+              <span className="text-sm text-gray-700 group-hover:text-gray-900">
+                {item.label}
+                {item.required && (
+                  <span className="text-red-500 ml-0.5">*</span>
+                )}
+              </span>
+            </label>
+            {fieldError?.message && (
+              <p className="ml-7 mt-1 text-sm text-red-500">
+                {fieldError.message}
+              </p>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}

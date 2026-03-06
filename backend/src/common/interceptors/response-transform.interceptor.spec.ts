@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 
 function makeContext(traceId = 'abc-123'): ExecutionContext {
   return {
+    getType: () => 'http',
     switchToHttp: () => ({
       getRequest: () => ({ traceId }),
     }),

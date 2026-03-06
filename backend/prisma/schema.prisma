@@ -13,15 +13,26 @@ enum UserRole {
 }
 
 enum CreatorCategory {
+  ENTERTAINMENT
+  EDUCATION
+  FINANCE
+  TECHNOLOGY
   LIFESTYLE
-  TECH
-  FASHION
-  FOOD
-  TRAVEL
   FITNESS
+  TRAVEL
+  FOOD
+  FASHION
   GAMING
-  BEAUTY
-  OTHER
+  MUSIC
+  PHOTOGRAPHY
+  AI_TOOLS
+  PARENTING
+  PETS
+  SPORTS
+  COMEDY
+  MOTIVATION
+  DIY
+  AUTOMOTIVE
 }
 
 enum SocialPlatform {
@@ -30,18 +41,111 @@ enum SocialPlatform {
   FACEBOOK
   TWITTER
   TIKTOK
+  LINKEDIN
+  BLOG
 }
 
-enum AgencyProductCategory {
-  BEAUTY
-  TECH
-  FOOD
-  FASHION
-  FITNESS
-  TRAVEL
-  SPORTS
-  GAMING
+enum ContentType {
+  REELS
+  LONG_FORM_VIDEO
+  STATIC_POSTS
+  STORIES
+  BLOG_ARTICLES
+  PODCASTS
+  LIVE_STREAMS
+  PRODUCT_REVIEWS
+  TUTORIALS
+}
+
+enum CollaborationType {
+  PAID_CAMPAIGNS
+  PRODUCT_EXCHANGE
+  AFFILIATE
+  BRAND_AMBASSADOR
+  EVENT_APPEARANCES
+  HYBRID
+}
+
+enum Availability {
+  IMMEDIATELY
+  ONE_TWO_WEEKS
+  ONE_MONTH
+  NOT_AVAILABLE
+}
+
+enum TravelScope {
+  WITHIN_CITY
+  WITHIN_STATE
+  ANYWHERE_INDIA
+  INTERNATIONAL
+}
+
+enum RateRange {
+  RATE_1K_5K
+  RATE_5K_20K
+  RATE_20K_50K
+  RATE_50K_1L
+  RATE_1L_5L
+  RATE_5L_PLUS
+  OPEN_TO_NEGOTIATE
+}
+
+enum IndustryCategory {
+  FASHION_APPAREL
+  FOOD_BEVERAGE
+  TECHNOLOGY_ELECTRONICS
+  FINANCE_FINTECH
+  TRAVEL_HOSPITALITY
+  BEAUTY_PERSONAL_CARE
+  FITNESS_SPORTS
+  GAMING_ENTERTAINMENT
+  EDUCATION_EDTECH
+  HEALTH_PHARMA
+  AUTOMOTIVE
+  REAL_ESTATE
+  D2C_ECOMMERCE
   OTHER
+}
+
+enum CompanySize {
+  SIZE_1_10
+  SIZE_11_50
+  SIZE_51_200
+  SIZE_201_500
+  SIZE_500_PLUS
+}
+
+enum BudgetRange {
+  BUDGET_5K_20K
+  BUDGET_20K_1L
+  BUDGET_1L_5L
+  BUDGET_5L_PLUS
+  VARIES
+}
+
+enum PaymentType {
+  FIXED
+  AFFILIATE
+  PRODUCT_EXCHANGE
+  HYBRID
+  PERFORMANCE_BASED
+}
+
+enum PaymentTimeline {
+  UPFRONT
+  ON_DELIVERY
+  FIFTEEN_DAYS
+  THIRTY_DAYS
+  MILESTONE_BASED
+}
+
+enum FollowerRange {
+  NANO
+  MICRO
+  MID_TIER
+  MACRO
+  MEGA
+  ANY
 }
 
 model User {
@@ -49,6 +153,8 @@ model User {
   email        String    @unique
   passwordHash String
   phone        String?
+  firstName    String?
+  lastName     String?
   role         UserRole
   isVerified   Boolean   @default(false)
   createdAt    DateTime  @default(now())
@@ -60,41 +166,71 @@ model User {
 }
 
 model CreatorProfile {
-  id              String          @id @default(uuid())
-  userId          String          @unique
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  displayName     String
-  age             Int?
-  bio             String?
-  profileImageUrl String?
-  category        CreatorCategory
-
-  socialAccounts SocialAccount[]
+  id                     String              @id @default(uuid())
+  userId                 String              @unique
+  user                   User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName              String
+  lastName               String
+  displayName            String              @unique
+  dateOfBirth            DateTime
+  gender                 String?
+  profileImageUrl        String?
+  bio                    String
+  languages              String[]
+  city                   String
+  state                  String
+  country                String              @default("India")
+  categories             CreatorCategory[]
+  contentTypes           ContentType[]
+  portfolioUrl           String?
+  rateRange              RateRange
+  collaborationTypes     CollaborationType[]
+  availability           Availability
+  willingToTravel        Boolean             @default(false)
+  travelScope            TravelScope?
+  previousCollaborations Int?
+  notableBrands          String[]
+  marketingEmails        Boolean             @default(true)
+  whatsappNotifications  Boolean             @default(false)
+  socialAccounts         SocialAccount[]
 }
 
 model SocialAccount {
-  id              String         @id @default(uuid())
+  id               String         @id @default(uuid())
   creatorProfileId String
-  creatorProfile  CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
-  platform        SocialPlatform
-  handle          String
-  profileUrl      String?
-  followerCount   Int            @default(0)
-  isVerified      Boolean        @default(false)
+  creatorProfile   CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  platform         SocialPlatform
+  handle           String
+  profileUrl       String?
+  followerCount    Int            @default(0)
+  isVerified       Boolean        @default(false)
+  accountType      String?
+
+  @@unique([creatorProfileId, platform])
 }
 
 model AgencyProfile {
-  id                   String                @id @default(uuid())
-  userId               String                @unique
-  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  brandName            String
-  companyRegistration  String?
-  logoUrl              String?
-  website              String?
-  description          String?
-  productCategory      AgencyProductCategory
-
-  contact AgencyContact?
+  id                  String           @id @default(uuid())
+  userId              String           @unique
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brandName           String
+  companyLegalName    String
+  industry            IndustryCategory
+  companySize         CompanySize
+  yearFounded         Int?
+  gstin               String?
+  logoUrl             String?
+  website             String
+  description         String
+  brandSocials        Json?
+  city                String
+  state               String
+  country             String           @default("India")
+  pinCode             String?
+  targetAudience      Json
+  campaignPreferences Json
+  marketingEmails     Boolean          @default(true)
+  contact             AgencyContact?
 }
 
 model AgencyContact {
@@ -104,7 +240,8 @@ model AgencyContact {
   contactPersonName String
   contactEmail      String
   contactPhone      String?
-  designation       String?
+  designation       String
+  linkedinUrl       String?
 }
 
 model RefreshToken {
@@ -115,4 +252,7 @@ model RefreshToken {
   expiresAt DateTime
   createdAt DateTime  @default(now())
   revokedAt DateTime?
+
+  @@index([userId])
+  @@index([expiresAt])
 }

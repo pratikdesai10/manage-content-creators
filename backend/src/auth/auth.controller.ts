@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
@@ -44,5 +52,17 @@ export class AuthController {
   @Post('logout')
   logout(@Body() dto: RefreshTokenDto) {
     return this.authService.logout(dto.refreshToken);
+  }
+
+  @Public()
+  @Get('check-username/:username')
+  checkUsername(@Param('username') username: string) {
+    return this.authService.checkUsernameAvailability(username);
+  }
+
+  @Public()
+  @Get('check-email/:email')
+  checkEmail(@Param('email') email: string) {
+    return this.authService.checkEmailAvailability(email);
   }
 }
