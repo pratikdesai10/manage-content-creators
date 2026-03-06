@@ -1,0 +1,875 @@
+{
+  "info": {
+    "name": "CollabHub API",
+    "description": "Creator-Brand Collaboration Platform API — full collection with all endpoints and test scenarios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" },
+    { "key": "creatorAccessToken", "value": "", "type": "string" },
+    { "key": "creatorRefreshToken", "value": "", "type": "string" },
+    { "key": "agencyAccessToken", "value": "", "type": "string" },
+    { "key": "agencyRefreshToken", "value": "", "type": "string" },
+    { "key": "creatorProfileId", "value": "", "type": "string" },
+    { "key": "agencyProfileId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Creator — valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.test('Returns accessToken', () => pm.expect(body.data.accessToken).to.be.a('string'));",
+                  "pm.test('Returns refreshToken', () => pm.expect(body.data.refreshToken).to.be.a('string'));",
+                  "pm.collectionVariables.set('creatorAccessToken', body.data.accessToken);",
+                  "pm.collectionVariables.set('creatorRefreshToken', body.data.refreshToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/creator",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"creator@collabhub.com\",\n  \"password\": \"password123\",\n  \"displayName\": \"Alice Creator\",\n  \"age\": 25,\n  \"bio\": \"Tech content creator\",\n  \"category\": \"TECH\",\n  \"socialAccounts\": [\n    {\n      \"platform\": \"INSTAGRAM\",\n      \"handle\": \"@alice_tech\",\n      \"followerCount\": 5000\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Creator — multiple social accounts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/creator",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"multi@collabhub.com\",\n  \"password\": \"password123\",\n  \"displayName\": \"Multi Social Creator\",\n  \"category\": \"LIFESTYLE\",\n  \"socialAccounts\": [\n    { \"platform\": \"INSTAGRAM\", \"handle\": \"@multi_ig\", \"followerCount\": 10000 },\n    { \"platform\": \"YOUTUBE\", \"handle\": \"@multi_yt\", \"followerCount\": 50000 },\n    { \"platform\": \"TIKTOK\", \"handle\": \"@multi_tt\", \"followerCount\": 25000 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Creator — 0 social accounts (expect 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Validation error mentions socialAccounts', () => pm.expect(JSON.stringify(body)).to.include('socialAccounts'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/creator",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nosocial@collabhub.com\",\n  \"password\": \"password123\",\n  \"displayName\": \"No Social\",\n  \"category\": \"TECH\",\n  \"socialAccounts\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Creator — missing socialAccounts (expect 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/creator",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"missing@collabhub.com\",\n  \"password\": \"password123\",\n  \"displayName\": \"Missing Social\",\n  \"category\": \"FOOD\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Creator — duplicate email (expect 409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 409', () => pm.response.to.have.status(409));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error message mentions email in use', () => pm.expect(JSON.stringify(body)).to.include('Email already in use'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/creator",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"creator@collabhub.com\",\n  \"password\": \"password123\",\n  \"displayName\": \"Duplicate\",\n  \"category\": \"FOOD\",\n  \"socialAccounts\": [{ \"platform\": \"TIKTOK\", \"handle\": \"@dup\", \"followerCount\": 1000 }]\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Creator — password too short (expect 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/creator",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"short@collabhub.com\",\n  \"password\": \"abc\",\n  \"displayName\": \"Short Pass\",\n  \"category\": \"FOOD\",\n  \"socialAccounts\": [{ \"platform\": \"TIKTOK\", \"handle\": \"@short\" }]\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Creator — invalid category enum (expect 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/creator",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"enum@collabhub.com\",\n  \"password\": \"password123\",\n  \"displayName\": \"Enum Test\",\n  \"category\": \"INVALID_CATEGORY\",\n  \"socialAccounts\": [{ \"platform\": \"INSTAGRAM\", \"handle\": \"@enum\" }]\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Agency — valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.test('Returns accessToken', () => pm.expect(body.data.accessToken).to.be.a('string'));",
+                  "pm.collectionVariables.set('agencyAccessToken', body.data.accessToken);",
+                  "pm.collectionVariables.set('agencyRefreshToken', body.data.refreshToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/agency",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"agency@collabhub.com\",\n  \"password\": \"password123\",\n  \"brandName\": \"TechBrands Inc\",\n  \"companyRegistration\": \"REG123456\",\n  \"website\": \"https://techbrands.com\",\n  \"description\": \"We sell premium tech products\",\n  \"productCategory\": \"TECH\",\n  \"contactPersonName\": \"John Smith\",\n  \"contactEmail\": \"john@techbrands.com\",\n  \"contactPhone\": \"+1234567890\",\n  \"designation\": \"CEO\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Agency — missing brandName (expect 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error mentions brandName', () => pm.expect(JSON.stringify(body)).to.include('brandName'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/agency",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nobrand@collabhub.com\",\n  \"password\": \"password123\",\n  \"productCategory\": \"TECH\",\n  \"contactPersonName\": \"Jane\",\n  \"contactEmail\": \"jane@test.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Agency — invalid contactEmail (expect 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/agency",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"bademail@collabhub.com\",\n  \"password\": \"password123\",\n  \"brandName\": \"Test Brand\",\n  \"productCategory\": \"BEAUTY\",\n  \"contactPersonName\": \"Jane\",\n  \"contactEmail\": \"not-an-email\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Agency — duplicate email (expect 409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register/agency",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"agency@collabhub.com\",\n  \"password\": \"password123\",\n  \"brandName\": \"Duplicate Brand\",\n  \"productCategory\": \"FOOD\",\n  \"contactPersonName\": \"Dup\",\n  \"contactEmail\": \"dup@test.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login — valid credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Returns accessToken', () => pm.expect(body.data.accessToken).to.be.a('string'));",
+                  "pm.test('Returns refreshToken', () => pm.expect(body.data.refreshToken).to.be.a('string'));",
+                  "pm.test('Returns user object', () => pm.expect(body.data.user).to.be.an('object'));",
+                  "pm.test('Does NOT expose passwordHash', () => pm.expect(body.data.user).to.not.have.property('passwordHash'));",
+                  "pm.collectionVariables.set('creatorAccessToken', body.data.accessToken);",
+                  "pm.collectionVariables.set('creatorRefreshToken', body.data.refreshToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"creator@collabhub.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login — wrong password (expect 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+                  "const body = pm.response.json();",
+                  "pm.test('Generic error message (no email enumeration)', () => pm.expect(JSON.stringify(body)).to.include('Invalid email or password'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"creator@collabhub.com\",\n  \"password\": \"wrongpassword\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login — nonexistent email (expect 401, same error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+                  "const body = pm.response.json();",
+                  "pm.test('Same generic message as wrong password', () => pm.expect(JSON.stringify(body)).to.include('Invalid email or password'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nobody@collabhub.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login — invalid email format (expect 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"notanemail\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token — valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Returns new accessToken', () => pm.expect(body.data.accessToken).to.be.a('string'));",
+                  "pm.test('Returns new refreshToken', () => pm.expect(body.data.refreshToken).to.be.a('string'));",
+                  "// Store old refresh token for revocation test",
+                  "pm.collectionVariables.set('oldRefreshToken', pm.collectionVariables.get('creatorRefreshToken'));",
+                  "pm.collectionVariables.set('creatorAccessToken', body.data.accessToken);",
+                  "pm.collectionVariables.set('creatorRefreshToken', body.data.refreshToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/refresh",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{creatorRefreshToken}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token — reuse rotated token (expect 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401 — old token is revoked', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/refresh",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{oldRefreshToken}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token — fake token (expect 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/refresh",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"00000000-0000-0000-0000-000000000000\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Logout — valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/logout",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{creatorAccessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{creatorRefreshToken}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Logout — no auth token (expect 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/logout",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"some-token\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh — after logout (expect 401 revoked)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401 — token revoked after logout', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/refresh",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{creatorRefreshToken}}\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Creators",
+      "item": [
+        {
+          "name": "GET /creators — public",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Returns array', () => pm.expect(body.data).to.be.an('array'));",
+                  "pm.test('No passwordHash in any user', () => {",
+                  "  body.data.forEach(c => pm.expect(c.user).to.not.have.property('passwordHash'));",
+                  "});",
+                  "if (body.data.length > 0) {",
+                  "  pm.collectionVariables.set('creatorProfileId', body.data[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/creators"
+          }
+        },
+        {
+          "name": "GET /creators/:id — valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Returns creator with socialAccounts', () => pm.expect(body.data.socialAccounts).to.be.an('array'));",
+                  "pm.test('No passwordHash in user', () => pm.expect(body.data.user).to.not.have.property('passwordHash'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/creators/{{creatorProfileId}}"
+          }
+        },
+        {
+          "name": "GET /creators/:id — not found (expect 404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/creators/00000000-0000-0000-0000-000000000000"
+          }
+        },
+        {
+          "name": "PATCH /creators/:id — own token (expect 200)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({",
+                  "  url: pm.collectionVariables.get('baseUrl') + '/auth/login',",
+                  "  method: 'POST',",
+                  "  header: { 'Content-Type': 'application/json' },",
+                  "  body: { mode: 'raw', raw: JSON.stringify({ email: 'creator@collabhub.com', password: 'password123' }) }",
+                  "}, (err, res) => {",
+                  "  const body = res.json();",
+                  "  pm.collectionVariables.set('creatorAccessToken', body.data.accessToken);",
+                  "  pm.collectionVariables.set('creatorRefreshToken', body.data.refreshToken);",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Bio is updated', () => pm.expect(body.data.bio).to.equal('Updated bio via Postman'));",
+                  "pm.test('Age is updated', () => pm.expect(body.data.age).to.equal(27));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/creators/{{creatorProfileId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{creatorAccessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bio\": \"Updated bio via Postman\",\n  \"age\": 27\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /creators/:id — no token (expect 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/creators/{{creatorProfileId}}",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bio\": \"Should fail\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /creators/:id — agency token (expect 403 wrong role)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403', () => pm.response.to.have.status(403));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error mentions creators', () => pm.expect(JSON.stringify(body)).to.include('creators'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/creators/{{creatorProfileId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{agencyAccessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bio\": \"Agency trying to edit creator\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /creators/:id — invalid enum (expect 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/creators/{{creatorProfileId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{creatorAccessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"NOT_VALID\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agencies",
+      "item": [
+        {
+          "name": "GET /agencies — public",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Returns array', () => pm.expect(body.data).to.be.an('array'));",
+                  "pm.test('No passwordHash in any user', () => {",
+                  "  body.data.forEach(a => pm.expect(a.user).to.not.have.property('passwordHash'));",
+                  "});",
+                  "if (body.data.length > 0) {",
+                  "  pm.collectionVariables.set('agencyProfileId', body.data[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/agencies"
+          }
+        },
+        {
+          "name": "GET /agencies/:id — valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Returns contact info', () => pm.expect(body.data.contact).to.be.an('object'));",
+                  "pm.test('No passwordHash in user', () => pm.expect(body.data.user).to.not.have.property('passwordHash'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/agencies/{{agencyProfileId}}"
+          }
+        },
+        {
+          "name": "GET /agencies/:id — not found (expect 404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/agencies/00000000-0000-0000-0000-000000000000"
+          }
+        },
+        {
+          "name": "PATCH /agencies/:id — own token (expect 200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Description is updated', () => pm.expect(body.data.description).to.equal('Updated via Postman'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/agencies/{{agencyProfileId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{agencyAccessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated via Postman\",\n  \"website\": \"https://updated.techbrands.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /agencies/:id — no token (expect 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/agencies/{{agencyProfileId}}",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Should fail\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /agencies/:id — creator token (expect 403 wrong role)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403', () => pm.response.to.have.status(403));",
+                  "const body = pm.response.json();",
+                  "pm.test('Error mentions agencies', () => pm.expect(JSON.stringify(body)).to.include('agencies'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/agencies/{{agencyProfileId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{creatorAccessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Creator trying to edit agency\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /agencies/:id — invalid enum (expect 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/agencies/{{agencyProfileId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{agencyAccessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productCategory\": \"NOT_VALID\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
