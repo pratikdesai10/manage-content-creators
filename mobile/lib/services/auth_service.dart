@@ -17,23 +17,18 @@ class AuthService {
       'password': password,
     });
     final authResponse = AuthResponse.fromJson(
-      // Backend wraps in {success, data, timestamp}
       response.data['data'] as Map<String, dynamic>,
     );
     await _storageService.saveToken(authResponse.accessToken);
     return authResponse;
   }
 
-  Future<AuthResponse> signupCreator({
-    required String email,
-    required String password,
-    required String displayName,
-  }) async {
-    final response = await _apiClient.dio.post('/auth/signup/creator', data: {
-      'email': email,
-      'password': password,
-      'displayName': displayName,
-    });
+  /// Register a creator with the full multi-step form payload.
+  Future<AuthResponse> registerCreator(Map<String, dynamic> payload) async {
+    final response = await _apiClient.dio.post(
+      '/auth/register/creator',
+      data: payload,
+    );
     final authResponse = AuthResponse.fromJson(
       response.data['data'] as Map<String, dynamic>,
     );
@@ -41,16 +36,12 @@ class AuthService {
     return authResponse;
   }
 
-  Future<AuthResponse> signupAgency({
-    required String email,
-    required String password,
-    required String companyName,
-  }) async {
-    final response = await _apiClient.dio.post('/auth/signup/agency', data: {
-      'email': email,
-      'password': password,
-      'companyName': companyName,
-    });
+  /// Register an agency with the full multi-step form payload.
+  Future<AuthResponse> registerAgency(Map<String, dynamic> payload) async {
+    final response = await _apiClient.dio.post(
+      '/auth/register/agency',
+      data: payload,
+    );
     final authResponse = AuthResponse.fromJson(
       response.data['data'] as Map<String, dynamic>,
     );
@@ -61,6 +52,13 @@ class AuthService {
   Future<User> getMe() async {
     final response = await _apiClient.dio.get('/auth/me');
     return User.fromJson(response.data['data'] as Map<String, dynamic>);
+  }
+
+  Future<bool> checkEmail(String email) async {
+    final response = await _apiClient.dio.get(
+      '/auth/check-email/${Uri.encodeComponent(email)}',
+    );
+    return (response.data['data'] as Map<String, dynamic>)['available'] == true;
   }
 
   Future<void> logout() async {

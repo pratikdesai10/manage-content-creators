@@ -6,6 +6,7 @@ import '../screens/home_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/signup/creator_signup_screen.dart';
 import '../screens/signup/agency_signup_screen.dart';
+import '../screens/signup/verify_email_screen.dart';
 import '../screens/dashboard/creator_dashboard_screen.dart';
 import '../screens/dashboard/agency_dashboard_screen.dart';
 
@@ -32,6 +33,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/signup/agency',
         builder: (_, __) => const AgencySignupScreen(),
+      ),
+      GoRoute(
+        path: '/signup/verify-email',
+        builder: (_, __) => const VerifyEmailScreen(),
       ),
       GoRoute(
         path: '/dashboard/creator',
