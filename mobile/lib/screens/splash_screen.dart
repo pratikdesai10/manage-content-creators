@@ -15,7 +15,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuth();
+    // Delay the auth check to avoid modifying providers during the widget tree build.
+    Future.microtask(() => _checkAuth());
   }
 
   Future<void> _checkAuth() async {

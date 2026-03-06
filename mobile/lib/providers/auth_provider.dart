@@ -39,39 +39,25 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
     }
   }
 
-  Future<void> signupCreator({
-    required String email,
-    required String password,
-    required String displayName,
-  }) async {
+  Future<void> registerCreator(Map<String, dynamic> payload) async {
     state = const AsyncValue.loading();
     try {
-      final authResponse = await _authService.signupCreator(
-        email: email,
-        password: password,
-        displayName: displayName,
-      );
+      final authResponse = await _authService.registerCreator(payload);
       state = AsyncValue.data(authResponse.user);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
+      rethrow;
     }
   }
 
-  Future<void> signupAgency({
-    required String email,
-    required String password,
-    required String companyName,
-  }) async {
+  Future<void> registerAgency(Map<String, dynamic> payload) async {
     state = const AsyncValue.loading();
     try {
-      final authResponse = await _authService.signupAgency(
-        email: email,
-        password: password,
-        companyName: companyName,
-      );
+      final authResponse = await _authService.registerAgency(payload);
       state = AsyncValue.data(authResponse.user);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
+      rethrow;
     }
   }
 
