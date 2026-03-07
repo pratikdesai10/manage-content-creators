@@ -23,6 +23,8 @@ export interface CreatorProfile {
   bio: string | null;
   niche: string[];
   location: string | null;
+  availability: string | null;
+  rateRange: string | null;
   socialAccounts: SocialAccount[];
   user: User;
 }
