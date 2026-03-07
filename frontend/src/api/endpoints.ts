@@ -1,6 +1,7 @@
 import apiClient from './axios';
 import type { CreatorFormData } from '../types/creator.types';
 import type { AgencyFormData } from '../types/agency.types';
+import type { AuthResponse, CreatorProfile } from '../types';
 
 export async function registerCreator(data: CreatorFormData) {
   const { confirmPassword, termsOfService, contentGuidelines, ageConfirmation, dataAccuracy, ...payload } = data;
@@ -67,6 +68,11 @@ export async function registerAgency(data: AgencyFormData) {
   return result;
 }
 
+export async function login(email: string, password: string): Promise<AuthResponse> {
+  const { data } = await apiClient.post<{ data: { accessToken: string; user: AuthResponse['user'] } }>('/auth/login', { email, password });
+  return { access_token: data.data.accessToken, user: data.data.user };
+}
+
 export async function checkUsername(username: string): Promise<{ available: boolean }> {
   const { data } = await apiClient.get(`/auth/check-username/${encodeURIComponent(username)}`);
   return data;
@@ -75,4 +81,47 @@ export async function checkUsername(username: string): Promise<{ available: bool
 export async function checkEmail(email: string): Promise<{ available: boolean }> {
   const { data } = await apiClient.get(`/auth/check-email/${encodeURIComponent(email)}`);
   return data;
+}
+
+export interface DashboardStats {
+  profileViews: number;
+  collaborationCount: number;
+  messageCount: number;
+}
+
+export interface Collaboration {
+  id: string;
+  brandName: string;
+  brandLogo: string | null;
+  type: string;
+  status: string;
+  createdAt: string;
+}
+
+export interface DashboardMessage {
+  id: string;
+  brandName: string;
+  preview: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export async function getCreatorProfiles(): Promise<CreatorProfile[]> {
+  const { data } = await apiClient.get<{ data: CreatorProfile[] }>('/creators');
+  return data.data;
+}
+
+export async function getCreatorStats(creatorId: string): Promise<DashboardStats> {
+  const { data } = await apiClient.get<{ data: DashboardStats }>(`/creators/${creatorId}/stats`);
+  return data.data;
+}
+
+export async function getRecentCollaborations(creatorId: string): Promise<Collaboration[]> {
+  const { data } = await apiClient.get<{ data: Collaboration[] }>(`/creators/${creatorId}/collaborations`);
+  return data.data;
+}
+
+export async function getRecentMessages(creatorId: string): Promise<DashboardMessage[]> {
+  const { data } = await apiClient.get<{ data: DashboardMessage[] }>(`/creators/${creatorId}/messages`);
+  return data.data;
 }
