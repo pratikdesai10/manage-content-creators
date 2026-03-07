@@ -92,4 +92,40 @@ export class CreatorService {
       take: 3,
     });
   }
+
+  async getCollaborationDetail(creatorId: string, collaborationId: string) {
+    await this.findOne(creatorId);
+    const collab = await this.prisma.collaboration.findUnique({
+      where: { id: collaborationId },
+    });
+    if (!collab || collab.creatorId !== creatorId) {
+      throw new NotFoundException(`Collaboration ${collaborationId} not found`);
+    }
+    return collab;
+  }
+
+  async getMessageThread(creatorId: string, messageId: string) {
+    await this.findOne(creatorId);
+    const message = await this.prisma.message.findUnique({
+      where: { id: messageId },
+      include: {
+        threads: { orderBy: { sentAt: 'asc' } },
+      },
+    });
+    if (!message || message.creatorId !== creatorId) {
+      throw new NotFoundException(`Message ${messageId} not found`);
+    }
+    return message;
+  }
+
+  async getSocialAccountDetail(creatorId: string, accountId: string) {
+    await this.findOne(creatorId);
+    const account = await this.prisma.socialAccount.findUnique({
+      where: { id: accountId },
+    });
+    if (!account || account.creatorProfileId !== creatorId) {
+      throw new NotFoundException(`Social account ${accountId} not found`);
+    }
+    return account;
+  }
 }
