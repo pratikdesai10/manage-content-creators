@@ -26,6 +26,24 @@ export class CreatorController {
   }
 
   @UseGuards(JwtAuthGuard, CreatorGuard)
+  @Get(':id/stats')
+  getStats(@Param('id') id: string) {
+    return this.creatorService.getDashboardStats(id);
+  }
+
+  @UseGuards(JwtAuthGuard, CreatorGuard)
+  @Get(':id/collaborations')
+  getCollaborations(@Param('id') id: string) {
+    return this.creatorService.getRecentCollaborations(id);
+  }
+
+  @UseGuards(JwtAuthGuard, CreatorGuard)
+  @Get(':id/messages')
+  getMessages(@Param('id') id: string) {
+    return this.creatorService.getRecentMessages(id);
+  }
+
+  @UseGuards(JwtAuthGuard, CreatorGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
