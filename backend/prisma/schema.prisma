@@ -214,6 +214,10 @@ model SocialAccount {
   followerCount    Int            @default(0)
   isVerified       Boolean        @default(false)
   accountType      String?
+  engagementRate Float   @default(0)
+  avgLikes       Int     @default(0)
+  growthPercent  Float   @default(0)
+  topContentType String?
 
   @@unique([creatorProfileId, platform])
 }
@@ -262,6 +266,12 @@ model Collaboration {
   type       CollaborationType
   status     CollaborationStatus
   createdAt  DateTime          @default(now())
+  brief          String?
+  deliverables   String[]
+  timeline       String?
+  budget         String?
+  contactPerson  String?
+  contactEmail   String?
 
   @@index([creatorId])
 }
@@ -274,8 +284,20 @@ model Message {
   preview   String
   isRead    Boolean        @default(false)
   createdAt DateTime       @default(now())
+  threads   MessageThread[]
 
   @@index([creatorId])
+}
+
+model MessageThread {
+  id        String   @id @default(uuid())
+  messageId String
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  sender    String
+  text      String
+  sentAt    DateTime @default(now())
+
+  @@index([messageId])
 }
 
 model RefreshToken {
