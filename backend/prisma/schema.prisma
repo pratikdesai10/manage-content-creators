@@ -148,6 +148,13 @@ enum FollowerRange {
   ANY
 }
 
+enum CollaborationStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
 model User {
   id           String    @id @default(uuid())
   email        String    @unique
@@ -253,8 +260,10 @@ model Collaboration {
   brandName  String
   brandLogo  String?
   type       CollaborationType
-  status     String
+  status     CollaborationStatus
   createdAt  DateTime          @default(now())
+
+  @@index([creatorId])
 }
 
 model Message {
@@ -265,6 +274,8 @@ model Message {
   preview   String
   isRead    Boolean        @default(false)
   createdAt DateTime       @default(now())
+
+  @@index([creatorId])
 }
 
 model RefreshToken {

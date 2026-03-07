@@ -41,5 +41,6 @@ prisma/
 - Run `npm run db:migrate` for migrations
 
 ## Developer Notes
-- Models: User, CreatorProfile, AgencyProfile, SocialAccount, AgencyContact, RefreshToken
-- Key enums: UserRole, CreatorCategory, SocialPlatform, ContentType, CollaborationType, Availability, TravelScope, RateRange, IndustryCategory, CompanySize, BudgetRange, PaymentType, PaymentTimeline, FollowerRange
+- Models: User, CreatorProfile, AgencyProfile, SocialAccount, AgencyContact, RefreshToken, Collaboration, Message
+- Key enums: UserRole, CreatorCategory, SocialPlatform, ContentType, CollaborationType, CollaborationStatus, Availability, TravelScope, RateRange, IndustryCategory, CompanySize, BudgetRange, PaymentType, PaymentTimeline, FollowerRange
+- Known limitation: `Message.brandName` is stored as a plain String (no FK to AgencyProfile) — deliberate prototype decision, to be revisited.
