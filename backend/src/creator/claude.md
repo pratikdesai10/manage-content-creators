@@ -24,13 +24,16 @@ creator/
 ```
 
 ## Key Components
-- **CreatorService** — `findAll()`, `findOne(id)`, `update(id, userId, dto)`
+- **CreatorService** — `findAll()`, `findOne(id)`, `update(id, userId, dto)`, `getDashboardStats(creatorId)`, `getRecentCollaborations(creatorId)`, `getRecentMessages(creatorId)`
 - **CreatorController** — REST endpoints with role-based guards
 
 ## Data Flow
 - List: GET /creators → findAll() → return profiles with socialAccounts + user
 - Get: GET /creators/:id → findOne() → 404 if not found
 - Update: PATCH /creators/:id → verify JWT + CREATOR role → verify ownership → update
+- Stats: GET /creators/:id/stats → verify JWT + CREATOR role → verify ownership → getDashboardStats()
+- Collaborations: GET /creators/:id/collaborations → verify JWT + CREATOR role → verify ownership → getRecentCollaborations()
+- Messages: GET /creators/:id/messages → verify JWT + CREATOR role → verify ownership → getRecentMessages()
 
 ## Dependencies
 - Internal: AuthModule (guards), PrismaModule (database)
@@ -42,6 +45,9 @@ creator/
 | GET | `/creators` | Public | List all creators |
 | GET | `/creators/:id` | Public | Get creator by ID |
 | PATCH | `/creators/:id` | JWT + Creator | Update own profile |
+| GET | `/creators/:id/stats` | JWT + Creator (owner) | Get dashboard stats (profileViews, collaborationCount, messageCount) |
+| GET | `/creators/:id/collaborations` | JWT + Creator (owner) | Get 3 most recent collaborations |
+| GET | `/creators/:id/messages` | JWT + Creator (owner) | Get 3 most recent messages |
 
 ## Integration
 - Imports `AuthModule` for `JwtAuthGuard` and `CreatorGuard`

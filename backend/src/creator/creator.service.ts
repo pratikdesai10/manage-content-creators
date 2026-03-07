@@ -62,6 +62,7 @@ export class CreatorService {
   }
 
   async getDashboardStats(creatorId: string) {
+    await this.findOne(creatorId); // throws NotFoundException if not found
     const [collaborationCount, messageCount] = await Promise.all([
       this.prisma.collaboration.count({ where: { creatorId } }),
       this.prisma.message.count({ where: { creatorId } }),
@@ -75,6 +76,7 @@ export class CreatorService {
   }
 
   async getRecentCollaborations(creatorId: string) {
+    await this.findOne(creatorId); // throws NotFoundException if not found
     return this.prisma.collaboration.findMany({
       where: { creatorId },
       orderBy: { createdAt: 'desc' },
@@ -83,6 +85,7 @@ export class CreatorService {
   }
 
   async getRecentMessages(creatorId: string) {
+    await this.findOne(creatorId); // throws NotFoundException if not found
     return this.prisma.message.findMany({
       where: { creatorId },
       orderBy: { createdAt: 'desc' },
