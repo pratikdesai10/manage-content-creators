@@ -12,7 +12,7 @@ export interface SocialAccount {
   id: string;
   platform: string;
   handle: string;
-  followersCount: number;
+  followerCount: number;
   creatorId: string;
 }
 

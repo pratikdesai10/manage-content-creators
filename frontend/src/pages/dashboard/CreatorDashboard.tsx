@@ -65,7 +65,7 @@ function StatCard({ label, value, icon }: { label: string; value: number | undef
 
 function SocialReach({ accounts }: { accounts: SocialAccount[] }) {
   if (accounts.length === 0) return null;
-  const maxFollowers = Math.max(...accounts.map((a) => a.followersCount), 1);
+  const maxFollowers = Math.max(...accounts.map((a) => a.followerCount), 1);
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
       <h2 className="text-sm font-semibold text-gray-700 mb-4">Social Reach</h2>
@@ -77,13 +77,13 @@ function SocialReach({ accounts }: { accounts: SocialAccount[] }) {
               <div
                 className="h-3 rounded-full transition-all duration-500"
                 style={{
-                  width: `${(account.followersCount / maxFollowers) * 100}%`,
+                  width: `${(account.followerCount / maxFollowers) * 100}%`,
                   backgroundColor: PLATFORM_COLORS[account.platform] ?? '#6B7280',
                 }}
               />
             </div>
             <span className="w-12 text-xs text-gray-600 text-right font-semibold">
-              {formatFollowers(account.followersCount)}
+              {formatFollowers(account.followerCount)}
             </span>
           </div>
         ))}
