@@ -2,116 +2,166 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Structure
+## Project Overview
 
-Monorepo with three sub-projects:
+**CollabHub** — A platform connecting content creators with agencies/brands for collaborations. Monorepo with three sub-projects sharing a common data model.
 
-- `backend/` — NestJS REST API (Node 18+, npm, port 3000)
-- `frontend/` — React/Vite SPA (Node 18+, npm, port 5173)
-- `mobile/` — Flutter mobile app (Android + iOS, Flutter 3.16+)
+## Tech Stack
 
----
+| Layer | Stack |
+|-------|-------|
+| Backend | NestJS, TypeScript, Prisma, PostgreSQL, Passport JWT, Swagger |
+| Frontend | React 18, Vite, TypeScript, Tailwind CSS, Zustand, TanStack Query, react-hook-form + Zod |
+| Mobile | Flutter 3.16+, Dart, Riverpod, GoRouter, Dio, flutter_secure_storage |
 
-## backend
+## High-Level Architecture
 
-### Commands
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   Frontend   │     │    Mobile    │     │   Backend    │
+│  React/Vite  │────▶│   Flutter    │────▶│   NestJS     │
+│  Port 5173   │     │  iOS/Android │     │  Port 3000   │
+└──────────────┘     └──────────────┘     └──────┬───────┘
+                                                 │
+                                          ┌──────▼───────┐
+                                          │  PostgreSQL   │
+                                          │   (Prisma)    │
+                                          └──────────────┘
+```
 
+- **Backend** — REST API with JWT auth, role-based access (Creator/Agency)
+- **Frontend** — SPA with multi-step signup, dashboards, Zustand auth state
+- **Mobile** — Flutter app mirroring frontend features, Riverpod state management
+
+## Folder Structure
+
+```
+manage-content-creators/
+├── CLAUDE.md              ← You are here (navigation + rules)
+├── backend/               ← NestJS REST API
+│   ├── prisma/            ← Schema + migrations
+│   └── src/
+│       ├── auth/          ← Auth, JWT, guards, registration
+│       ├── creator/       ← Creator profile CRUD
+│       ├── agency/        ← Agency profile CRUD
+│       ├── prisma/        ← Database service (global)
+│       ├── common/        ← Filters, interceptors, HTTP client
+│       └── config/        ← Environment config
+├── frontend/              ← React/Vite SPA
+│   └── src/
+│       ├── api/           ← Axios client + endpoints
+│       ├── components/    ← Layout + route guards
+│       ├── pages/         ← Route pages + signup flows
+│       ├── stores/        ← Zustand auth store
+│       ├── hooks/         ← Custom React hooks
+│       ├── types/         ← TypeScript types + constants
+│       ├── schemas/       ← Zod validation schemas
+│       └── lib/           ← Utilities (cn)
+└── mobile/                ← Flutter app
+    └── lib/
+        ├── config/        ← Router, theme, env config
+        ├── models/        ← Data models (json_serializable)
+        ├── providers/     ← Riverpod auth + DI providers
+        ├── screens/       ← Page widgets + signup flows
+        ├── services/      ← API client, auth, storage
+        ├── widgets/       ← Reusable UI components
+        └── utils/         ← Enums, validators
+```
+
+## Commands
+
+### Backend
 ```bash
 cd backend
-
-npm run start:dev        # Dev server with watch (port 3000)
-npm run build            # Compile TypeScript to dist/
+npm run start:dev        # Dev server (port 3000)
+npm run build            # Compile TypeScript
 npm run lint             # ESLint
 npm run test             # Jest unit tests
-
 npm run db:migrate       # Prisma migrate dev
 npm run db:generate      # Regenerate Prisma client
 npm run db:studio        # Prisma Studio GUI
 npm run db:seed          # Seed database
 ```
 
-### Architecture
-
-- **AppModule** imports `ConfigModule` (global), `PrismaModule` (global), and feature modules.
-- **PrismaModule** (`src/prisma/`) — global, `PrismaService` extends `PrismaClient`, handles connect/disconnect.
-- **ConfigModule** loads `src/config/configuration.ts` — typed factory for `port`, `database.url`, `jwt.secret`, `jwt.expiresIn`.
-- **Global middleware** — `HttpExceptionFilter` (shapes all errors), `ResponseTransformInterceptor` (wraps responses in `{success, data, timestamp}`).
-- **Feature modules** — `src/auth/`, `src/creator/`, `src/agency/` — scaffolded with TODO stubs.
-- **main.ts** — helmet, compression, CORS (localhost:5173 + localhost:3000), global `ValidationPipe`, Swagger at `/api/docs`.
-
-### Environment Variables (backend/.env)
-
-- `DATABASE_URL` — PostgreSQL connection string
-- `JWT_SECRET` — signing secret
-- `JWT_EXPIRY` — token lifetime (e.g. `7d`)
-- `PORT` — defaults to `3000`
-
----
-
-## frontend
-
-### Commands
-
+### Frontend
 ```bash
 cd frontend
-
 npm run dev              # Vite dev server (port 5173)
-npm run build            # Production bundle to dist/
-npm run preview          # Preview production build
+npm run build            # Production bundle
+npm run preview          # Preview build
 npm run lint             # ESLint
 ```
 
-### Architecture
+### Mobile
+```bash
+cd mobile
+flutter pub get
+flutter run
+flutter run -d ios / -d android
+dart run build_runner build --delete-conflicting-outputs  # Code generation
+flutter analyze
+```
 
-- **Routing** — `react-router-dom` v6 nested routes in `src/App.tsx`. `PageLayout` wraps all routes (Navbar + Outlet + Footer). Protected routes use `ProtectedRoute` + `RoleRoute` guards.
-- **Auth state** — Zustand store in `src/stores/authStore.ts`, persisted to localStorage under key `collabhub-auth`. Access via `useAuth()` hook.
-- **API client** — Axios instance in `src/api/axios.ts`. Request interceptor attaches JWT from Zustand store. Response interceptor auto-logouts on 401. Endpoint functions go in `src/api/endpoints.ts`.
-- **Server state** — TanStack Query v5 via `QueryClientProvider` in `App.tsx`.
-- **Styling** — Tailwind CSS v3. Use `cn()` from `src/lib/utils.ts` for conditional classes.
-- **Forms** — react-hook-form + zod resolvers (forms not yet implemented in placeholders).
+## Environment Variables
 
-### Environment Variables (frontend/.env)
+### backend/.env
+- `DATABASE_URL` — PostgreSQL connection string
+- `JWT_SECRET` — JWT signing secret
+- `JWT_ACCESS_EXPIRY` — Access token lifetime (default: `15m`)
+- `JWT_REFRESH_EXPIRY` — Refresh token lifetime (default: `7d`)
+- `PORT` — Server port (default: `3000`)
 
+### frontend/.env
 - `VITE_API_URL` — Backend base URL (default: `http://localhost:3000`)
+
+### mobile/.env
+- `COLLABHUB_API_URL` — Backend base URL (default: `http://localhost:3000`)
 
 ---
 
-## mobile
+## Module Documentation
 
-### Commands
+### Backend
+- [backend/src/auth/claude.md](backend/src/auth/claude.md) — Auth, JWT, guards, registration
+- [backend/src/creator/claude.md](backend/src/creator/claude.md) — Creator profile CRUD
+- [backend/src/agency/claude.md](backend/src/agency/claude.md) — Agency profile CRUD
+- [backend/src/prisma/claude.md](backend/src/prisma/claude.md) — Database service
+- [backend/src/common/claude.md](backend/src/common/claude.md) — Filters, interceptors, HTTP client
+- [backend/src/config/claude.md](backend/src/config/claude.md) — Environment config
 
-```bash
-cd mobile
+### Frontend
+- [frontend/src/api/claude.md](frontend/src/api/claude.md) — Axios client + endpoints
+- [frontend/src/components/claude.md](frontend/src/components/claude.md) — Layout + route guards
+- [frontend/src/pages/claude.md](frontend/src/pages/claude.md) — Route pages + signup flows
+- [frontend/src/stores/claude.md](frontend/src/stores/claude.md) — Zustand auth store
+- [frontend/src/hooks/claude.md](frontend/src/hooks/claude.md) — Custom hooks
+- [frontend/src/types/claude.md](frontend/src/types/claude.md) — TypeScript types + constants
+- [frontend/src/schemas/claude.md](frontend/src/schemas/claude.md) — Zod validation schemas
+- [frontend/src/lib/claude.md](frontend/src/lib/claude.md) — Utilities
 
-flutter pub get                                          # Install dependencies
-flutter run                                             # Run on connected device/emulator
-flutter run -d ios                                      # iOS simulator
-flutter run -d android                                  # Android emulator
-dart run build_runner build --delete-conflicting-outputs  # Generate .g.dart files (models, env, providers)
-dart run build_runner watch --delete-conflicting-outputs  # Watch mode during development
-flutter analyze                                         # Dart static analysis
-```
+### Mobile
+- [mobile/lib/config/claude.md](mobile/lib/config/claude.md) — Router, theme, env config
+- [mobile/lib/models/claude.md](mobile/lib/models/claude.md) — Data models
+- [mobile/lib/providers/claude.md](mobile/lib/providers/claude.md) — Riverpod providers
+- [mobile/lib/screens/claude.md](mobile/lib/screens/claude.md) — Screen widgets
+- [mobile/lib/services/claude.md](mobile/lib/services/claude.md) — API + storage services
+- [mobile/lib/widgets/claude.md](mobile/lib/widgets/claude.md) — Reusable widgets
+- [mobile/lib/utils/claude.md](mobile/lib/utils/claude.md) — Enums + validators
 
-### Architecture
+---
 
-- **Entry point** — `lib/main.dart`: `ProviderScope` wraps `CollabHubApp` (ConsumerWidget), uses `MaterialApp.router` with GoRouter and Material 3 theme.
-- **Routing** — `lib/config/router.dart`: GoRouter with `initialLocation: /splash`. Auth redirect guards all `/dashboard/*` routes — unauthenticated users redirected to `/login`.
-- **Auth state** — `lib/providers/auth_provider.dart`: `AuthNotifier` (`StateNotifier<AsyncValue<User?>>`). Exposes `checkAuth`, `login`, `signupCreator`, `signupAgency`, `logout`. Companion providers: `currentUserProvider`, `isAuthenticatedProvider`.
-- **API client** — `lib/services/api_client.dart`: Dio instance with JWT interceptor (reads token from `StorageService` on every request). On 401: clears token, fires `onUnauthorized` callback to reset auth state.
-- **Token storage** — `lib/services/storage_service.dart`: `flutter_secure_storage` wrapper (keychain/keystore). Key: `auth_token`.
-- **Models** — `lib/models/`: `User`, `AuthResponse`, `UserRole` enum, `CreatorProfile`, `AgencyProfile`, `SocialAccount`. All use `json_serializable` with generated `fromJson`/`toJson`. Mirror TypeScript interfaces in `frontend/src/types/`.
-- **Theme** — `lib/config/theme.dart`: Material 3, primary seed `#6C63FF`, Inter font via `google_fonts`, light + dark via `ColorScheme.fromSeed`.
-- **Env config** — `lib/config/app_config.dart`: `envied` reads `COLLABHUB_API_URL` from `mobile/.env` at build time.
+## AI Development Rules
 
-### Environment Variables (mobile/.env)
+- **Read first**: When working on any module, ALWAYS read that module's `claude.md` before making changes.
+- **Follow conventions**: Adhere to the architecture and conventions defined in each module's documentation.
+- **Understand before modifying**: Do not modify modules without understanding their documentation and data flow.
+- **Update docs**: When adding new functionality to a module, update that module's `claude.md`.
+- **Cross-layer sync**: When modifying types/enums, check and update across all three layers (backend Prisma schema, frontend types, mobile enums/models).
+- **New modules**: When creating a new module, create a `claude.md` using the template at `docs/claude-module-template.md`.
 
-- `COLLABHUB_API_URL` — Backend base URL (default: `http://localhost:3000`)
-  - For Android device testing use LAN IP: `http://192.168.x.x:3000`
+## Cross-Cutting Concerns
 
-### Code Generation
-
-Required after modifying models, `.env`, or providers:
-
-```bash
-dart run build_runner build --delete-conflicting-outputs
-```
+- **Auth flow**: Backend issues JWT (15m) + refresh token (7d). Frontend stores in Zustand/localStorage. Mobile stores in flutter_secure_storage. All clients auto-logout on 401.
+- **API response format**: All backend responses wrapped in `{success, data, timestamp, traceId}`. Errors: `{statusCode, timestamp, path, message, traceId}`.
+- **Validation**: Backend uses class-validator DTOs. Frontend uses Zod schemas. Mobile uses custom Validators class. Keep rules in sync.
+- **Enums**: Source of truth is `backend/prisma/schema.prisma`. Mirrored in `frontend/src/types/*.types.ts` and `mobile/lib/utils/enums.dart`.
