@@ -9,6 +9,7 @@ import {
   type DashboardMessage,
 } from '../../api/endpoints';
 import type { CreatorProfile, SocialAccount } from '../../types';
+import { AVAILABILITY_LABELS, RATE_RANGE_LABELS } from '../../types/creator.types';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -101,7 +102,7 @@ function CollaborationsList({ collaborations }: { collaborations: Collaboration[
             <div key={c.id} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">
-                  {c.brandName[0]}
+                  {c.brandName?.[0]?.toUpperCase() ?? '?'}
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">{c.brandName}</p>
@@ -135,7 +136,7 @@ function MessagesList({ messages }: { messages: DashboardMessage[] | undefined }
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">
-                    {m.brandName[0]}
+                    {m.brandName?.[0]?.toUpperCase() ?? '?'}
                   </div>
                   {!m.isRead && (
                     <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-purple-500 rounded-full border-2 border-white" />
@@ -173,7 +174,7 @@ function ProfileCard({ profile, userEmail }: { profile: CreatorProfile; userEmai
         </div>
         <div className="text-center">
           <p className="font-bold text-gray-900 text-lg">{profile.displayName}</p>
-          <p className="text-sm text-gray-500">{userEmail}</p>
+          <p className="text-sm text-gray-500">@{profile.displayName}</p>
         </div>
       </div>
 
@@ -204,6 +205,28 @@ function ProfileCard({ profile, userEmail }: { profile: CreatorProfile; userEmai
         </>
       )}
 
+      {(profile.availability || profile.rateRange) && (
+        <>
+          <hr className="border-gray-100" />
+          {profile.availability && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">Availability</span>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${profile.availability === 'IMMEDIATELY' ? 'bg-green-100 text-green-700' : profile.availability === 'NOT_AVAILABLE' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                {AVAILABILITY_LABELS[profile.availability as keyof typeof AVAILABILITY_LABELS] ?? profile.availability}
+              </span>
+            </div>
+          )}
+          {profile.rateRange && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">Rate</span>
+              <span className="text-xs font-semibold text-gray-800">
+                {RATE_RANGE_LABELS[profile.rateRange as keyof typeof RATE_RANGE_LABELS] ?? profile.rateRange}
+              </span>
+            </div>
+          )}
+        </>
+      )}
+
       <hr className="border-gray-100" />
 
       <button className="w-full py-2 text-sm font-medium text-purple-600 border border-purple-200 rounded-lg hover:bg-purple-50 transition">
@@ -218,7 +241,7 @@ function ProfileCard({ profile, userEmail }: { profile: CreatorProfile; userEmai
 export function CreatorDashboard() {
   const { user } = useAuth();
 
-  const { data: profiles } = useQuery({
+  const { data: profiles, isLoading: profilesLoading } = useQuery({
     queryKey: ['creatorProfiles'],
     queryFn: getCreatorProfiles,
     enabled: !!user,
@@ -252,11 +275,15 @@ export function CreatorDashboard() {
       <div className="flex gap-6 items-start">
         {/* Left Sidebar */}
         <aside className="w-72 flex-shrink-0">
-          {profile ? (
-            <ProfileCard profile={profile} userEmail={user?.email} />
+          {profilesLoading ? (
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex items-center justify-center h-40">
+              <p className="text-sm text-gray-400">Loading profile…</p>
+            </div>
+          ) : profile ? (
+            <ProfileCard profile={profile as any} userEmail={user?.email} />
           ) : (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex items-center justify-center h-40">
-              <p className="text-sm text-gray-400">Loading profile...</p>
+              <p className="text-sm text-gray-400">No creator profile found.</p>
             </div>
           )}
         </aside>

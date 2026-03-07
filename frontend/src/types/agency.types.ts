@@ -116,7 +116,7 @@ export interface AgencyFormData {
   yearFounded?: number;
   gstin?: string;
   description: string;
-  brandSocials: {
+  brandSocials?: {
     instagram?: string;
     youtube?: string;
     twitter?: string;
