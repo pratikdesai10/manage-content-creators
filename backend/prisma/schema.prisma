@@ -193,6 +193,8 @@ model CreatorProfile {
   marketingEmails        Boolean             @default(true)
   whatsappNotifications  Boolean             @default(false)
   socialAccounts         SocialAccount[]
+  collaborations         Collaboration[]
+  messages               Message[]
 }
 
 model SocialAccount {
@@ -242,6 +244,27 @@ model AgencyContact {
   contactPhone      String?
   designation       String
   linkedinUrl       String?
+}
+
+model Collaboration {
+  id         String            @id @default(uuid())
+  creatorId  String
+  creator    CreatorProfile    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  brandName  String
+  brandLogo  String?
+  type       CollaborationType
+  status     String
+  createdAt  DateTime          @default(now())
+}
+
+model Message {
+  id        String         @id @default(uuid())
+  creatorId String
+  creator   CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  brandName String
+  preview   String
+  isRead    Boolean        @default(false)
+  createdAt DateTime       @default(now())
 }
 
 model RefreshToken {
