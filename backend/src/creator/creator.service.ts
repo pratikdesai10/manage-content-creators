@@ -60,4 +60,33 @@ export class CreatorService {
       },
     });
   }
+
+  async getDashboardStats(creatorId: string) {
+    const [collaborationCount, messageCount] = await Promise.all([
+      this.prisma.collaboration.count({ where: { creatorId } }),
+      this.prisma.message.count({ where: { creatorId } }),
+    ]);
+
+    return {
+      profileViews: 1284, // mock static value — no tracking model yet
+      collaborationCount,
+      messageCount,
+    };
+  }
+
+  async getRecentCollaborations(creatorId: string) {
+    return this.prisma.collaboration.findMany({
+      where: { creatorId },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+    });
+  }
+
+  async getRecentMessages(creatorId: string) {
+    return this.prisma.message.findMany({
+      where: { creatorId },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+    });
+  }
 }
