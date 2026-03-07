@@ -6,13 +6,15 @@ async function main() {
   const creators = await prisma.creatorProfile.findMany({ take: 3 });
 
   if (creators.length === 0) {
-    console.log('No creator profiles found. Register a creator first, then re-run seed.');
-    return;
+    console.warn('No creator profiles found. Register a creator first, then re-run seed.');
+    process.exit(1);
   }
 
+  // Clear ALL existing mock data before seeding
+  await prisma.collaboration.deleteMany({});
+  await prisma.message.deleteMany({});
+
   for (const creator of creators) {
-    await prisma.collaboration.deleteMany({ where: { creatorId: creator.id } });
-    await prisma.message.deleteMany({ where: { creatorId: creator.id } });
 
     await prisma.collaboration.createMany({
       data: [
@@ -74,5 +76,8 @@ async function main() {
 }
 
 main()
-  .catch(console.error)
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
   .finally(() => prisma.$disconnect());
