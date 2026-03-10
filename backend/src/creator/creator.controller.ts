@@ -56,6 +56,48 @@ export class CreatorController {
   }
 
   @UseGuards(JwtAuthGuard, CreatorGuard)
+  @Get(':id/collaborations/:collabId')
+  async getCollaborationDetail(
+    @Param('id') id: string,
+    @Param('collabId') collabId: string,
+    @CurrentUser() user: User,
+  ) {
+    const profile = await this.creatorService.findOne(id);
+    if (profile.userId !== user.id) {
+      throw new ForbiddenException('Access restricted to profile owner');
+    }
+    return this.creatorService.getCollaborationDetail(id, collabId);
+  }
+
+  @UseGuards(JwtAuthGuard, CreatorGuard)
+  @Get(':id/messages/:messageId/thread')
+  async getMessageThread(
+    @Param('id') id: string,
+    @Param('messageId') messageId: string,
+    @CurrentUser() user: User,
+  ) {
+    const profile = await this.creatorService.findOne(id);
+    if (profile.userId !== user.id) {
+      throw new ForbiddenException('Access restricted to profile owner');
+    }
+    return this.creatorService.getMessageThread(id, messageId);
+  }
+
+  @UseGuards(JwtAuthGuard, CreatorGuard)
+  @Get(':id/social-accounts/:accountId')
+  async getSocialAccountDetail(
+    @Param('id') id: string,
+    @Param('accountId') accountId: string,
+    @CurrentUser() user: User,
+  ) {
+    const profile = await this.creatorService.findOne(id);
+    if (profile.userId !== user.id) {
+      throw new ForbiddenException('Access restricted to profile owner');
+    }
+    return this.creatorService.getSocialAccountDetail(id, accountId);
+  }
+
+  @UseGuards(JwtAuthGuard, CreatorGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
