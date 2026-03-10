@@ -125,3 +125,55 @@ export async function getRecentMessages(creatorId: string): Promise<DashboardMes
   const { data } = await apiClient.get<{ data: DashboardMessage[] }>(`/creators/${creatorId}/messages`);
   return data.data;
 }
+
+export interface CollaborationDetail extends Collaboration {
+  brief: string | null;
+  deliverables: string[];
+  timeline: string | null;
+  budget: string | null;
+  contactPerson: string | null;
+  contactEmail: string | null;
+}
+
+export interface MessageThreadEntry {
+  id: string;
+  sender: 'BRAND' | 'CREATOR';
+  text: string;
+  sentAt: string;
+}
+
+export interface MessageWithThread extends DashboardMessage {
+  threads: MessageThreadEntry[];
+}
+
+export interface SocialAccountDetail {
+  id: string;
+  platform: string;
+  handle: string;
+  followerCount: number;
+  engagementRate: number;
+  avgLikes: number;
+  growthPercent: number;
+  topContentType: string | null;
+}
+
+export async function getCollaborationDetail(creatorId: string, collabId: string): Promise<CollaborationDetail> {
+  const { data } = await apiClient.get<{ data: CollaborationDetail }>(
+    `/creators/${creatorId}/collaborations/${collabId}`
+  );
+  return data.data;
+}
+
+export async function getMessageThread(creatorId: string, messageId: string): Promise<MessageWithThread> {
+  const { data } = await apiClient.get<{ data: MessageWithThread }>(
+    `/creators/${creatorId}/messages/${messageId}/thread`
+  );
+  return data.data;
+}
+
+export async function getSocialAccountDetail(creatorId: string, accountId: string): Promise<SocialAccountDetail> {
+  const { data } = await apiClient.get<{ data: SocialAccountDetail }>(
+    `/creators/${creatorId}/social-accounts/${accountId}`
+  );
+  return data.data;
+}
