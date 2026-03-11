@@ -28,7 +28,7 @@ components/
 ## Key Components
 
 - **PageLayout** — wraps all routes via React Router `<Outlet />`
-- **Navbar** — shows login/signup for guests, dashboard/logout for authenticated users
+- **Navbar** — shows Login/Sign Up for guests; for authenticated users shows Dashboard link and avatar button with dropdown (View Dashboard, View Profile, Logout); logo links to dashboard or home based on auth state; dropdown closes on outside click
 - **ProtectedRoute** — checks `isAuthenticated`, redirects to `/login`
 - **RoleRoute** — checks `user.role` matches required role prop
 

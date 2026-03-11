@@ -12,10 +12,10 @@
 ```
 pages/
 ├── Home.tsx              — Landing page with CTAs
-├── Login.tsx             — Login form (placeholder/TODO)
+├── Login.tsx             — Login form (react-hook-form + Zod, role-based redirect)
 ├── NotFound.tsx          — 404 page
 ├── dashboard/
-│   ├── CreatorDashboard.tsx — Creator stats (placeholder)
+│   ├── CreatorDashboard.tsx — Full creator dashboard (profile sidebar, stats, social reach, collabs, messages, detail panels)
 │   └── AgencyDashboard.tsx  — Agency stats (placeholder)
 └── signup/
     ├── CreatorSignup.tsx     — 5-step creator registration form
@@ -48,6 +48,10 @@ pages/
 ```
 
 ## Key Components
+- **Login** — react-hook-form + Zod (`loginSchema`), calls `login()` API, updates Zustand store, redirects based on `user.role`
+- **CreatorDashboard** — full dashboard: ProfileCard sidebar, StatCard × 3 (with SVG sparklines), SocialReach bars (clickable → SocialDetailPanel), CollaborationsList (clickable → CollabDetailPanel), MessagesList (clickable → ChatPanel floating widget)
+  - `activePanel` state — `{type: 'collab'|'social', id}` or `null`; `activeChat` state — `{messageId}` or `null`
+  - Detail data fetched via TanStack Query on demand; side panels laid out in a CSS Grid 2-column when open
 - **CreatorSignup / AgencySignup** — multi-step form orchestrators using react-hook-form + Zod
   - Manages `currentStep`, `direction` (animation), `isSubmitting`
   - Per-step Zod validation via `creatorStepSchemas[]` / `agencyStepSchemas[]`
@@ -71,6 +75,7 @@ pages/
 - Username/email checks are debounced (500ms) in PersonalInfoStep
 
 ## Developer Notes
-- Login page is a TODO placeholder
-- Dashboard pages have placeholder stat cards
+- Login page is fully implemented with react-hook-form + Zod (`loginSchema`), role-based redirect to creator/agency dashboard on success, API error display, and show/hide password toggle
+- CreatorDashboard is fully implemented with profile sidebar, stat cards with sparklines, social reach bars, collaborations list, messages list, and clickable detail panels
+- Dashboard detail panels open inline (collab/social) or as floating bottom-right widget (chat/message thread); clicking same item toggles panel closed
 - EmailVerification has a 60s countdown for resend
