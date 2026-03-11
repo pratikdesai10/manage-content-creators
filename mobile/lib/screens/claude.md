@@ -13,7 +13,7 @@
 screens/
 ├── splash_screen.dart     — Auth check → route to dashboard or home
 ├── home_screen.dart       — Landing with "Join as Creator/Agency" CTAs
-├── login_screen.dart      — Login form (placeholder)
+├── login_screen.dart      — Login form (fully implemented)
 ├── signup/
 │   ├── creator_signup_screen.dart — 5-step PageView form
 │   ├── agency_signup_screen.dart  — 5-step PageView form
@@ -31,6 +31,7 @@ screens/
   - Builds signup payload, calls `authNotifierProvider.registerCreator()`
 - **AgencySignupScreen** — 5-step form (account manager → brand → location/audience → campaign → review)
   - Same PageView pattern, calls `authNotifierProvider.registerAgency()`
+- **LoginScreen** — `ConsumerStatefulWidget`; Form with email + password fields (show/hide toggle); calls `authNotifierProvider.login()`; on success routes to `/splash`; on error shows red SnackBar with error message
 - **Dashboard screens** — display user email, logout button
 
 ## Data Flow

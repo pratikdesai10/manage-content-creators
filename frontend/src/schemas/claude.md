@@ -1,20 +1,23 @@
 # Module: Schemas
 
 ## Purpose
-- Zod validation schemas for multi-step signup forms
+- Zod validation schemas for forms across the app
 
 ## Responsibilities
 - Define per-step validation rules for creator and agency signup
 - Provide schema arrays for sequential step validation
+- Define validation schema for login
 
 ## Folder Structure
 ```
 schemas/
 ├── creatorSignupSchema.ts — 5-step creator Zod schemas
-└── agencySignupSchema.ts  — 5-step agency Zod schemas
+├── agencySignupSchema.ts  — 5-step agency Zod schemas
+└── loginSchema.ts         — Login form schema (email + password min 8)
 ```
 
 ## Key Components
+- **loginSchema** — `{email: string().email(), password: string().min(8)}`; exports `LoginFormData` type
 - **creatorStepSchemas** — array of 5 Zod schemas:
   1. Personal info (name, email, password with match refinement, DOB)
   2. Social accounts (array, min 1, nested platform/handle/followerCount)
@@ -33,7 +36,8 @@ schemas/
 - External: `zod`
 
 ## Integration
-- Imported by `CreatorSignup.tsx` and `AgencySignup.tsx`
+- `loginSchema` imported by `Login.tsx`
+- `creatorStepSchemas` / `agencyStepSchemas` imported by `CreatorSignup.tsx` / `AgencySignup.tsx`
 - Used with `@hookform/resolvers/zod` for per-step validation
 - Schema index matches step index (0-based)
 

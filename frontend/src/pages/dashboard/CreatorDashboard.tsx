@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../hooks/useAuth';
 import {
@@ -57,23 +57,105 @@ const COLLAB_TYPE_LABEL: Record<string, string> = {
   HYBRID: 'Hybrid',
 };
 
-type ActivePanel = { type: 'collab'; id: string } | { type: 'message'; id: string } | { type: 'social'; id: string } | null;
+type ActivePanel = { type: 'collab'; id: string } | { type: 'social'; id: string } | null;
+type ActiveChat = { messageId: string } | null;
 
-// ── Stat Card ─────────────────────────────────────────────────────────────────
+// ── Stat Card (Instagram-style insight card with sparkline) ───────────────────
 
-function StatCard({ label, value, icon }: { label: string; value: number | undefined; icon: string }) {
+const SPARKLINE_SEEDS: Record<string, number[]> = {
+  'Profile Views':    [62, 45, 78, 91, 55, 83, 110, 97, 120, 88, 134, 115, 142, 128],
+  'Collaborations':  [0, 1, 0, 1, 1, 0, 2, 1, 1, 2, 1, 2, 3, 2],
+  'Messages':        [1, 0, 2, 1, 3, 2, 1, 3, 2, 4, 3, 2, 4, 3],
+};
+
+function Sparkline({ data, color }: { data: number[]; color: string }) {
+  const max = Math.max(...data, 1);
+  const width = 80;
+  const height = 28;
+  const step = width / (data.length - 1);
+  const points = data
+    .map((v, i) => `${i * step},${height - (v / max) * height}`)
+    .join(' ');
+  // filled area path
+  const area = `M0,${height} ` + data.map((v, i) => `L${i * step},${height - (v / max) * height}`).join(' ') + ` L${width},${height} Z`;
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-center gap-4">
-      <span className="text-2xl">{icon}</span>
-      <div>
-        <p className="text-sm text-gray-500">{label}</p>
-        <p className="text-2xl font-bold text-gray-900">{value ?? '—'}</p>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
+      <defs>
+        <linearGradient id={`sg-${color.replace('#','')}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.02" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#sg-${color.replace('#','')})`} />
+      <polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      {/* last dot */}
+      <circle
+        cx={(data.length - 1) * step}
+        cy={height - (data[data.length - 1] / max) * height}
+        r="2.5"
+        fill={color}
+      />
+    </svg>
+  );
+}
+
+const STAT_META: Record<string, { color: string; change: number; period: string; icon: string }> = {
+  'Profile Views':   { color: '#7C3AED', change: 18.4, period: 'last 30 days', icon: '👁' },
+  'Collaborations':  { color: '#059669', change: 33.3, period: 'last 30 days', icon: '🤝' },
+  'Messages':        { color: '#0284C7', change: 50.0, period: 'last 30 days', icon: '💬' },
+};
+
+function StatCard({ label, value, sidePanelOpen }: { label: string; value: number | undefined; sidePanelOpen: boolean }) {
+  const meta = STAT_META[label] ?? { color: '#6B7280', change: 0, period: 'last 30 days', icon: '📊' };
+  const sparkData = SPARKLINE_SEEDS[label] ?? [1, 1, 1, 1, 1, 1, 1];
+  const isPositive = meta.change >= 0;
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3 hover:shadow-md transition-shadow duration-200">
+      {/* Top row: label + change badge */}
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-1.5">
+          <span className="text-base leading-none">{meta.icon}</span>
+          <p className="text-xs font-medium text-gray-500 leading-tight">{label}</p>
+        </div>
+        <span
+          className="text-xs font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0"
+          style={{
+            backgroundColor: isPositive ? `${meta.color}15` : '#FEE2E215',
+            color: isPositive ? meta.color : '#DC2626',
+          }}
+        >
+          {isPositive ? '↑' : '↓'} {Math.abs(meta.change)}%
+        </span>
       </div>
+
+      {/* Value */}
+      <div>
+        <p className="text-2xl font-bold text-gray-900 leading-none tabular-nums">
+          {value !== undefined ? value.toLocaleString('en-IN') : '—'}
+        </p>
+        <p className="text-[10px] text-gray-400 mt-0.5">{meta.period}</p>
+      </div>
+
+      {/* Sparkline — hidden when panel open to save space */}
+      {!sidePanelOpen && (
+        <div className="pt-1">
+          <Sparkline data={sparkData} color={meta.color} />
+        </div>
+      )}
     </div>
   );
 }
 
-// ── Collaboration Detail Panel ────────────────────────────────────────────────
+// ── Collaboration Detail Panel (compact horizontal layout) ───────────────────
 
 function CollabDetailPanel({
   creatorId,
@@ -90,83 +172,84 @@ function CollabDetailPanel({
   });
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col gap-4 h-full">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
+      {/* Header row */}
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-gray-700">Collaboration Details</h2>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none" aria-label="Close panel">×</button>
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0">
+            {data?.brandName?.[0]?.toUpperCase() ?? '?'}
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900 text-sm leading-tight">{data?.brandName ?? '…'}</p>
+            <p className="text-xs text-gray-500">{data ? (COLLAB_TYPE_LABEL[data.type] ?? data.type) : ''}</p>
+          </div>
+          {data && (
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[data.status] ?? 'bg-gray-100 text-gray-600'}`}>
+              {data.status}
+            </span>
+          )}
+        </div>
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none flex-shrink-0 ml-2" aria-label="Close panel">×</button>
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-gray-400 text-center py-8">Loading…</p>
+        <p className="text-sm text-gray-400 text-center py-4">Loading…</p>
       ) : data ? (
         <>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-base font-bold text-gray-500">
-              {data.brandName?.[0]?.toUpperCase() ?? '?'}
-            </div>
-            <div>
-              <p className="font-semibold text-gray-900">{data.brandName}</p>
-              <p className="text-xs text-gray-500">{COLLAB_TYPE_LABEL[data.type] ?? data.type}</p>
-            </div>
-            <span className={`ml-auto text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[data.status] ?? 'bg-gray-100 text-gray-600'}`}>
-              {data.status}
-            </span>
-          </div>
-
-          <hr className="border-gray-100" />
-
+          {/* Brief */}
           {data.brief && (
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Campaign Brief</p>
-              <p className="text-sm text-gray-700 leading-relaxed">{data.brief}</p>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Brief</p>
+              <p className="text-xs text-gray-700 leading-relaxed line-clamp-3">{data.brief}</p>
             </div>
           )}
 
-          {data.deliverables && data.deliverables.length > 0 && (
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Deliverables</p>
-              <ul className="flex flex-col gap-1">
-                {data.deliverables.map((d, i) => (
-                  <li key={i} className="text-sm text-gray-700 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 flex-shrink-0" />
-                    {d}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
+          {/* Two-column: deliverables + timeline/budget */}
           <div className="grid grid-cols-2 gap-3">
-            {data.timeline && (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-0.5">Timeline</p>
-                <p className="text-sm font-medium text-gray-800">{data.timeline}</p>
+            {data.deliverables && data.deliverables.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Deliverables</p>
+                <ul className="flex flex-col gap-1">
+                  {data.deliverables.map((d, i) => (
+                    <li key={i} className="text-xs text-gray-700 flex items-start gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-purple-400 flex-shrink-0 mt-1.5" />
+                      {d}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
-            {data.budget && (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-0.5">Budget</p>
-                <p className="text-sm font-medium text-gray-800">{data.budget}</p>
-              </div>
-            )}
-          </div>
-
-          {(data.contactPerson || data.contactEmail) && (
-            <div className="bg-purple-50 rounded-lg p-3">
-              <p className="text-xs font-semibold text-purple-700 mb-1">Brand Contact</p>
-              {data.contactPerson && <p className="text-sm text-gray-800 font-medium">{data.contactPerson}</p>}
-              {data.contactEmail && <p className="text-xs text-gray-500">{data.contactEmail}</p>}
+            <div className="flex flex-col gap-2">
+              {data.timeline && (
+                <div className="bg-gray-50 rounded-lg p-2.5">
+                  <p className="text-xs text-gray-500 mb-0.5">Timeline</p>
+                  <p className="text-xs font-medium text-gray-800">{data.timeline}</p>
+                </div>
+              )}
+              {data.budget && (
+                <div className="bg-gray-50 rounded-lg p-2.5">
+                  <p className="text-xs text-gray-500 mb-0.5">Budget</p>
+                  <p className="text-xs font-semibold text-gray-800">{data.budget}</p>
+                </div>
+              )}
+              {(data.contactPerson || data.contactEmail) && (
+                <div className="bg-purple-50 rounded-lg p-2.5">
+                  <p className="text-xs font-semibold text-purple-700 mb-0.5">Contact</p>
+                  {data.contactPerson && <p className="text-xs text-gray-800 font-medium">{data.contactPerson}</p>}
+                  {data.contactEmail && <p className="text-xs text-gray-500 truncate">{data.contactEmail}</p>}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </>
       ) : (
-        <p className="text-sm text-gray-400 text-center py-8">Could not load details.</p>
+        <p className="text-sm text-gray-400 text-center py-4">Could not load details.</p>
       )}
     </div>
   );
 }
 
-// ── Chat Panel ────────────────────────────────────────────────────────────────
+// ── Chat Panel (fixed bottom-right widget) ───────────────────────────────────
 
 function ChatPanel({
   creatorId,
@@ -178,63 +261,80 @@ function ChatPanel({
   onClose: () => void;
 }) {
   const [draft, setDraft] = useState('');
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['messageThread', messageId],
     queryFn: () => getMessageThread(creatorId, messageId),
   });
 
+  useEffect(() => {
+    if (data?.threads?.length) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [data?.threads]);
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col h-[520px]">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+    <div className="fixed bottom-6 right-6 z-50 w-80 bg-white rounded-2xl border border-gray-200 shadow-2xl flex flex-col h-[400px]">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 rounded-t-2xl">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">
+          <div className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center text-xs font-bold text-purple-600">
             {data?.brandName?.[0]?.toUpperCase() ?? '?'}
           </div>
           <p className="text-sm font-semibold text-gray-800">{data?.brandName ?? '…'}</p>
         </div>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none" aria-label="Close chat">×</button>
+        <button
+          onClick={onClose}
+          className="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition text-base leading-none"
+          aria-label="Close chat"
+        >×</button>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-2">
         {isLoading ? (
-          <p className="text-sm text-gray-400 text-center py-8">Loading…</p>
+          <p className="text-xs text-gray-400 text-center py-6">Loading…</p>
         ) : data?.threads?.length ? (
-          data.threads.map((entry) => (
-            <div
-              key={entry.id}
-              className={`flex flex-col max-w-[80%] ${entry.sender === 'CREATOR' ? 'self-end items-end' : 'self-start items-start'}`}
-            >
+          <>
+            {data.threads.map((entry) => (
               <div
-                className={`px-3 py-2 rounded-2xl text-sm leading-relaxed ${
-                  entry.sender === 'CREATOR'
-                    ? 'bg-purple-600 text-white rounded-br-sm'
-                    : 'bg-gray-100 text-gray-800 rounded-bl-sm'
-                }`}
+                key={entry.id}
+                className={`flex flex-col max-w-[85%] ${entry.sender === 'CREATOR' ? 'self-end items-end' : 'self-start items-start'}`}
               >
-                {entry.text}
+                <div
+                  className={`px-3 py-2 rounded-2xl text-xs leading-relaxed ${
+                    entry.sender === 'CREATOR'
+                      ? 'bg-purple-600 text-white rounded-br-sm'
+                      : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                  }`}
+                >
+                  {entry.text}
+                </div>
+                <p className="text-xs text-gray-400 mt-0.5 px-1">{formatTime(entry.sentAt)}</p>
               </div>
-              <p className="text-xs text-gray-400 mt-0.5 px-1">{formatTime(entry.sentAt)}</p>
-            </div>
-          ))
+            ))}
+            <div ref={bottomRef} />
+          </>
         ) : (
-          <p className="text-sm text-gray-400 text-center py-8">No messages yet.</p>
+          <p className="text-xs text-gray-400 text-center py-6">No messages yet.</p>
         )}
       </div>
 
-      <div className="px-4 py-3 border-t border-gray-100 flex gap-2">
+      {/* Input */}
+      <div className="px-3 py-2.5 border-t border-gray-100 flex gap-2 rounded-b-2xl">
         <input
           type="text"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Type a reply…"
-          className="flex-1 text-sm px-3 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-purple-400"
+          className="flex-1 text-xs px-3 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-400"
           onKeyDown={(e) => e.key === 'Enter' && setDraft('')}
           aria-label="Message input"
         />
         <button
           onClick={() => setDraft('')}
-          className="px-3 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition"
+          className="px-3 py-2 bg-purple-600 text-white text-xs rounded-xl hover:bg-purple-700 transition font-medium"
         >
           Send
         </button>
@@ -262,59 +362,55 @@ function SocialDetailPanel({
   const platformColor = data ? PLATFORM_COLORS[data.platform] ?? '#6B7280' : '#6B7280';
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col gap-4">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
+      {/* Header row */}
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-gray-700">Platform Analytics</h2>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none" aria-label="Close panel">×</button>
+        <div className="flex items-center gap-3">
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+            style={{ backgroundColor: platformColor }}
+          >
+            {data?.platform[0] ?? '?'}
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900 text-sm leading-tight">{data?.platform ?? '…'}</p>
+            <p className="text-xs text-gray-500">@{data?.handle ?? ''}</p>
+          </div>
+        </div>
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none flex-shrink-0" aria-label="Close panel">×</button>
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-gray-400 text-center py-8">Loading…</p>
+        <p className="text-sm text-gray-400 text-center py-4">Loading…</p>
       ) : data ? (
-        <>
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
-              style={{ backgroundColor: platformColor }}
-            >
-              {data.platform[0]}
-            </div>
-            <div>
-              <p className="font-semibold text-gray-900">{data.platform}</p>
-              <p className="text-xs text-gray-500">@{data.handle}</p>
-            </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="bg-gray-50 rounded-lg p-2.5">
+            <p className="text-xs text-gray-500 mb-0.5">Followers</p>
+            <p className="text-base font-bold text-gray-900">{formatFollowers(data.followerCount)}</p>
           </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-500 mb-0.5">Followers</p>
-              <p className="text-lg font-bold text-gray-900">{formatFollowers(data.followerCount)}</p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-500 mb-0.5">Engagement Rate</p>
-              <p className="text-lg font-bold text-gray-900">{data.engagementRate}%</p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-500 mb-0.5">Avg Likes</p>
-              <p className="text-lg font-bold text-gray-900">{formatFollowers(data.avgLikes)}</p>
-            </div>
-            <div className={`rounded-lg p-3 ${(data.growthPercent ?? 0) >= 0 ? 'bg-green-50' : 'bg-red-50'}`}>
-              <p className="text-xs text-gray-500 mb-0.5">Growth (this month)</p>
-              <p className={`text-lg font-bold ${(data.growthPercent ?? 0) >= 0 ? 'text-green-700' : 'text-red-700'}`}>
-                {(data.growthPercent ?? 0) >= 0 ? '+' : ''}{data.growthPercent}%
-              </p>
-            </div>
+          <div className="bg-gray-50 rounded-lg p-2.5">
+            <p className="text-xs text-gray-500 mb-0.5">Engagement</p>
+            <p className="text-base font-bold text-gray-900">{data.engagementRate}%</p>
           </div>
-
+          <div className="bg-gray-50 rounded-lg p-2.5">
+            <p className="text-xs text-gray-500 mb-0.5">Avg Likes</p>
+            <p className="text-base font-bold text-gray-900">{formatFollowers(data.avgLikes)}</p>
+          </div>
+          <div className={`rounded-lg p-2.5 ${(data.growthPercent ?? 0) >= 0 ? 'bg-green-50' : 'bg-red-50'}`}>
+            <p className="text-xs text-gray-500 mb-0.5">Growth</p>
+            <p className={`text-base font-bold ${(data.growthPercent ?? 0) >= 0 ? 'text-green-700' : 'text-red-700'}`}>
+              {(data.growthPercent ?? 0) >= 0 ? '+' : ''}{data.growthPercent ?? 0}%
+            </p>
+          </div>
           {data.topContentType && (
-            <div className="bg-purple-50 rounded-lg p-3">
-              <p className="text-xs text-purple-600 font-semibold mb-0.5">Top Performing Content</p>
-              <p className="text-sm font-medium text-gray-800">{data.topContentType}</p>
+            <div className="col-span-2 bg-purple-50 rounded-lg p-2.5">
+              <p className="text-xs text-purple-600 font-semibold mb-0.5">Top Content</p>
+              <p className="text-xs font-medium text-gray-800">{data.topContentType}</p>
             </div>
           )}
-        </>
+        </div>
       ) : (
-        <p className="text-sm text-gray-400 text-center py-8">Could not load analytics.</p>
+        <p className="text-sm text-gray-400 text-center py-4">Could not load analytics.</p>
       )}
     </div>
   );
@@ -389,20 +485,20 @@ function CollaborationsList({
                 selectedId === c.id ? 'bg-purple-50' : 'hover:bg-gray-50'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0">
                   {c.brandName?.[0]?.toUpperCase() ?? '?'}
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{c.brandName}</p>
-                  <p className="text-xs text-gray-500">{COLLAB_TYPE_LABEL[c.type] ?? c.type}</p>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{c.brandName}</p>
+                  <p className="text-xs text-gray-500 truncate">{COLLAB_TYPE_LABEL[c.type] ?? c.type}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[c.status] ?? 'bg-gray-100 text-gray-600'}`}>
+              <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${STATUS_COLOR[c.status] ?? 'bg-gray-100 text-gray-600'}`}>
                   {c.status}
                 </span>
-                <span className="text-xs text-gray-400">{formatDate(c.createdAt)}</span>
+                <span className="text-xs text-gray-400 whitespace-nowrap">{formatDate(c.createdAt)}</span>
               </div>
             </button>
           ))}
@@ -438,8 +534,8 @@ function MessagesList({
                 selectedId === m.id ? 'bg-purple-50' : 'hover:bg-gray-50'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className="relative">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="relative flex-shrink-0">
                   <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">
                     {m.brandName?.[0]?.toUpperCase() ?? '?'}
                   </div>
@@ -447,12 +543,12 @@ function MessagesList({
                     <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-purple-500 rounded-full border-2 border-white" />
                   )}
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{m.brandName}</p>
-                  <p className="text-xs text-gray-500 truncate max-w-[180px]">{m.preview}</p>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{m.brandName}</p>
+                  <p className="text-xs text-gray-500 truncate">{m.preview}</p>
                 </div>
               </div>
-              <span className="text-xs text-gray-400 flex-shrink-0 ml-4">{formatDate(m.createdAt)}</span>
+              <span className="text-xs text-gray-400 flex-shrink-0 ml-2 whitespace-nowrap">{formatDate(m.createdAt)}</span>
             </button>
           ))}
         </div>
@@ -535,6 +631,7 @@ function ProfileCard({ profile, userEmail }: { profile: CreatorProfile; userEmai
 export function CreatorDashboard() {
   const { user } = useAuth();
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
+  const [activeChat, setActiveChat] = useState<ActiveChat>(null);
 
   const { data: profiles, isLoading: profilesLoading } = useQuery({
     queryKey: ['creatorProfiles'],
@@ -565,14 +662,19 @@ export function CreatorDashboard() {
 
   const socialAccounts = profile?.socialAccounts ?? [];
 
-  const panelOpen = activePanel !== null;
+  const sidePanelOpen = activePanel !== null;
   const selectedCollabId = activePanel?.type === 'collab' ? activePanel.id : null;
-  const selectedMessageId = activePanel?.type === 'message' ? activePanel.id : null;
   const selectedSocialId = activePanel?.type === 'social' ? activePanel.id : null;
 
   function openPanel(type: NonNullable<ActivePanel>['type'], id: string) {
     setActivePanel((prev) =>
       prev?.type === type && prev.id === id ? null : { type, id }
+    );
+  }
+
+  function openChat(messageId: string) {
+    setActiveChat((prev) =>
+      prev?.messageId === messageId ? null : { messageId }
     );
   }
 
@@ -595,14 +697,14 @@ export function CreatorDashboard() {
         </aside>
 
         {/* Main Area */}
-        <div className="flex-1 min-w-0">
-          <div className={`${panelOpen ? 'grid grid-cols-2 gap-4 items-start' : 'flex flex-col gap-6'}`}>
-            {/* Left column — existing content */}
+        <div className={`flex-1 min-w-0 transition-all duration-200 ${activeChat && !sidePanelOpen ? 'pr-[340px]' : ''}`}>
+          <div className={`${sidePanelOpen ? 'grid grid-cols-2 gap-4 items-start' : 'flex flex-col gap-6'}`}>
+            {/* Left column — main content */}
             <div className="flex flex-col gap-6">
-              <div className="grid grid-cols-3 gap-4">
-                <StatCard label="Profile Views" value={stats?.profileViews} icon="👁" />
-                <StatCard label="Collaborations" value={stats?.collaborationCount} icon="🤝" />
-                <StatCard label="Messages" value={stats?.messageCount} icon="💬" />
+              <div className={`grid gap-4 ${sidePanelOpen ? 'grid-cols-1' : 'grid-cols-3'}`}>
+                <StatCard label="Profile Views" value={stats?.profileViews} sidePanelOpen={sidePanelOpen} />
+                <StatCard label="Collaborations" value={stats?.collaborationCount} sidePanelOpen={sidePanelOpen} />
+                <StatCard label="Messages" value={stats?.messageCount} sidePanelOpen={sidePanelOpen} />
               </div>
 
               <SocialReach
@@ -617,25 +719,18 @@ export function CreatorDashboard() {
               />
               <MessagesList
                 messages={messages}
-                selectedId={selectedMessageId}
-                onSelect={(id) => openPanel('message', id)}
+                selectedId={activeChat?.messageId ?? null}
+                onSelect={openChat}
               />
             </div>
 
-            {/* Right column — detail panel */}
-            {panelOpen && creatorId && (
+            {/* Right column — collab / social detail panel */}
+            {sidePanelOpen && creatorId && (
               <div className="sticky top-6">
                 {activePanel.type === 'collab' && (
                   <CollabDetailPanel
                     creatorId={creatorId}
                     collabId={activePanel.id}
-                    onClose={() => setActivePanel(null)}
-                  />
-                )}
-                {activePanel.type === 'message' && (
-                  <ChatPanel
-                    creatorId={creatorId}
-                    messageId={activePanel.id}
                     onClose={() => setActivePanel(null)}
                   />
                 )}
@@ -651,6 +746,15 @@ export function CreatorDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Floating chat widget — fixed bottom-right, independent of layout */}
+      {activeChat && creatorId && (
+        <ChatPanel
+          creatorId={creatorId}
+          messageId={activeChat.messageId}
+          onClose={() => setActiveChat(null)}
+        />
+      )}
     </div>
   );
 }

@@ -8,11 +8,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Tech Stack
 
-| Layer | Stack |
-|-------|-------|
-| Backend | NestJS, TypeScript, Prisma, PostgreSQL, Passport JWT, Swagger |
+| Layer    | Stack                                                                                    |
+| -------- | ---------------------------------------------------------------------------------------- |
+| Backend  | NestJS, TypeScript, Prisma, PostgreSQL, Passport JWT, Swagger                            |
 | Frontend | React 18, Vite, TypeScript, Tailwind CSS, Zustand, TanStack Query, react-hook-form + Zod |
-| Mobile | Flutter 3.16+, Dart, Riverpod, GoRouter, Dio, flutter_secure_storage |
+| Mobile   | Flutter 3.16+, Dart, Riverpod, GoRouter, Dio, flutter_secure_storage                     |
 
 ## High-Level Architecture
 
@@ -71,6 +71,7 @@ manage-content-creators/
 ## Commands
 
 ### Backend
+
 ```bash
 cd backend
 npm run start:dev        # Dev server (port 3000)
@@ -84,6 +85,7 @@ npm run db:seed          # Seed database
 ```
 
 ### Frontend
+
 ```bash
 cd frontend
 npm run dev              # Vite dev server (port 5173)
@@ -93,6 +95,7 @@ npm run lint             # ESLint
 ```
 
 ### Mobile
+
 ```bash
 cd mobile
 flutter pub get
@@ -105,6 +108,7 @@ flutter analyze
 ## Environment Variables
 
 ### backend/.env
+
 - `DATABASE_URL` — PostgreSQL connection string
 - `JWT_SECRET` — JWT signing secret
 - `JWT_ACCESS_EXPIRY` — Access token lifetime (default: `15m`)
@@ -112,9 +116,11 @@ flutter analyze
 - `PORT` — Server port (default: `3000`)
 
 ### frontend/.env
+
 - `VITE_API_URL` — Backend base URL (default: `http://localhost:3000`)
 
 ### mobile/.env
+
 - `COLLABHUB_API_URL` — Backend base URL (default: `http://localhost:3000`)
 
 ---
@@ -122,6 +128,7 @@ flutter analyze
 ## Module Documentation
 
 ### Backend
+
 - [backend/src/auth/claude.md](backend/src/auth/claude.md) — Auth, JWT, guards, registration
 - [backend/src/creator/claude.md](backend/src/creator/claude.md) — Creator profile CRUD
 - [backend/src/agency/claude.md](backend/src/agency/claude.md) — Agency profile CRUD
@@ -130,6 +137,7 @@ flutter analyze
 - [backend/src/config/claude.md](backend/src/config/claude.md) — Environment config
 
 ### Frontend
+
 - [frontend/src/api/claude.md](frontend/src/api/claude.md) — Axios client + endpoints
 - [frontend/src/components/claude.md](frontend/src/components/claude.md) — Layout + route guards
 - [frontend/src/pages/claude.md](frontend/src/pages/claude.md) — Route pages + signup flows
@@ -140,6 +148,7 @@ flutter analyze
 - [frontend/src/lib/claude.md](frontend/src/lib/claude.md) — Utilities
 
 ### Mobile
+
 - [mobile/lib/config/claude.md](mobile/lib/config/claude.md) — Router, theme, env config
 - [mobile/lib/models/claude.md](mobile/lib/models/claude.md) — Data models
 - [mobile/lib/providers/claude.md](mobile/lib/providers/claude.md) — Riverpod providers
@@ -158,6 +167,7 @@ flutter analyze
 - **Update docs**: When adding new functionality to a module, update that module's `claude.md`.
 - **Cross-layer sync**: When modifying types/enums, check and update across all three layers (backend Prisma schema, frontend types, mobile enums/models).
 - **New modules**: When creating a new module, create a `claude.md` using the template at `docs/claude-module-template.md`.
+- **Post-development doc review**: After completing any development work, review all affected `claude.md` files across the project and update them to reflect new APIs, components, data flows, types, or behavioral changes. Check backend, frontend, and mobile modules that were touched or impacted.
 
 ## Cross-Cutting Concerns
 
