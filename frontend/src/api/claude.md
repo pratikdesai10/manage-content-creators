@@ -32,6 +32,13 @@ api/
 - **getCollaborationDetail(creatorId, collabId)** — GET `/creators/:id/collaborations/:collabId` → `CollaborationDetail`
 - **getMessageThread(creatorId, messageId)** — GET `/creators/:id/messages/:messageId/thread` → `MessageWithThread`
 - **getSocialAccountDetail(creatorId, accountId)** — GET `/creators/:id/social-accounts/:accountId` → `SocialAccountDetail`
+- **getAgencyProfiles()** — GET `/agencies` → `AgencyProfile[]`
+- **getAgencyStats(agencyId)** — GET `/agencies/:id/stats` → `AgencyDashboardStats`
+- **getAgencyCampaigns(agencyId)** — GET `/agencies/:id/campaigns` → `AgencyCampaign[]`
+- **getAgencyMessages(agencyId)** — GET `/agencies/:id/messages` → `AgencyMessage[]`
+- **getAgencyCampaignDetail(agencyId, campaignId)** — GET `/agencies/:id/campaigns/:campaignId` → `AgencyCampaign`
+- **getAgencyMessageThread(agencyId, messageId)** — GET `/agencies/:id/messages/:messageId/thread` → `AgencyMessageWithThread`
+- **getAgencyTopCreators(agencyId)** — GET `/agencies/:id/top-creators` → `TopCreator[]`
 
 ## Types Defined in endpoints.ts
 - **DashboardStats** — `{profileViews, collaborationCount, messageCount}`
@@ -41,6 +48,11 @@ api/
 - **MessageThreadEntry** — `{id, sender: 'BRAND'|'CREATOR', text, sentAt}`
 - **MessageWithThread** — extends `DashboardMessage` with `{threads: MessageThreadEntry[]}`
 - **SocialAccountDetail** — `{id, platform, handle, followerCount, engagementRate, avgLikes, growthPercent, topContentType}`
+- **AgencyDashboardStats** — `{activeCampaigns, creatorsContacted, totalSpend, messageCount, unreadMessages}`
+- **AgencyCampaign** — `{id, creatorName, creatorAvatar, type, status, brief, deliverables, timeline, budget, contactPerson, contactEmail, createdAt}`
+- **AgencyMessage** — `{id, creatorName, preview, isRead, createdAt}`
+- **AgencyMessageWithThread** — extends `AgencyMessage` with `{threads: MessageThreadEntry[]}`
+- **TopCreator** — `{id, name, platform, followers, engagementRate, avatarUrl}`
 
 ## Data Flow
 - Component calls endpoint fn → Axios interceptor adds token → backend API → response/error
@@ -50,7 +62,7 @@ api/
 - External: `axios`
 
 ## Integration
-- Used by signup pages, Login page, CreatorDashboard, PersonalInfoStep (username/email checks)
+- Used by signup pages, Login page, CreatorDashboard, AgencyDashboard, PersonalInfoStep (username/email checks)
 - Token sourced from Zustand store (not React context)
 
 ## Conventions
