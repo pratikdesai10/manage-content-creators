@@ -1,7 +1,7 @@
 import apiClient from './axios';
 import type { CreatorFormData } from '../types/creator.types';
 import type { AgencyFormData } from '../types/agency.types';
-import type { AuthResponse, CreatorProfile } from '../types';
+import type { AuthResponse, AgencyProfile, CreatorProfile } from '../types';
 
 export async function registerCreator(data: CreatorFormData) {
   const { confirmPassword, termsOfService, contentGuidelines, ageConfirmation, dataAccuracy, ...payload } = data;
@@ -175,5 +175,96 @@ export async function getSocialAccountDetail(creatorId: string, accountId: strin
   const { data } = await apiClient.get<{ data: SocialAccountDetail }>(
     `/creators/${creatorId}/social-accounts/${accountId}`
   );
+  return data.data;
+}
+
+// ── Agency Dashboard ────────────────────────────────────────────────────────
+
+export interface BudgetBreakdownItem {
+  type: string;
+  amount: number;
+}
+
+export interface AgencyDashboardStats {
+  activeCampaigns: number;
+  creatorsContacted: number;
+  totalSpend: number;
+  messageCount: number;
+  unreadMessages: number;
+  budgetBreakdown: BudgetBreakdownItem[];
+}
+
+export interface AgencyCampaign {
+  id: string;
+  creatorName: string;
+  creatorAvatar: string | null;
+  type: string;
+  status: string;
+  brief: string | null;
+  deliverables: string[];
+  timeline: string | null;
+  budget: string | null;
+  contactPerson: string | null;
+  contactEmail: string | null;
+  createdAt: string;
+}
+
+export interface AgencyMessage {
+  id: string;
+  creatorName: string;
+  preview: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface AgencyMessageWithThread extends AgencyMessage {
+  threads: MessageThreadEntry[];
+}
+
+export interface TopCreator {
+  id: string;
+  name: string;
+  platform: string;
+  followers: number;
+  engagementRate: number;
+  avatarUrl: string | null;
+}
+
+export async function getAgencyProfiles(): Promise<AgencyProfile[]> {
+  const { data } = await apiClient.get<{ data: AgencyProfile[] }>('/agencies');
+  return data.data;
+}
+
+export async function getAgencyStats(agencyId: string): Promise<AgencyDashboardStats> {
+  const { data } = await apiClient.get<{ data: AgencyDashboardStats }>(`/agencies/${agencyId}/stats`);
+  return data.data;
+}
+
+export async function getAgencyCampaigns(agencyId: string): Promise<AgencyCampaign[]> {
+  const { data } = await apiClient.get<{ data: AgencyCampaign[] }>(`/agencies/${agencyId}/campaigns`);
+  return data.data;
+}
+
+export async function getAgencyMessages(agencyId: string): Promise<AgencyMessage[]> {
+  const { data } = await apiClient.get<{ data: AgencyMessage[] }>(`/agencies/${agencyId}/messages`);
+  return data.data;
+}
+
+export async function getAgencyCampaignDetail(agencyId: string, campaignId: string): Promise<AgencyCampaign> {
+  const { data } = await apiClient.get<{ data: AgencyCampaign }>(
+    `/agencies/${agencyId}/campaigns/${campaignId}`
+  );
+  return data.data;
+}
+
+export async function getAgencyMessageThread(agencyId: string, messageId: string): Promise<AgencyMessageWithThread> {
+  const { data } = await apiClient.get<{ data: AgencyMessageWithThread }>(
+    `/agencies/${agencyId}/messages/${messageId}/thread`
+  );
+  return data.data;
+}
+
+export async function getAgencyTopCreators(agencyId: string): Promise<TopCreator[]> {
+  const { data } = await apiClient.get<{ data: TopCreator[] }>(`/agencies/${agencyId}/top-creators`);
   return data.data;
 }

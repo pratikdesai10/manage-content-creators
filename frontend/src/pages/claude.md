@@ -16,7 +16,7 @@ pages/
 ├── NotFound.tsx          — 404 page
 ├── dashboard/
 │   ├── CreatorDashboard.tsx — Full creator dashboard (profile sidebar, stats, social reach, collabs, messages, detail panels)
-│   └── AgencyDashboard.tsx  — Agency stats (placeholder)
+│   └── AgencyDashboard.tsx  — Full agency dashboard (profile sidebar, stat cards with sparklines, budget overview, campaigns, messages, top creators, detail panels)
 └── signup/
     ├── CreatorSignup.tsx     — 5-step creator registration form
     ├── AgencySignup.tsx      — 5-step agency registration form
@@ -52,6 +52,10 @@ pages/
 - **CreatorDashboard** — full dashboard: ProfileCard sidebar, StatCard × 3 (with SVG sparklines), SocialReach bars (clickable → SocialDetailPanel), CollaborationsList (clickable → CollabDetailPanel), MessagesList (clickable → ChatPanel floating widget)
   - `activePanel` state — `{type: 'collab'|'social', id}` or `null`; `activeChat` state — `{messageId}` or `null`
   - Detail data fetched via TanStack Query on demand; side panels laid out in a CSS Grid 2-column when open
+- **AgencyDashboard** — full dashboard: AgencyProfileCard sidebar, AgencyStatCard × 4 (with SVG sparklines), BudgetOverview (horizontal bar chart), CampaignsList (clickable → CampaignDetailPanel), AgencyMessagesList (clickable → AgencyChatPanel floating widget), TopCreatorsList
+  - `activePanel` state — `{type: 'campaign', id}` or `null`; `activeChat` state — `{messageId}` or `null`
+  - Detail data fetched via TanStack Query on demand; side panels laid out in a CSS Grid 2-column when open
+  - Total Spend formatted as INR with L/K suffixes; Messages card shows unread badge
 - **CreatorSignup / AgencySignup** — multi-step form orchestrators using react-hook-form + Zod
   - Manages `currentStep`, `direction` (animation), `isSubmitting`
   - Per-step Zod validation via `creatorStepSchemas[]` / `agencyStepSchemas[]`
@@ -78,4 +82,6 @@ pages/
 - Login page is fully implemented with react-hook-form + Zod (`loginSchema`), role-based redirect to creator/agency dashboard on success, API error display, and show/hide password toggle
 - CreatorDashboard is fully implemented with profile sidebar, stat cards with sparklines, social reach bars, collaborations list, messages list, and clickable detail panels
 - Dashboard detail panels open inline (collab/social) or as floating bottom-right widget (chat/message thread); clicking same item toggles panel closed
+- AgencyDashboard is fully implemented with profile sidebar (brand info, contact, platforms, budget), 4 stat cards with sparklines, budget overview bar chart, recent campaigns, recent messages, top creators, and clickable detail/chat panels
+- AgencyDashboard uses mock data from backend (same pattern as creator dashboard)
 - EmailVerification has a 60s countdown for resend
