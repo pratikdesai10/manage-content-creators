@@ -579,21 +579,21 @@ function ProfileCard({ profile, userEmail }: { profile: CreatorProfile; userEmai
       </div>
       <hr className="border-gray-100" />
       {profile.bio && <p className="text-sm text-gray-600 line-clamp-3">{profile.bio}</p>}
-      {profile.niche && profile.niche.length > 0 && (
+      {profile.categories && profile.categories.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
-          {profile.niche.map((cat) => (
+          {profile.categories.map((cat) => (
             <span key={cat} className="px-2 py-0.5 text-xs rounded-full bg-purple-50 text-purple-700 font-medium">
               {cat.replace(/_/g, ' ')}
             </span>
           ))}
         </div>
       )}
-      {profile.location && (
+      {(profile.city || profile.state) && (
         <>
           <hr className="border-gray-100" />
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">Location</span>
-            <span className="text-xs font-semibold text-gray-800">{profile.location}</span>
+            <span className="text-xs font-semibold text-gray-800">{[profile.city, profile.state].filter(Boolean).join(', ')}</span>
           </div>
         </>
       )}
