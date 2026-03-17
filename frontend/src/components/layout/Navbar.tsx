@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 export function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isLanding = pathname === '/';
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -28,25 +30,28 @@ export function Navbar() {
   const dashboardPath = user?.role === 'CREATOR' ? '/dashboard/creator' : '/dashboard/agency';
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav className={isLanding
+      ? 'bg-[#050510]/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-50'
+      : 'bg-white border-b border-gray-200 sticky top-0 z-50'
+    }>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to={isAuthenticated ? dashboardPath : '/'} className="text-xl font-bold text-indigo-600">
+          <Link to={isAuthenticated ? dashboardPath : '/'} className={`text-xl font-bold ${isLanding ? 'text-white' : 'text-indigo-600'}`}>
             CollabHub
           </Link>
 
           {/* Nav links */}
           <div className="flex items-center gap-6">
             {!isAuthenticated && (
-              <Link to="/" className="text-sm text-gray-600 hover:text-gray-900">
+              <Link to="/" className={`text-sm ${isLanding ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
                 Home
               </Link>
             )}
 
             {isAuthenticated && user ? (
               <>
-                <Link to={dashboardPath} className="text-sm text-gray-600 hover:text-gray-900">
+                <Link to={dashboardPath} className={`text-sm ${isLanding ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
                   Dashboard
                 </Link>
 
@@ -98,12 +103,15 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link to="/login" className={`text-sm ${isLanding ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
                   Login
                 </Link>
                 <Link
                   to="/signup/creator"
-                  className="text-sm bg-indigo-600 text-white px-3 py-1.5 rounded-md hover:bg-indigo-700 transition"
+                  className={`text-sm px-3 py-1.5 rounded-md transition ${isLanding
+                    ? 'bg-white text-indigo-600 hover:bg-gray-100'
+                    : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                  }`}
                 >
                   Sign Up
                 </Link>
