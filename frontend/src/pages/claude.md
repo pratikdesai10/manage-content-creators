@@ -11,9 +11,20 @@
 ## Folder Structure
 ```
 pages/
-├── Home.tsx              — Landing page with CTAs
+├── Home.tsx              — Landing page orchestrator (imports all landing sections, dark theme wrapper)
 ├── Login.tsx             — Login form (react-hook-form + Zod, role-based redirect)
 ├── NotFound.tsx          — 404 page
+├── landing/
+│   ├── ParticleCanvas.tsx      — Full-viewport canvas with ~80 floating particles + connecting lines (30 on mobile, respects prefers-reduced-motion)
+│   ├── GlowOrbs.tsx            — 3 absolute-positioned gradient blur orbs with CSS drift animation
+│   ├── HeroSection.tsx         — CSS Grid container (1-col mobile, 2-col desktop) composing HeroContent + HeroCards
+│   ├── HeroContent.tsx         — Left side: gradient headline, subtitle, two CTAs with Framer Motion fade-up
+│   ├── HeroCards.tsx           — Right side: 3 floating mock cards with mouse parallax (CSS float fallback on touch)
+│   ├── StatsBar.tsx            — 3 animated counters (10K+ Creators, 500+ Brands, $2M+ Paid Out) using useCountUp
+│   ├── HowItWorks.tsx          — 3-step cards with staggered whileInView reveals
+│   ├── FeaturesBentoGrid.tsx   — 6 feature cards in bento grid with 3D tilt on hover, glass-morphism
+│   ├── CreatorShowcase.tsx     — Horizontal scrolling creator cards with mock data
+│   └── FinalCTA.tsx            — Full-width gradient CTA section with two buttons
 ├── dashboard/
 │   ├── CreatorDashboard.tsx — Full creator dashboard (profile sidebar, stats, social reach, collabs, messages, detail panels)
 │   └── AgencyDashboard.tsx  — Full agency dashboard (profile sidebar, stat cards with sparklines, budget overview, campaigns, messages, top creators, detail panels)
