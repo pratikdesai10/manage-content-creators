@@ -4,27 +4,51 @@ export interface User {
 	id: string
 	email: string
 	role: UserRole
+	isVerified: boolean
 	createdAt: string
-	updatedAt: string
 }
 
 export interface SocialAccount {
 	id: string
+	creatorProfileId: string
 	platform: string
 	handle: string
+	profileUrl: string | null
 	followerCount: number
-	creatorId: string
+	isVerified: boolean
+	accountType: string | null
+	engagementRate: number
+	avgLikes: number
+	growthPercent: number
+	topContentType: string | null
 }
 
 export interface CreatorProfile {
 	id: string
 	userId: string
+	firstName: string
+	lastName: string
 	displayName: string
-	bio: string | null
-	niche: string[]
-	location: string | null
-	availability: string | null
-	rateRange: string | null
+	dateOfBirth: string
+	gender: string | null
+	profileImageUrl: string | null
+	bio: string
+	languages: string[]
+	city: string
+	state: string
+	country: string
+	categories: string[]
+	contentTypes: string[]
+	portfolioUrl: string | null
+	rateRange: string
+	collaborationTypes: string[]
+	availability: string
+	willingToTravel: boolean
+	travelScope: string | null
+	previousCollaborations: number | null
+	notableBrands: string[]
+	marketingEmails: boolean
+	whatsappNotifications: boolean
 	socialAccounts: SocialAccount[]
 	user: User
 }
