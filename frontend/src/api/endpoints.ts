@@ -268,3 +268,51 @@ export async function getAgencyTopCreators(agencyId: string): Promise<TopCreator
   const { data } = await apiClient.get<{ data: TopCreator[] }>(`/agencies/${agencyId}/top-creators`);
   return data.data;
 }
+
+// ── Single Profile Endpoints ─────────────────────────────────────────────────
+
+export async function getCreatorProfile(id: string): Promise<CreatorProfile> {
+  const { data } = await apiClient.get<{ data: CreatorProfile }>(`/creators/${id}`);
+  return data.data;
+}
+
+export async function getAgencyProfile(id: string): Promise<AgencyProfile> {
+  const { data } = await apiClient.get<{ data: AgencyProfile }>(`/agencies/${id}`);
+  return data.data;
+}
+
+export async function updateCreatorProfile(id: string, payload: Record<string, unknown>): Promise<CreatorProfile> {
+  const { data } = await apiClient.patch<{ data: CreatorProfile }>(`/creators/${id}`, payload);
+  return data.data;
+}
+
+export async function updateAgencyProfile(id: string, payload: Record<string, unknown>): Promise<AgencyProfile> {
+  const { data } = await apiClient.patch<{ data: AgencyProfile }>(`/agencies/${id}`, payload);
+  return data.data;
+}
+
+// ── Mocked Endpoints (no backend yet) ────────────────────────────────────────
+
+export async function changePassword(_data: { currentPassword: string; newPassword: string }): Promise<void> {
+  // TODO: wire to real endpoint when backend adds support
+  console.log('changePassword called (mocked)', _data);
+  await new Promise((r) => setTimeout(r, 500));
+}
+
+export async function updateAccountEmail(_data: { newEmail: string }): Promise<void> {
+  // TODO: wire to real endpoint when backend adds support
+  console.log('updateEmail called (mocked)', _data);
+  await new Promise((r) => setTimeout(r, 500));
+}
+
+export async function deleteAccount(): Promise<void> {
+  // TODO: wire to real endpoint when backend adds support
+  console.log('deleteAccount called (mocked)');
+  await new Promise((r) => setTimeout(r, 500));
+}
+
+export async function resendVerificationEmail(): Promise<void> {
+  // TODO: wire to real endpoint when backend adds support
+  console.log('resendVerificationEmail called (mocked)');
+  await new Promise((r) => setTimeout(r, 500));
+}
