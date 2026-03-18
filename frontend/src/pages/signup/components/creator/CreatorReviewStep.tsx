@@ -54,39 +54,39 @@ export function CreatorReviewStep({ form }: CreatorReviewStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Almost there! Review & accept</h2>
-        <p className="text-gray-500 mt-1">Double-check your details before creating your account.</p>
+        <h2 className="text-2xl font-bold text-white">Almost there! Review & accept</h2>
+        <p className="text-gray-400 mt-1">Double-check your details before creating your account.</p>
       </div>
 
       {/* Profile Preview Card */}
-      <div className="border border-gray-200 rounded-xl p-6 bg-gradient-to-br from-purple-50/50 to-white space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 space-y-4">
         <div className="flex items-start gap-4">
           {/* Profile image */}
           {values.profileImageUrl ? (
             <img
               src={values.profileImageUrl}
               alt="Profile"
-              className="w-16 h-16 rounded-full object-cover border-2 border-purple-200"
+              className="w-16 h-16 rounded-full object-cover border-2 border-indigo-500/30"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-xl font-bold">
+            <div className="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xl font-bold">
               {(values.firstName?.[0] || '').toUpperCase()}
               {(values.lastName?.[0] || '').toUpperCase()}
             </div>
           )}
 
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-white">
               {values.firstName} {values.lastName}
             </h3>
             {values.displayName && (
-              <p className="text-sm text-gray-500">@{values.displayName}</p>
+              <p className="text-sm text-gray-400">@{values.displayName}</p>
             )}
           </div>
 
           <button
             type="button"
-            className="text-sm text-purple-600 hover:text-purple-800 font-medium"
+            className="text-sm text-indigo-400 hover:text-indigo-300 font-medium"
           >
             Edit
           </button>
@@ -98,7 +98,7 @@ export function CreatorReviewStep({ form }: CreatorReviewStepProps) {
             {values.categories.map((cat) => (
               <span
                 key={cat}
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-medium"
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-400 text-xs font-medium"
               >
                 {CATEGORY_ICONS[cat as CreatorCategory]} {CATEGORY_LABELS[cat as CreatorCategory]}
               </span>
@@ -107,17 +107,17 @@ export function CreatorReviewStep({ form }: CreatorReviewStepProps) {
         )}
 
         {/* Stats row */}
-        <div className="flex items-center gap-6 text-sm text-gray-600">
+        <div className="flex items-center gap-6 text-sm text-gray-400">
           {totalFollowers > 0 && (
             <div>
-              <span className="font-semibold text-gray-900">{formatFollowers(totalFollowers)}</span>{' '}
+              <span className="font-semibold text-white">{formatFollowers(totalFollowers)}</span>{' '}
               total followers
             </div>
           )}
           {topAccount && topAccount.platform && (
             <div>
               Top platform:{' '}
-              <span className="font-semibold text-gray-900">
+              <span className="font-semibold text-white">
                 {PLATFORM_LABELS[topAccount.platform as keyof typeof PLATFORM_LABELS] || topAccount.platform}
               </span>
             </div>
@@ -126,7 +126,7 @@ export function CreatorReviewStep({ form }: CreatorReviewStepProps) {
 
         {/* Bio snippet */}
         {bioSnippet && (
-          <p className="text-sm text-gray-600 italic">"{bioSnippet}"</p>
+          <p className="text-sm text-gray-400 italic">"{bioSnippet}"</p>
         )}
       </div>
 
