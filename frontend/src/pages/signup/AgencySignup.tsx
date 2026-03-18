@@ -117,7 +117,7 @@ export function AgencySignup() {
   const oneBasedStep = currentStep + 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-white py-8 px-4">
+    <div className="min-h-screen py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <ProgressBar
           currentStep={oneBasedStep}
@@ -128,7 +128,7 @@ export function AgencySignup() {
             setCurrentStep(step - 1);
           }}
         />
-        <div className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl shadow-xl p-8">
+        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={currentStep}

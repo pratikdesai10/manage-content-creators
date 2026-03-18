@@ -50,37 +50,37 @@ export function AgencyReviewStep({ form }: AgencyReviewStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Review and launch your brand on CollabHub</h2>
+        <h2 className="text-2xl font-bold text-white">Review and launch your brand on CollabHub</h2>
       </div>
 
       {/* Brand Profile Preview Card */}
-      <div className="border border-gray-200 rounded-xl p-6 bg-gradient-to-br from-purple-50/50 to-white space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 space-y-4">
         <div className="flex items-start gap-4">
           {/* Brand Logo */}
           {values.brandLogo ? (
             <img
               src={values.brandLogo}
               alt="Brand Logo"
-              className="w-16 h-16 rounded-lg object-cover border-2 border-purple-200"
+              className="w-16 h-16 rounded-lg object-cover border-2 border-indigo-500/30"
             />
           ) : (
-            <div className="w-16 h-16 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 text-xl font-bold">
+            <div className="w-16 h-16 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xl font-bold">
               {(values.brandName?.[0] || 'B').toUpperCase()}
             </div>
           )}
 
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-gray-900">{values.brandName || 'Your Brand'}</h3>
+            <h3 className="text-lg font-semibold text-white">{values.brandName || 'Your Brand'}</h3>
             {industryLabel && (
-              <p className="text-sm text-gray-500">{industryLabel}</p>
+              <p className="text-sm text-gray-400">{industryLabel}</p>
             )}
           </div>
         </div>
 
         {/* Location */}
         {locationStr && (
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
@@ -90,8 +90,8 @@ export function AgencyReviewStep({ form }: AgencyReviewStepProps) {
 
         {/* Target Audience summary */}
         {(values.targetAgeGroups?.length > 0 || values.targetLocations?.length > 0) && (
-          <div className="text-sm text-gray-600">
-            <span className="font-medium text-gray-700">Target Audience: </span>
+          <div className="text-sm text-gray-400">
+            <span className="font-medium text-gray-300">Target Audience: </span>
             {values.targetAgeGroups?.length > 0 && (
               <span>Ages {values.targetAgeGroups.join(', ')}</span>
             )}
@@ -106,8 +106,8 @@ export function AgencyReviewStep({ form }: AgencyReviewStepProps) {
 
         {/* Budget Range */}
         {budgetLabel && (
-          <div className="text-sm text-gray-600">
-            <span className="font-medium text-gray-700">Budget: </span>
+          <div className="text-sm text-gray-400">
+            <span className="font-medium text-gray-300">Budget: </span>
             <span>{budgetLabel}</span>
           </div>
         )}
@@ -118,7 +118,7 @@ export function AgencyReviewStep({ form }: AgencyReviewStepProps) {
             {values.preferredPlatforms.map((platform) => (
               <span
                 key={platform}
-                className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-medium"
+                className="inline-flex items-center px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-400 text-xs font-medium"
               >
                 {PLATFORM_LABELS[platform as keyof typeof PLATFORM_LABELS] || platform}
               </span>

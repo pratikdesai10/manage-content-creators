@@ -10,7 +10,7 @@ interface AccountManagerStepProps {
 }
 
 const inputClass =
-  'w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition';
+  'w-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg px-4 py-2.5 text-sm outline-none transition-colors';
 
 export function AccountManagerStep({ form }: AccountManagerStepProps) {
   const {
@@ -43,25 +43,25 @@ export function AccountManagerStep({ form }: AccountManagerStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Who's managing this account?</h2>
-        <p className="text-gray-500 mt-1">We need details of the person handling brand collaborations</p>
+        <h2 className="text-2xl font-bold text-white">Who's managing this account?</h2>
+        <p className="text-gray-400 mt-1">We need details of the person handling brand collaborations</p>
       </div>
 
       {/* Full Name */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
         <input
           type="text"
           placeholder="Jane Doe"
           {...register('fullName')}
           className={inputClass}
         />
-        {errors.fullName && <p className="mt-1 text-sm text-red-500">{errors.fullName.message}</p>}
+        {errors.fullName && <p className="mt-1 text-sm text-red-400">{errors.fullName.message}</p>}
       </div>
 
       {/* Work Email */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Work Email</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Work Email</label>
         <div className="relative">
           <input
             type="email"
@@ -77,17 +77,17 @@ export function AccountManagerStep({ form }: AccountManagerStepProps) {
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-lg">&#10003;</span>
           )}
           {emailStatus === 'taken' && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 text-lg">&#10007;</span>
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-red-400 text-lg">&#10007;</span>
           )}
         </div>
-        <p className="mt-1 text-xs text-gray-400">Use your company email for faster verification</p>
-        {errors.workEmail && <p className="mt-1 text-sm text-red-500">{errors.workEmail.message}</p>}
+        <p className="mt-1 text-xs text-gray-500">Use your company email for faster verification</p>
+        {errors.workEmail && <p className="mt-1 text-sm text-red-400">{errors.workEmail.message}</p>}
       </div>
 
       {/* Password + Confirm Password */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
           <input
             type="password"
             placeholder="Min 8 characters"
@@ -95,23 +95,23 @@ export function AccountManagerStep({ form }: AccountManagerStepProps) {
             className={inputClass}
           />
           <PasswordStrengthMeter password={password || ''} />
-          {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>}
+          {errors.password && <p className="mt-1 text-sm text-red-400">{errors.password.message}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Confirm Password</label>
           <input
             type="password"
             placeholder="Re-enter password"
             {...register('confirmPassword')}
             className={inputClass}
           />
-          {errors.confirmPassword && <p className="mt-1 text-sm text-red-500">{errors.confirmPassword.message}</p>}
+          {errors.confirmPassword && <p className="mt-1 text-sm text-red-400">{errors.confirmPassword.message}</p>}
         </div>
       </div>
 
       {/* Phone */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Phone</label>
         <PhoneInput
           value={watch('phone')}
           onChange={(val) => setValue('phone', val)}
@@ -121,20 +121,20 @@ export function AccountManagerStep({ form }: AccountManagerStepProps) {
 
       {/* Designation / Role */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Designation / Role</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Designation / Role</label>
         <input
           type="text"
           placeholder="e.g., Marketing Manager, Brand Head"
           {...register('designation')}
           className={inputClass}
         />
-        {errors.designation && <p className="mt-1 text-sm text-red-500">{errors.designation.message}</p>}
+        {errors.designation && <p className="mt-1 text-sm text-red-400">{errors.designation.message}</p>}
       </div>
 
       {/* LinkedIn Profile */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          LinkedIn Profile <span className="text-gray-400 font-normal">(optional)</span>
+        <label className="block text-sm font-medium text-gray-400 mb-1">
+          LinkedIn Profile <span className="text-gray-500 font-normal">(optional)</span>
         </label>
         <input
           type="url"
@@ -142,8 +142,8 @@ export function AccountManagerStep({ form }: AccountManagerStepProps) {
           {...register('linkedinUrl')}
           className={inputClass}
         />
-        <p className="mt-1 text-xs text-gray-400">Helps creators trust your brand</p>
-        {errors.linkedinUrl && <p className="mt-1 text-sm text-red-500">{errors.linkedinUrl.message}</p>}
+        <p className="mt-1 text-xs text-gray-500">Helps creators trust your brand</p>
+        {errors.linkedinUrl && <p className="mt-1 text-sm text-red-400">{errors.linkedinUrl.message}</p>}
       </div>
     </div>
   );
