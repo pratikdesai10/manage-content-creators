@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useId } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../hooks/useAuth';
+import toast from 'react-hot-toast';
 import {
   getAgencyProfiles,
   getAgencyStats,
@@ -11,6 +13,7 @@ import {
   getAgencyTopCreators,
   type AgencyCampaign,
   type AgencyMessage,
+  type MessageThreadEntry,
 } from '../../api/endpoints';
 import type { AgencyProfile } from '../../types';
 import {
@@ -33,10 +36,10 @@ const PLATFORM_COLORS: Record<string, string> = {
 };
 
 const STATUS_COLOR: Record<string, string> = {
-  COMPLETED: 'bg-green-100 text-green-700',
-  ACTIVE: 'bg-blue-100 text-blue-700',
-  PENDING: 'bg-yellow-100 text-yellow-700',
-  CANCELLED: 'bg-red-100 text-red-700',
+  COMPLETED: 'bg-emerald-500/10 text-emerald-400',
+  ACTIVE: 'bg-blue-500/10 text-blue-400',
+  PENDING: 'bg-amber-500/10 text-amber-400',
+  CANCELLED: 'bg-red-500/10 text-red-400',
 };
 
 const COLLAB_TYPE_LABEL: Record<string, string> = {
@@ -146,7 +149,7 @@ function AgencyStatCard({
   const isPositive = meta.change >= 0;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3 hover:shadow-md transition-shadow duration-200">
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-4 flex flex-col gap-3 hover:shadow-md transition-shadow duration-200">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-1.5">
           <span className="text-base leading-none">{meta.icon}</span>
@@ -165,11 +168,11 @@ function AgencyStatCard({
 
       <div>
         <div className="flex items-baseline gap-2">
-          <p className="text-2xl font-bold text-gray-900 leading-none tabular-nums">
+          <p className="text-2xl font-bold text-white leading-none tabular-nums">
             {displayValue ?? (value !== undefined ? value.toLocaleString('en-IN') : '—')}
           </p>
           {badge && (
-            <span className="text-xs font-medium text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full">
+            <span className="text-xs font-medium text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full">
               {badge}
             </span>
           )}
@@ -201,15 +204,15 @@ function BudgetOverview({ breakdown }: { breakdown: { type: string; amount: numb
   if (!breakdown?.length) return null;
   const maxAmount = Math.max(...breakdown.map((b) => b.amount), 1);
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-      <h2 className="text-sm font-semibold text-gray-700 mb-4">Budget Overview</h2>
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6">
+      <h2 className="text-sm font-semibold text-gray-300 mb-4">Budget Overview</h2>
       <div className="flex flex-col gap-3">
         {breakdown.map((item) => (
           <div key={item.type} className="flex items-center gap-3">
-            <span className="w-28 text-xs text-gray-600 font-medium truncate">
+            <span className="w-28 text-xs text-gray-400 font-medium truncate">
               {COLLAB_TYPE_LABEL[item.type] ?? item.type}
             </span>
-            <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+            <div className="flex-1 bg-white/10 rounded-full h-3 overflow-hidden">
               <div
                 className="h-3 rounded-full transition-all duration-500"
                 style={{
@@ -218,7 +221,7 @@ function BudgetOverview({ breakdown }: { breakdown: { type: string; amount: numb
                 }}
               />
             </div>
-            <span className="w-14 text-xs text-gray-600 text-right font-semibold">
+            <span className="w-14 text-xs text-gray-400 text-right font-semibold">
               {formatCurrency(item.amount)}
             </span>
           </div>
@@ -240,29 +243,29 @@ function CampaignsList({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-      <h2 className="text-sm font-semibold text-gray-700 mb-4">Recent Campaigns</h2>
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6">
+      <h2 className="text-sm font-semibold text-gray-300 mb-4">Recent Campaigns</h2>
       {campaigns?.length ? (
         <div className="flex flex-col">
           {campaigns.map((c) => (
             <button
               key={c.id}
               onClick={() => onSelect(c.id)}
-              className={`flex items-center justify-between py-3 px-2 -mx-2 rounded-lg cursor-pointer border-b border-gray-50 last:border-0 transition w-full text-left ${
-                selectedId === c.id ? 'bg-purple-50' : 'hover:bg-gray-50'
+              className={`flex items-center justify-between py-3 px-2 -mx-2 rounded-lg cursor-pointer border-b border-white/5 last:border-0 transition w-full text-left ${
+                selectedId === c.id ? 'bg-white/10' : 'hover:bg-white/5'
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm font-bold text-gray-400 flex-shrink-0">
                   {c.creatorName?.[0]?.toUpperCase() ?? '?'}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{c.creatorName}</p>
+                  <p className="text-sm font-medium text-white truncate">{c.creatorName}</p>
                   <p className="text-xs text-gray-500 truncate">{COLLAB_TYPE_LABEL[c.type] ?? c.type}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${STATUS_COLOR[c.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${STATUS_COLOR[c.status] ?? 'bg-white/10 text-gray-300'}`}>
                   {c.status}
                 </span>
                 <span className="text-xs text-gray-400 whitespace-nowrap">{formatDate(c.createdAt)}</span>
@@ -289,29 +292,29 @@ function AgencyMessagesList({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-      <h2 className="text-sm font-semibold text-gray-700 mb-4">Recent Messages</h2>
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6">
+      <h2 className="text-sm font-semibold text-gray-300 mb-4">Recent Messages</h2>
       {messages?.length ? (
         <div className="flex flex-col">
           {messages.map((m) => (
             <button
               key={m.id}
               onClick={() => onSelect(m.id)}
-              className={`flex items-center justify-between py-3 px-2 -mx-2 rounded-lg cursor-pointer border-b border-gray-50 last:border-0 transition w-full text-left ${
-                selectedId === m.id ? 'bg-purple-50' : 'hover:bg-gray-50'
+              className={`flex items-center justify-between py-3 px-2 -mx-2 rounded-lg cursor-pointer border-b border-white/5 last:border-0 transition w-full text-left ${
+                selectedId === m.id ? 'bg-white/10' : 'hover:bg-white/5'
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="relative flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">
+                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm font-bold text-gray-400">
                     {m.creatorName?.[0]?.toUpperCase() ?? '?'}
                   </div>
                   {!m.isRead && (
-                    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-purple-500 rounded-full border-2 border-white" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-indigo-500 rounded-full border-2 border-[#050510]" />
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{m.creatorName}</p>
+                  <p className="text-sm font-medium text-white truncate">{m.creatorName}</p>
                   <p className="text-xs text-gray-500 truncate">{m.preview}</p>
                 </div>
               </div>
@@ -336,19 +339,19 @@ function TopCreatorsList({ agencyId }: { agencyId: string }) {
   });
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-      <h2 className="text-sm font-semibold text-gray-700 mb-4">Top Creators</h2>
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6">
+      <h2 className="text-sm font-semibold text-gray-300 mb-4">Top Creators</h2>
       {creators?.length ? (
         <div className="flex flex-col gap-3">
           {creators.map((c) => {
             const platformColor = PLATFORM_COLORS[c.platform] ?? '#6B7280';
             return (
               <div key={c.id} className="flex items-center gap-3 py-2">
-                <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0">
+                <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm font-bold text-gray-400 flex-shrink-0">
                   {c.name[0]?.toUpperCase() ?? '?'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{c.name}</p>
+                  <p className="text-sm font-medium text-white truncate">{c.name}</p>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span
                       className="text-xs px-1.5 py-0.5 rounded-full font-medium text-white"
@@ -360,7 +363,7 @@ function TopCreatorsList({ agencyId }: { agencyId: string }) {
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-semibold text-gray-900">{c.engagementRate}%</p>
+                  <p className="text-sm font-semibold text-white">{c.engagementRate}%</p>
                   <p className="text-xs text-gray-400">engagement</p>
                 </div>
               </div>
@@ -391,23 +394,23 @@ function CampaignDetailPanel({
   });
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-5 flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm font-bold text-gray-400 flex-shrink-0">
             {data?.creatorName?.[0]?.toUpperCase() ?? '?'}
           </div>
           <div>
-            <p className="font-semibold text-gray-900 text-sm leading-tight">{data?.creatorName ?? '...'}</p>
+            <p className="font-semibold text-white text-sm leading-tight">{data?.creatorName ?? '...'}</p>
             <p className="text-xs text-gray-500">{data ? (COLLAB_TYPE_LABEL[data.type] ?? data.type) : ''}</p>
           </div>
           {data && (
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[data.status] ?? 'bg-gray-100 text-gray-600'}`}>
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[data.status] ?? 'bg-white/10 text-gray-300'}`}>
               {data.status}
             </span>
           )}
         </div>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none flex-shrink-0 ml-2" aria-label="Close panel">x</button>
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-300 text-lg leading-none flex-shrink-0 ml-2" aria-label="Close panel">x</button>
       </div>
 
       {isLoading ? (
@@ -415,9 +418,9 @@ function CampaignDetailPanel({
       ) : data ? (
         <>
           {data.brief && (
-            <div className="bg-gray-50 rounded-lg p-3">
+            <div className="bg-white/[0.03] rounded-lg p-3">
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Brief</p>
-              <p className="text-xs text-gray-700 leading-relaxed line-clamp-3">{data.brief}</p>
+              <p className="text-xs text-gray-300 leading-relaxed line-clamp-3">{data.brief}</p>
             </div>
           )}
 
@@ -427,8 +430,8 @@ function CampaignDetailPanel({
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Deliverables</p>
                 <ul className="flex flex-col gap-1">
                   {data.deliverables.map((d, i) => (
-                    <li key={i} className="text-xs text-gray-700 flex items-start gap-1.5">
-                      <span className="w-1 h-1 rounded-full bg-purple-400 flex-shrink-0 mt-1.5" />
+                    <li key={i} className="text-xs text-gray-300 flex items-start gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0 mt-1.5" />
                       {d}
                     </li>
                   ))}
@@ -437,21 +440,21 @@ function CampaignDetailPanel({
             )}
             <div className="flex flex-col gap-2">
               {data.timeline && (
-                <div className="bg-gray-50 rounded-lg p-2.5">
+                <div className="bg-white/[0.03] rounded-lg p-2.5">
                   <p className="text-xs text-gray-500 mb-0.5">Timeline</p>
-                  <p className="text-xs font-medium text-gray-800">{data.timeline}</p>
+                  <p className="text-xs font-medium text-white">{data.timeline}</p>
                 </div>
               )}
               {data.budget && (
-                <div className="bg-gray-50 rounded-lg p-2.5">
+                <div className="bg-white/[0.03] rounded-lg p-2.5">
                   <p className="text-xs text-gray-500 mb-0.5">Budget</p>
-                  <p className="text-xs font-semibold text-gray-800">{data.budget}</p>
+                  <p className="text-xs font-semibold text-white">{data.budget}</p>
                 </div>
               )}
               {(data.contactPerson || data.contactEmail) && (
-                <div className="bg-purple-50 rounded-lg p-2.5">
-                  <p className="text-xs font-semibold text-purple-700 mb-0.5">Contact</p>
-                  {data.contactPerson && <p className="text-xs text-gray-800 font-medium">{data.contactPerson}</p>}
+                <div className="bg-indigo-500/10 rounded-lg p-2.5">
+                  <p className="text-xs font-semibold text-indigo-400 mb-0.5">Contact</p>
+                  {data.contactPerson && <p className="text-xs text-white font-medium">{data.contactPerson}</p>}
                   {data.contactEmail && <p className="text-xs text-gray-500 truncate">{data.contactEmail}</p>}
                 </div>
               )}
@@ -490,18 +493,34 @@ function AgencyChatPanel({
     }
   }, [data?.threads?.length]);
 
+  const handleSend = () => {
+    if (!draft.trim()) return;
+    const newMessage: MessageThreadEntry = {
+      id: `local-${Date.now()}`,
+      sender: 'BRAND',
+      text: draft.trim(),
+      sentAt: new Date().toISOString(),
+    };
+    if (data) {
+      data.threads = [...data.threads, newMessage];
+    }
+    setDraft('');
+    toast.success('Message sent');
+    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+  };
+
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-80 bg-white rounded-2xl border border-gray-200 shadow-2xl flex flex-col h-[400px]">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 rounded-t-2xl">
+    <div className="fixed bottom-6 right-6 z-50 w-80 bg-[#0a0a1a]/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl flex flex-col h-[400px]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 rounded-t-2xl">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center text-xs font-bold text-purple-600">
+          <div className="w-7 h-7 rounded-full bg-indigo-500/20 flex items-center justify-center text-xs font-bold text-indigo-400">
             {data?.creatorName?.[0]?.toUpperCase() ?? '?'}
           </div>
-          <p className="text-sm font-semibold text-gray-800">{data?.creatorName ?? '...'}</p>
+          <p className="text-sm font-semibold text-white">{data?.creatorName ?? '...'}</p>
         </div>
         <button
           onClick={onClose}
-          className="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition text-base leading-none"
+          className="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:bg-white/10 hover:text-gray-300 transition text-base leading-none"
           aria-label="Close chat"
         >x</button>
       </div>
@@ -519,8 +538,8 @@ function AgencyChatPanel({
                 <div
                   className={`px-3 py-2 rounded-2xl text-xs leading-relaxed ${
                     entry.sender === 'BRAND'
-                      ? 'bg-purple-600 text-white rounded-br-sm'
-                      : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-br-sm'
+                      : 'bg-white/5 border border-white/10 text-gray-300 rounded-bl-sm'
                   }`}
                 >
                   {entry.text}
@@ -535,19 +554,24 @@ function AgencyChatPanel({
         )}
       </div>
 
-      <div className="px-3 py-2.5 border-t border-gray-100 flex gap-2 rounded-b-2xl">
+      <div className="px-3 py-2.5 border-t border-white/10 flex gap-2 rounded-b-2xl">
         <input
           type="text"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Type a reply..."
-          className="flex-1 text-xs px-3 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-400"
-          onKeyDown={(e) => e.key === 'Enter' && setDraft('')}
+          className="flex-1 text-xs px-3 py-2 bg-white/5 border border-white/10 text-white placeholder-gray-500 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500/30"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
           aria-label="Message input"
         />
         <button
-          onClick={() => setDraft('')}
-          className="px-3 py-2 bg-purple-600 text-white text-xs rounded-xl hover:bg-purple-700 transition font-medium"
+          onClick={handleSend}
+          className="px-3 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs rounded-xl hover:from-indigo-600 hover:to-purple-700 transition font-medium"
         >
           Send
         </button>
@@ -571,40 +595,40 @@ function AgencyProfileCard({ profile, userEmail }: { profile: AgencyProfile; use
   const platforms = profile.campaignPreferences?.platforms ?? [];
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col gap-4">
+    <div className="rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 via-white/5 to-purple-500/10 backdrop-blur-sm p-6 flex flex-col gap-4">
       <div className="flex flex-col items-center gap-2">
         {profile.logoUrl ? (
           <img src={profile.logoUrl} alt={profile.brandName} className="w-20 h-20 rounded-full object-cover" />
         ) : (
-          <div className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
             {initials}
           </div>
         )}
         <div className="text-center">
-          <p className="font-bold text-gray-900 text-lg">{profile.brandName}</p>
+          <p className="font-bold text-white text-lg">{profile.brandName}</p>
           <div className="flex flex-wrap justify-center gap-1.5 mt-1">
-            <span className="px-2 py-0.5 text-xs rounded-full bg-purple-50 text-purple-700 font-medium">
+            <span className="px-2 py-0.5 text-xs rounded-full bg-indigo-500/15 text-indigo-400 font-medium">
               {industryLabel}
             </span>
-            <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600 font-medium">
+            <span className="px-2 py-0.5 text-xs rounded-full bg-white/10 text-gray-300 font-medium">
               {sizeLabel} employees
             </span>
           </div>
         </div>
       </div>
 
-      <hr className="border-gray-100" />
+      <hr className="border-white/10" />
 
       {profile.description && (
-        <p className="text-sm text-gray-600 line-clamp-3">{profile.description}</p>
+        <p className="text-sm text-gray-400 line-clamp-3">{profile.description}</p>
       )}
 
       {profile.contact && (
         <>
-          <hr className="border-gray-100" />
+          <hr className="border-white/10" />
           <div className="flex flex-col gap-1.5">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Contact</p>
-            <p className="text-sm font-medium text-gray-900">{profile.contact.contactPersonName}</p>
+            <p className="text-sm font-medium text-white">{profile.contact.contactPersonName}</p>
             <p className="text-xs text-gray-500">{profile.contact.designation}</p>
             <p className="text-xs text-gray-500 truncate">{profile.contact.contactEmail}</p>
           </div>
@@ -613,7 +637,7 @@ function AgencyProfileCard({ profile, userEmail }: { profile: AgencyProfile; use
 
       {platforms.length > 0 && (
         <>
-          <hr className="border-gray-100" />
+          <hr className="border-white/10" />
           <div>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Platforms</p>
             <div className="flex flex-wrap gap-1.5">
@@ -633,18 +657,21 @@ function AgencyProfileCard({ profile, userEmail }: { profile: AgencyProfile; use
 
       {budgetLabel && (
         <>
-          <hr className="border-gray-100" />
+          <hr className="border-white/10" />
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">Budget</span>
-            <span className="text-xs font-semibold text-gray-800">{budgetLabel}</span>
+            <span className="text-xs font-semibold text-white">{budgetLabel}</span>
           </div>
         </>
       )}
 
-      <hr className="border-gray-100" />
-      <button className="w-full py-2 text-sm font-medium text-purple-600 border border-purple-200 rounded-lg hover:bg-purple-50 transition">
+      <hr className="border-white/10" />
+      <Link
+        to="/dashboard/agency/edit-profile"
+        className="w-full py-2 text-sm font-medium bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl shadow-lg shadow-indigo-500/25 hover:from-indigo-600 hover:to-purple-700 transition-all text-center block"
+      >
         Edit Profile
-      </button>
+      </Link>
     </div>
   );
 }
@@ -704,13 +731,13 @@ export function AgencyDashboard() {
         {/* Left Sidebar */}
         <aside className="w-72 flex-shrink-0">
           {profilesLoading ? (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex items-center justify-center h-40">
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 flex items-center justify-center h-40">
               <p className="text-sm text-gray-400">Loading profile...</p>
             </div>
           ) : profile ? (
             <AgencyProfileCard profile={profile} userEmail={user?.email} />
           ) : (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex items-center justify-center h-40">
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 flex items-center justify-center h-40">
               <p className="text-sm text-gray-400">No agency profile found.</p>
             </div>
           )}
