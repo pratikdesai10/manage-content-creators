@@ -37,13 +37,13 @@ export function SocialMediaStep({ form }: SocialMediaStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Connect your social presence</h2>
-        <p className="text-gray-500 mt-1">Add at least one social account to showcase your reach.</p>
+        <h2 className="text-2xl font-bold text-white">Connect your social presence</h2>
+        <p className="text-gray-400 mt-1">Add at least one social account to showcase your reach.</p>
       </div>
 
       {/* Total followers badge */}
       {totalFollowers > 0 && (
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-full text-sm font-medium">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/20 border border-indigo-500/40 text-indigo-400 rounded-full text-sm font-medium">
           <span>Total Followers:</span>
           <span className="font-bold">{formatFollowers(totalFollowers)}</span>
         </div>
@@ -75,7 +75,7 @@ export function SocialMediaStep({ form }: SocialMediaStepProps) {
           })
         }
         disabled={allPlatformsUsed}
-        className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-purple-600 border-2 border-dashed border-purple-300 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-indigo-400 border-2 border-dashed border-white/10 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Plus className="w-4 h-4" />
         Add Another Social Account
@@ -83,10 +83,10 @@ export function SocialMediaStep({ form }: SocialMediaStepProps) {
 
       {/* Array-level error */}
       {errors.socialAccounts && !Array.isArray(errors.socialAccounts) && (
-        <p className="text-sm text-red-500">{errors.socialAccounts.message}</p>
+        <p className="text-sm text-red-400">{errors.socialAccounts.message}</p>
       )}
       {errors.socialAccounts?.root && (
-        <p className="text-sm text-red-500">{errors.socialAccounts.root.message}</p>
+        <p className="text-sm text-red-400">{errors.socialAccounts.root.message}</p>
       )}
     </div>
   );

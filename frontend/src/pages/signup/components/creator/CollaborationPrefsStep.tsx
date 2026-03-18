@@ -19,7 +19,7 @@ interface CollaborationPrefsStepProps {
 }
 
 const inputClass =
-  'w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition';
+  'w-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg px-4 py-2.5 text-sm outline-none transition-colors';
 
 export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
   const {
@@ -55,14 +55,14 @@ export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">How do you like to collaborate?</h2>
-        <p className="text-gray-500 mt-1">Tell brands about your collaboration preferences and rates.</p>
+        <h2 className="text-2xl font-bold text-white">How do you like to collaborate?</h2>
+        <p className="text-gray-400 mt-1">Tell brands about your collaboration preferences and rates.</p>
       </div>
 
       {/* Rate Range */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Rate Range (per collaboration)</label>
-        <select {...register('rateRange')} className={inputClass}>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Rate Range (per collaboration)</label>
+        <select {...register('rateRange')} className={inputClass + ' appearance-none'}>
           <option value="">Select rate range</option>
           {RATE_RANGES.map((r) => (
             <option key={r} value={r}>
@@ -70,12 +70,12 @@ export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
             </option>
           ))}
         </select>
-        {errors.rateRange && <p className="mt-1 text-sm text-red-500">{errors.rateRange.message}</p>}
+        {errors.rateRange && <p className="mt-1 text-sm text-red-400">{errors.rateRange.message}</p>}
       </div>
 
       {/* Preferred Collaboration Type */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Collaboration Type</label>
+        <label className="block text-sm font-medium text-gray-400 mb-2">Preferred Collaboration Type</label>
         <ChipMultiSelect
           items={COLLABORATION_TYPES}
           labels={COLLABORATION_TYPE_LABELS as Record<string, string>}
@@ -87,8 +87,8 @@ export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
 
       {/* Availability */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Availability</label>
-        <select {...register('availability')} className={inputClass}>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Availability</label>
+        <select {...register('availability')} className={inputClass + ' appearance-none'}>
           <option value="">Select availability</option>
           {AVAILABILITY_OPTIONS.map((a) => (
             <option key={a} value={a}>
@@ -96,7 +96,7 @@ export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
             </option>
           ))}
         </select>
-        {errors.availability && <p className="mt-1 text-sm text-red-500">{errors.availability.message}</p>}
+        {errors.availability && <p className="mt-1 text-sm text-red-400">{errors.availability.message}</p>}
       </div>
 
       {/* Willing to Travel */}
@@ -111,7 +111,7 @@ export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
             <div
               className={cn(
                 'w-11 h-6 rounded-full transition-colors duration-200',
-                willingToTravel ? 'bg-purple-600' : 'bg-gray-300',
+                willingToTravel ? 'bg-indigo-500' : 'bg-white/10',
               )}
             />
             <div
@@ -121,13 +121,13 @@ export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
               )}
             />
           </div>
-          <span className="text-sm font-medium text-gray-700">Willing to Travel</span>
+          <span className="text-sm font-medium text-gray-300">Willing to Travel</span>
         </label>
 
         {willingToTravel && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Travel Scope</label>
-            <select {...register('travelScope')} className={inputClass}>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Travel Scope</label>
+            <select {...register('travelScope')} className={inputClass + ' appearance-none'}>
               <option value="">Select scope</option>
               {TRAVEL_SCOPES.map((t) => (
                 <option key={t} value={t}>
@@ -141,8 +141,8 @@ export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
 
       {/* Previous Brand Collaborations */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Previous Brand Collaborations <span className="text-gray-400 font-normal">(optional)</span>
+        <label className="block text-sm font-medium text-gray-400 mb-1">
+          Previous Brand Collaborations <span className="text-gray-500 font-normal">(optional)</span>
         </label>
         <input
           type="number"
@@ -155,7 +155,7 @@ export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
 
       {/* Notable Brands */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-400 mb-1">
           Notable Brands You've Worked With
         </label>
         <input
@@ -171,13 +171,13 @@ export function CollaborationPrefsStep({ form }: CollaborationPrefsStepProps) {
             {notableBrands.map((brand) => (
               <span
                 key={brand}
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium"
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-400 text-sm font-medium"
               >
                 {brand}
                 <button
                   type="button"
                   onClick={() => handleRemoveBrand(brand)}
-                  className="ml-1 text-purple-400 hover:text-purple-700"
+                  className="ml-1 text-indigo-400 hover:text-indigo-300"
                   aria-label={`Remove ${brand}`}
                 >
                   &times;
