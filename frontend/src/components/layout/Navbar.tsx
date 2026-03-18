@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 export function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const isLanding = pathname === '/';
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -30,31 +28,28 @@ export function Navbar() {
   const dashboardPath = user?.role === 'CREATOR' ? '/dashboard/creator' : '/dashboard/agency';
 
   return (
-    <nav className={isLanding
-      ? 'bg-[#050510]/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-50'
-      : 'bg-white border-b border-gray-200 sticky top-0 z-50'
-    }>
+    <nav className="bg-[#050510]/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to={isAuthenticated ? dashboardPath : '/'} className={`text-xl font-bold ${isLanding ? 'text-white' : 'text-indigo-600'}`}>
+          <Link to={isAuthenticated ? dashboardPath : '/'} className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
             CollabHub
           </Link>
 
           {/* Nav links */}
           <div className="flex items-center gap-6">
             {!isAuthenticated && (
-              <Link to="/" className={`text-sm ${isLanding ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
+              <Link to="/" className="text-sm text-white/70 hover:text-white transition-colors">
                 Home
               </Link>
             )}
 
             {isAuthenticated && user ? (
               <>
-                <Link to="/creators" className={`text-sm ${isLanding ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
+                <Link to="/creators" className="text-sm text-white/70 hover:text-white transition-colors">
                   Discover
                 </Link>
-                <Link to={dashboardPath} className={`text-sm ${isLanding ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
+                <Link to={dashboardPath} className="text-sm text-white/70 hover:text-white transition-colors">
                   Dashboard
                 </Link>
 
@@ -62,24 +57,24 @@ export function Navbar() {
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setDropdownOpen((o) => !o)}
-                    className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm font-bold hover:ring-2 hover:ring-purple-300 transition focus:outline-none"
+                    className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold hover:ring-2 hover:ring-purple-300 transition focus:outline-none"
                     aria-label="Account menu"
                   >
                     {initials}
                   </button>
 
                   {dropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl border border-gray-100 shadow-lg py-1 z-50">
+                    <div className="absolute right-0 mt-2 w-52 bg-[#0a0a1a]/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl py-1 z-50">
                       {/* User info header */}
-                      <div className="px-4 py-3 border-b border-gray-50">
-                        <p className="text-xs font-semibold text-gray-900 truncate">{user.email}</p>
+                      <div className="px-4 py-3 border-b border-white/5">
+                        <p className="text-xs font-semibold text-white truncate">{user.email}</p>
                         <p className="text-xs text-gray-400 mt-0.5 capitalize">{user.role?.toLowerCase()}</p>
                       </div>
 
                       <Link
                         to={dashboardPath}
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 hover:text-white transition"
                       >
                         <span className="text-base">📊</span> View Dashboard
                       </Link>
@@ -87,7 +82,7 @@ export function Navbar() {
                       <Link
                         to={dashboardPath}
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 hover:text-white transition"
                       >
                         <span className="text-base">👤</span> View Profile
                       </Link>
@@ -95,16 +90,16 @@ export function Navbar() {
                       <Link
                         to="/settings"
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 hover:text-white transition"
                       >
                         <span className="text-base">&#9881;&#65039;</span> Settings
                       </Link>
 
-                      <div className="border-t border-gray-50 mt-1" />
+                      <div className="border-t border-white/5 mt-1" />
 
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition"
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition"
                       >
                         <span className="text-base">🚪</span> Logout
                       </button>
@@ -114,15 +109,12 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className={`text-sm ${isLanding ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
+                <Link to="/login" className="text-sm text-white/70 hover:text-white transition-colors">
                   Login
                 </Link>
                 <Link
                   to="/signup/creator"
-                  className={`text-sm px-3 py-1.5 rounded-md transition ${isLanding
-                    ? 'bg-white text-indigo-600 hover:bg-gray-100'
-                    : 'bg-indigo-600 text-white hover:bg-indigo-700'
-                  }`}
+                  className="text-sm px-4 py-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all shadow-lg shadow-indigo-500/25"
                 >
                   Sign Up
                 </Link>
