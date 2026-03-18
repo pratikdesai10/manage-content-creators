@@ -35,11 +35,11 @@ export function ProgressBar({
                   className={cn(
                     'flex items-center justify-center rounded-full font-semibold text-sm transition-all duration-300',
                     isCompleted &&
-                      'w-10 h-10 bg-purple-600 text-white cursor-pointer hover:bg-purple-700',
+                      'w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 text-white cursor-pointer hover:from-indigo-600 hover:to-purple-700',
                     isCurrent &&
-                      'w-12 h-12 bg-blue-500 text-white ring-4 ring-blue-200 scale-110',
+                      'w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 text-white ring-4 ring-indigo-500/30 scale-110',
                     isUpcoming &&
-                      'w-10 h-10 bg-gray-200 text-gray-400 cursor-not-allowed',
+                      'w-10 h-10 bg-white/10 border border-white/10 text-gray-500 cursor-not-allowed',
                   )}
                   aria-label={`Step ${step}: ${stepLabels[i]}`}
                 >
@@ -64,8 +64,8 @@ export function ProgressBar({
                 <span
                   className={cn(
                     'mt-2 text-xs font-medium text-center whitespace-nowrap',
-                    isCompleted && 'text-purple-600',
-                    isCurrent && 'text-blue-600',
+                    isCompleted && 'text-indigo-400',
+                    isCurrent && 'text-white',
                     isUpcoming && 'text-gray-400',
                   )}
                 >
@@ -78,7 +78,7 @@ export function ProgressBar({
                 <div
                   className={cn(
                     'flex-1 h-0.5 mx-2 transition-colors duration-300',
-                    isCompleted ? 'bg-purple-600' : 'bg-gray-200',
+                    isCompleted ? 'bg-gradient-to-r from-indigo-500 to-purple-600' : 'bg-white/10',
                   )}
                 />
               )}

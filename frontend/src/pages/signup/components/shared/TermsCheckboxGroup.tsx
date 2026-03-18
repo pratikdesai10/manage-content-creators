@@ -27,19 +27,19 @@ export function TermsCheckboxGroup({ items, form }: TermsCheckboxGroupProps) {
                 type="checkbox"
                 {...register(item.name)}
                 className={cn(
-                  'mt-0.5 h-4 w-4 rounded border-gray-300 accent-purple-600 cursor-pointer',
-                  'focus:ring-purple-500',
+                  'mt-0.5 h-4 w-4 rounded border-white/10 accent-indigo-500 cursor-pointer',
+                  'focus:ring-indigo-500/30',
                 )}
               />
-              <span className="text-sm text-gray-700 group-hover:text-gray-900">
+              <span className="text-sm text-gray-300 group-hover:text-white">
                 {item.label}
                 {item.required && (
-                  <span className="text-red-500 ml-0.5">*</span>
+                  <span className="text-red-400 ml-0.5">*</span>
                 )}
               </span>
             </label>
             {fieldError?.message && (
-              <p className="ml-7 mt-1 text-sm text-red-500">
+              <p className="ml-7 mt-1 text-sm text-red-400">
                 {fieldError.message}
               </p>
             )}

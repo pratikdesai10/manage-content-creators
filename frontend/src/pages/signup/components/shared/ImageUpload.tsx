@@ -116,16 +116,16 @@ export function ImageUpload({
             'flex flex-col items-center justify-center cursor-pointer border-2 border-dashed transition-colors',
             isCircle ? 'w-32 h-32 rounded-full' : 'w-40 h-40 rounded-xl',
             isDragging
-              ? 'border-purple-500 bg-purple-50'
-              : 'border-gray-300 hover:border-purple-400 bg-gray-50',
+              ? 'border-indigo-500/30 bg-indigo-500/10'
+              : 'border-white/10 hover:border-indigo-500/30 bg-white/[0.02]',
           )}
         >
-          <Upload className="w-6 h-6 text-gray-400 mb-2" />
-          <span className="text-xs text-gray-500 text-center px-2">{label}</span>
+          <Upload className="w-6 h-6 text-gray-500 mb-2" />
+          <span className="text-xs text-gray-400 text-center px-2">{label}</span>
         </div>
       )}
 
-      {displayError && <p className="mt-1.5 text-sm text-red-500">{displayError}</p>}
+      {displayError && <p className="mt-1.5 text-sm text-red-400">{displayError}</p>}
     </div>
   );
 }

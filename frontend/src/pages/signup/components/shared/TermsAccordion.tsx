@@ -11,17 +11,17 @@ export function TermsAccordion({ title, content }: TermsAccordionProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
+    <div className="border border-white/10 rounded-lg overflow-hidden">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-white/5 transition-colors"
       >
-        <span className="font-semibold text-gray-800 text-sm">{title}</span>
+        <span className="font-semibold text-white text-sm">{title}</span>
         {isOpen ? (
-          <ChevronUp className="w-4 h-4 text-gray-500 flex-shrink-0" />
+          <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-gray-500 flex-shrink-0" />
+          <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
         )}
       </button>
 
@@ -32,7 +32,7 @@ export function TermsAccordion({ title, content }: TermsAccordionProps) {
         )}
       >
         <div className="px-4 pb-4 pt-1">
-          <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">
+          <p className="text-sm text-gray-300 whitespace-pre-line leading-relaxed">
             {content}
           </p>
         </div>

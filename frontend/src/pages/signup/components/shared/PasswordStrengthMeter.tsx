@@ -21,12 +21,12 @@ function getStrengthInfo(score: number): {
   segments: number;
 } {
   if (score <= 1) {
-    return { label: 'Weak', color: 'text-red-500', bgColor: 'bg-red-500', segments: 1 };
+    return { label: 'Weak', color: 'text-red-400', bgColor: 'bg-red-500', segments: 1 };
   }
   if (score <= 3) {
-    return { label: 'Medium', color: 'text-yellow-500', bgColor: 'bg-yellow-500', segments: 2 };
+    return { label: 'Medium', color: 'text-amber-500', bgColor: 'bg-amber-500', segments: 2 };
   }
-  return { label: 'Strong', color: 'text-green-500', bgColor: 'bg-green-500', segments: 3 };
+  return { label: 'Strong', color: 'text-emerald-500', bgColor: 'bg-emerald-500', segments: 3 };
 }
 
 export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
@@ -43,7 +43,7 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
             key={segment}
             className={cn(
               'h-1.5 flex-1 rounded-full transition-colors duration-300',
-              segment <= segments ? bgColor : 'bg-gray-200',
+              segment <= segments ? bgColor : 'bg-white/10',
             )}
           />
         ))}
