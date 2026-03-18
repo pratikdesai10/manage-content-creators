@@ -14,7 +14,7 @@ interface LocationAudienceStepProps {
 }
 
 const inputClass =
-  'w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition';
+  'w-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg px-4 py-2.5 text-sm outline-none transition-colors';
 
 export function LocationAudienceStep({ form }: LocationAudienceStepProps) {
   const {
@@ -32,45 +32,45 @@ export function LocationAudienceStep({ form }: LocationAudienceStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Where are you based and who do you target?</h2>
+        <h2 className="text-2xl font-bold text-white">Where are you based and who do you target?</h2>
       </div>
 
       {/* Company Location */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Company Location</h3>
+        <h3 className="text-lg font-semibold text-white mb-3">Company Location</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Country</label>
             <input
               type="text"
               {...register('country')}
               className={inputClass}
             />
-            {errors.country && <p className="mt-1 text-sm text-red-500">{errors.country.message}</p>}
+            {errors.country && <p className="mt-1 text-sm text-red-400">{errors.country.message}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+            <label className="block text-sm font-medium text-gray-400 mb-1">State</label>
             <input
               type="text"
               placeholder="e.g., Maharashtra"
               {...register('state')}
               className={inputClass}
             />
-            {errors.state && <p className="mt-1 text-sm text-red-500">{errors.state.message}</p>}
+            {errors.state && <p className="mt-1 text-sm text-red-400">{errors.state.message}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+            <label className="block text-sm font-medium text-gray-400 mb-1">City</label>
             <input
               type="text"
               placeholder="e.g., Mumbai"
               {...register('city')}
               className={inputClass}
             />
-            {errors.city && <p className="mt-1 text-sm text-red-500">{errors.city.message}</p>}
+            {errors.city && <p className="mt-1 text-sm text-red-400">{errors.city.message}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              PIN / ZIP Code <span className="text-gray-400 font-normal">(optional)</span>
+            <label className="block text-sm font-medium text-gray-400 mb-1">
+              PIN / ZIP Code <span className="text-gray-500 font-normal">(optional)</span>
             </label>
             <input
               type="text"
@@ -78,18 +78,18 @@ export function LocationAudienceStep({ form }: LocationAudienceStepProps) {
               {...register('pinCode')}
               className={inputClass}
             />
-            {errors.pinCode && <p className="mt-1 text-sm text-red-500">{errors.pinCode.message}</p>}
+            {errors.pinCode && <p className="mt-1 text-sm text-red-400">{errors.pinCode.message}</p>}
           </div>
         </div>
       </div>
 
       {/* Target Audience */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Target Audience</h3>
+        <h3 className="text-lg font-semibold text-white mb-3">Target Audience</h3>
 
         {/* Target Age Groups */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Target Age Group</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Target Age Group</label>
           <ChipMultiSelect
             items={AGE_GROUPS}
             selected={targetAgeGroups}
@@ -100,7 +100,7 @@ export function LocationAudienceStep({ form }: LocationAudienceStepProps) {
 
         {/* Target Gender */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Target Gender</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Target Gender</label>
           <ChipMultiSelect
             items={TARGET_GENDERS}
             selected={targetGenders}
@@ -111,7 +111,7 @@ export function LocationAudienceStep({ form }: LocationAudienceStepProps) {
 
         {/* Target Locations */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Target Locations</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Target Locations</label>
           <ChipMultiSelect
             items={TARGET_LOCATIONS}
             selected={targetLocations}
@@ -122,10 +122,10 @@ export function LocationAudienceStep({ form }: LocationAudienceStepProps) {
 
         {/* Target Income Bracket */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Target Income Bracket <span className="text-gray-400 font-normal">(optional)</span>
+          <label className="block text-sm font-medium text-gray-400 mb-1">
+            Target Income Bracket <span className="text-gray-500 font-normal">(optional)</span>
           </label>
-          <select {...register('targetIncomeBracket')} className={inputClass}>
+          <select {...register('targetIncomeBracket')} className={inputClass + ' appearance-none'}>
             <option value="">Select income bracket</option>
             {INCOME_BRACKETS.map((bracket) => (
               <option key={bracket} value={bracket}>
@@ -137,7 +137,7 @@ export function LocationAudienceStep({ form }: LocationAudienceStepProps) {
 
         {/* Primary Language of Audience */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Primary Language of Audience</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Primary Language of Audience</label>
           <ChipMultiSelect
             items={LANGUAGES}
             selected={targetLanguages}

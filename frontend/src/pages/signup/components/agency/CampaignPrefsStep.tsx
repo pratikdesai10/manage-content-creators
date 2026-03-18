@@ -23,7 +23,7 @@ interface CampaignPrefsStepProps {
 }
 
 const inputClass =
-  'w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition';
+  'w-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg px-4 py-2.5 text-sm outline-none transition-colors';
 
 export function CampaignPrefsStep({ form }: CampaignPrefsStepProps) {
   const {
@@ -42,15 +42,15 @@ export function CampaignPrefsStep({ form }: CampaignPrefsStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">What kind of campaigns do you run?</h2>
+        <h2 className="text-2xl font-bold text-white">What kind of campaigns do you run?</h2>
       </div>
 
       {/* Content & Platform Preferences */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Content & Platform Preferences</h3>
+        <h3 className="text-lg font-semibold text-white mb-3">Content & Platform Preferences</h3>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Platforms</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Preferred Platforms</label>
           <ChipMultiSelect
             items={PREFERRED_PLATFORMS}
             labels={PLATFORM_LABELS as Record<string, string>}
@@ -61,7 +61,7 @@ export function CampaignPrefsStep({ form }: CampaignPrefsStepProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Content Types Needed</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Content Types Needed</label>
           <ChipMultiSelect
             items={CONTENT_TYPES_AGENCY}
             labels={CONTENT_TYPE_LABELS as Record<string, string>}
@@ -74,11 +74,11 @@ export function CampaignPrefsStep({ form }: CampaignPrefsStepProps) {
 
       {/* Budget & Payment */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Budget & Payment</h3>
+        <h3 className="text-lg font-semibold text-white mb-3">Budget & Payment</h3>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Budget Range</label>
-          <select {...register('budgetRange')} className={inputClass}>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Budget Range</label>
+          <select {...register('budgetRange')} className={inputClass + ' appearance-none'}>
             <option value="">Select budget range</option>
             {BUDGET_RANGES.map((range) => (
               <option key={range} value={range}>
@@ -86,11 +86,11 @@ export function CampaignPrefsStep({ form }: CampaignPrefsStepProps) {
               </option>
             ))}
           </select>
-          {errors.budgetRange && <p className="mt-1 text-sm text-red-500">{errors.budgetRange.message}</p>}
+          {errors.budgetRange && <p className="mt-1 text-sm text-red-400">{errors.budgetRange.message}</p>}
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Payment Type</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Payment Type</label>
           <ChipMultiSelect
             items={PAYMENT_TYPES}
             labels={PAYMENT_TYPE_LABELS as Record<string, string>}
@@ -101,8 +101,8 @@ export function CampaignPrefsStep({ form }: CampaignPrefsStepProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Payment Timeline</label>
-          <select {...register('paymentTimeline')} className={inputClass}>
+          <label className="block text-sm font-medium text-gray-400 mb-1">Payment Timeline</label>
+          <select {...register('paymentTimeline')} className={inputClass + ' appearance-none'}>
             <option value="">Select payment timeline</option>
             {PAYMENT_TIMELINES.map((timeline) => (
               <option key={timeline} value={timeline}>
@@ -110,19 +110,19 @@ export function CampaignPrefsStep({ form }: CampaignPrefsStepProps) {
               </option>
             ))}
           </select>
-          {errors.paymentTimeline && <p className="mt-1 text-sm text-red-500">{errors.paymentTimeline.message}</p>}
+          {errors.paymentTimeline && <p className="mt-1 text-sm text-red-400">{errors.paymentTimeline.message}</p>}
         </div>
       </div>
 
       {/* Campaign Frequency */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Campaign Frequency</h3>
+        <h3 className="text-lg font-semibold text-white mb-3">Campaign Frequency</h3>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Campaigns Per Month <span className="text-gray-400 font-normal">(optional)</span>
+          <label className="block text-sm font-medium text-gray-400 mb-1">
+            Campaigns Per Month <span className="text-gray-500 font-normal">(optional)</span>
           </label>
-          <select {...register('campaignsPerMonth')} className={inputClass}>
+          <select {...register('campaignsPerMonth')} className={inputClass + ' appearance-none'}>
             <option value="">Select frequency</option>
             {CAMPAIGNS_PER_MONTH.map((freq) => (
               <option key={freq} value={freq}>
@@ -133,7 +133,7 @@ export function CampaignPrefsStep({ form }: CampaignPrefsStepProps) {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Creator Follower Range</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Preferred Creator Follower Range</label>
           <ChipMultiSelect
             items={FOLLOWER_RANGES}
             labels={FOLLOWER_RANGE_LABELS as Record<string, string>}
@@ -144,8 +144,8 @@ export function CampaignPrefsStep({ form }: CampaignPrefsStepProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Preferred Creator Categories <span className="text-gray-400 font-normal">(max 5)</span>
+          <label className="block text-sm font-medium text-gray-400 mb-2">
+            Preferred Creator Categories <span className="text-gray-500 font-normal">(max 5)</span>
           </label>
           <ChipMultiSelect
             items={CREATOR_CATEGORIES}
