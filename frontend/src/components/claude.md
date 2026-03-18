@@ -15,9 +15,10 @@
 ```
 components/
 ├── layout/
-│   ├── PageLayout.tsx    — Navbar + Outlet + Footer wrapper
-│   ├── Navbar.tsx        — Top navigation, auth-aware links
-│   └── Footer.tsx        — Copyright footer
+│   ├── PageLayout.tsx    — Navbar + DarkBackground + Outlet + Footer wrapper (dark theme)
+│   ├── DarkBackground.tsx — Fixed full-screen dark bg (#050510) + ParticleCanvas + GlowOrbs (z-0, pointer-events-none)
+│   ├── Navbar.tsx        — Always-dark glassmorphism nav (gradient logo, glass dropdown)
+│   └── Footer.tsx        — Always-dark footer (border-white/5)
 ├── common/
 │   ├── ProtectedRoute.tsx — Redirects unauthenticated to /login
 │   └── RoleRoute.tsx      — Redirects wrong role to /
@@ -27,8 +28,10 @@ components/
 
 ## Key Components
 
-- **PageLayout** — wraps all routes via React Router `<Outlet />`
-- **Navbar** — shows Login/Sign Up for guests; for authenticated users shows Dashboard link and avatar button with dropdown (View Dashboard, View Profile, Logout); logo links to dashboard or home based on auth state; dropdown closes on outside click
+- **PageLayout** — wraps all routes via React Router `<Outlet />`; renders `DarkBackground` as first child, applies `bg-[#050510] text-white` globally, main content at `relative z-10`
+- **DarkBackground** — shared background layer: renders `bg-[#050510]` fixed bg, `ParticleCanvas`, and `GlowOrbs` (imported from `pages/landing/`). Present on every page.
+- **Navbar** — always-dark glassmorphism: `bg-[#050510]/80 backdrop-blur-md border-b border-white/10`; gradient logo (`from-indigo-400 to-purple-400`); `text-white/70` links; gradient Sign Up button; glass dropdown (`bg-[#0a0a1a]/95 backdrop-blur-xl`); no light/dark conditional
+- **Footer** — always-dark: `border-t border-white/5`, `text-gray-600`; no light/dark conditional
 - **ProtectedRoute** — checks `isAuthenticated`, redirects to `/login`
 - **RoleRoute** — checks `user.role` matches required role prop
 
