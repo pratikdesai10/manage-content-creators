@@ -51,6 +51,9 @@ export function Navbar() {
 
             {isAuthenticated && user ? (
               <>
+                <Link to="/creators" className={`text-sm ${isLanding ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
+                  Discover
+                </Link>
                 <Link to={dashboardPath} className={`text-sm ${isLanding ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
                   Dashboard
                 </Link>
@@ -87,6 +90,14 @@ export function Navbar() {
                         className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
                       >
                         <span className="text-base">👤</span> View Profile
+                      </Link>
+
+                      <Link
+                        to="/settings"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                      >
+                        <span className="text-base">&#9881;&#65039;</span> Settings
                       </Link>
 
                       <div className="border-t border-gray-50 mt-1" />
