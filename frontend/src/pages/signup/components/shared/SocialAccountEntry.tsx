@@ -11,6 +11,9 @@ interface SocialAccountEntryProps {
   usedPlatforms: string[];
 }
 
+const darkInput =
+  'w-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg px-3 py-2.5 text-sm outline-none transition-colors';
+
 export function SocialAccountEntry({
   index,
   form,
@@ -28,7 +31,7 @@ export function SocialAccountEntry({
   const currentPlatform = form.watch(`socialAccounts.${index}.platform`);
 
   return (
-    <div className="relative border border-gray-200 rounded-xl p-4 space-y-4 bg-white">
+    <div className="relative bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 space-y-4">
       {/* Remove button */}
       <button
         type="button"
@@ -37,8 +40,8 @@ export function SocialAccountEntry({
         className={cn(
           'absolute top-3 right-3 p-1.5 rounded-lg transition-colors',
           canRemove
-            ? 'text-gray-400 hover:text-red-500 hover:bg-red-50'
-            : 'text-gray-200 cursor-not-allowed',
+            ? 'text-red-400 hover:text-red-300 hover:bg-white/5'
+            : 'text-gray-600 cursor-not-allowed',
         )}
         aria-label="Remove social account"
       >
@@ -48,16 +51,15 @@ export function SocialAccountEntry({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pr-8">
         {/* Platform dropdown */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-1">
             Platform
           </label>
           <select
             {...register(`socialAccounts.${index}.platform`)}
             className={cn(
-              'w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2',
-              accountErrors?.platform
-                ? 'border-red-300 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-purple-500 focus:border-purple-500',
+              darkInput,
+              'appearance-none',
+              accountErrors?.platform && 'border-red-400 focus:ring-red-400/30',
             )}
           >
             <option value="">Select platform</option>
@@ -74,7 +76,7 @@ export function SocialAccountEntry({
             ))}
           </select>
           {accountErrors?.platform?.message && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="mt-1 text-sm text-red-400">
               {accountErrors.platform.message}
             </p>
           )}
@@ -82,7 +84,7 @@ export function SocialAccountEntry({
 
         {/* Handle */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-1">
             Handle
           </label>
           <input
@@ -90,14 +92,12 @@ export function SocialAccountEntry({
             placeholder="@yourhandle"
             {...register(`socialAccounts.${index}.handle`)}
             className={cn(
-              'w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2',
-              accountErrors?.handle
-                ? 'border-red-300 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-purple-500 focus:border-purple-500',
+              darkInput,
+              accountErrors?.handle && 'border-red-400 focus:ring-red-400/30',
             )}
           />
           {accountErrors?.handle?.message && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="mt-1 text-sm text-red-400">
               {accountErrors.handle.message}
             </p>
           )}
@@ -105,7 +105,7 @@ export function SocialAccountEntry({
 
         {/* Profile URL */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-1">
             Profile URL
           </label>
           <input
@@ -113,14 +113,12 @@ export function SocialAccountEntry({
             placeholder="https://..."
             {...register(`socialAccounts.${index}.profileUrl`)}
             className={cn(
-              'w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2',
-              accountErrors?.profileUrl
-                ? 'border-red-300 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-purple-500 focus:border-purple-500',
+              darkInput,
+              accountErrors?.profileUrl && 'border-red-400 focus:ring-red-400/30',
             )}
           />
           {accountErrors?.profileUrl?.message && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="mt-1 text-sm text-red-400">
               {accountErrors.profileUrl.message}
             </p>
           )}
@@ -128,7 +126,7 @@ export function SocialAccountEntry({
 
         {/* Follower count */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-1">
             Follower Count
           </label>
           <input
@@ -138,14 +136,12 @@ export function SocialAccountEntry({
               setValueAs: (v: string) => (v === '' ? 0 : Number(v)),
             })}
             className={cn(
-              'w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2',
-              accountErrors?.followerCount
-                ? 'border-red-300 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-purple-500 focus:border-purple-500',
+              darkInput,
+              accountErrors?.followerCount && 'border-red-400 focus:ring-red-400/30',
             )}
           />
           {accountErrors?.followerCount?.message && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="mt-1 text-sm text-red-400">
               {accountErrors.followerCount.message}
             </p>
           )}
@@ -153,13 +149,13 @@ export function SocialAccountEntry({
 
         {/* Account type (optional) */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-1">
             Account Type{' '}
-            <span className="text-gray-400 font-normal">(optional)</span>
+            <span className="text-gray-500 font-normal">(optional)</span>
           </label>
           <select
             {...register(`socialAccounts.${index}.accountType`)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition-colors focus:ring-purple-500 focus:border-purple-500"
+            className={cn(darkInput, 'appearance-none')}
           >
             <option value="">Select type</option>
             <option value="personal">Personal</option>
