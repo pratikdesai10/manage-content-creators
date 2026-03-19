@@ -26,6 +26,7 @@ export function Navbar() {
 
   const initials = user?.email?.[0]?.toUpperCase() ?? '?';
   const dashboardPath = user?.role === 'CREATOR' ? '/dashboard/creator' : '/dashboard/agency';
+  const profilePath = user?.role === 'CREATOR' ? `/creators/${user?.id}` : `/agencies/${user?.id}`;
 
   return (
     <nav className="bg-[#050510]/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
@@ -80,7 +81,7 @@ export function Navbar() {
                       </Link>
 
                       <Link
-                        to={dashboardPath}
+                        to={profilePath}
                         onClick={() => setDropdownOpen(false)}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 hover:text-white transition"
                       >

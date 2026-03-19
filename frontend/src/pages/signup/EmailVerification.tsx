@@ -19,12 +19,13 @@ export function EmailVerification() {
   }, [countdown]);
 
   const handleResend = async () => {
-    setCountdown(60);
     setCanResend(false);
     try {
       await resendVerificationEmail();
+      setCountdown(60);
       toast.success('Verification email resent!');
     } catch {
+      setCanResend(true);
       toast.error('Failed to resend email. Please try again.');
     }
   };

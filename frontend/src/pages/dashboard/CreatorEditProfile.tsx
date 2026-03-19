@@ -449,7 +449,7 @@ export function CreatorEditProfile() {
             <label className={labelClass}>Previous Collaborations</label>
             <input
               type="number"
-              {...register('previousCollaborations')}
+              {...register('previousCollaborations', { valueAsNumber: true })}
               className={inputClass}
               min={0}
               placeholder="0"

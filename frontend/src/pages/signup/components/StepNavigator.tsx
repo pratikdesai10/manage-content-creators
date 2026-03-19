@@ -20,6 +20,13 @@ export function StepNavigator({
   const isFirstStep = currentStep === 1;
   const isLastStep = currentStep === totalSteps;
 
+  const gradientBtnClass = cn(
+    'px-6 py-2.5 rounded-xl font-semibold text-white transition-all duration-200',
+    'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700',
+    'shadow-lg shadow-indigo-500/25',
+    'disabled:opacity-50 disabled:cursor-not-allowed',
+  );
+
   return (
     <div className="border-t border-white/10 pt-6 mt-8 flex items-center justify-between">
       {/* Back button or spacer */}
@@ -47,13 +54,7 @@ export function StepNavigator({
           type="button"
           onClick={onNext}
           disabled={isSubmitting}
-          className={cn(
-            'px-6 py-2.5 rounded-xl font-semibold text-white transition-all duration-200',
-            'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700',
-            'shadow-lg shadow-indigo-500/25',
-            'disabled:opacity-50 disabled:cursor-not-allowed',
-            'flex items-center gap-2',
-          )}
+          className={cn(gradientBtnClass, 'flex items-center gap-2')}
         >
           {isSubmitting ? (
             <>
@@ -103,12 +104,7 @@ export function StepNavigator({
           type="button"
           onClick={onNext}
           disabled={isSubmitting}
-          className={cn(
-            'px-6 py-2.5 rounded-xl font-semibold text-white transition-all duration-200',
-            'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700',
-            'shadow-lg shadow-indigo-500/25',
-            'disabled:opacity-50 disabled:cursor-not-allowed',
-          )}
+          className={gradientBtnClass}
         >
           Next
         </button>

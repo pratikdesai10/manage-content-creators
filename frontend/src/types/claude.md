@@ -21,7 +21,7 @@ types/
 
 ## Key Components
 
-- **index.ts** — `UserRole`, `User`, `SocialAccount`, `CreatorProfile`, `AgencyProfile` (expanded to full Prisma model with nested `targetAudience`, `campaignPreferences`, `contact`), `AuthResponse`
+- **index.ts** — `UserRole`, `User` (with `isVerified`), `SocialAccount` (12 fields incl. `engagementRate`, `avgLikes`, `growthPercent`), `CreatorProfile` (27 fields matching Prisma schema, `categories` not `niche`, `city/state/country` not `location`), `AgencyProfile` (expanded to full Prisma model with nested `targetAudience`, `campaignPreferences`, `contact`), `AuthResponse`
 - **creator.types.ts** — `SOCIAL_PLATFORMS`, `CREATOR_CATEGORIES`, `CATEGORY_LABELS`, `CATEGORY_ICONS`, `CONTENT_TYPES`, `RATE_RANGES`, `COLLABORATION_TYPES`, `AVAILABILITY_OPTIONS`, `TRAVEL_SCOPES`, `LANGUAGES`, `GENDER_OPTIONS`, `CreatorFormData`
 - **agency.types.ts** — `INDUSTRY_CATEGORIES`, `COMPANY_SIZES`, `BUDGET_RANGES`, `PAYMENT_TYPES`, `PAYMENT_TIMELINES`, `FOLLOWER_RANGES`, `AGE_GROUPS`, `TARGET_GENDERS`, `TARGET_LOCATIONS`, `INCOME_BRACKETS`, `AgencyFormData`
 
