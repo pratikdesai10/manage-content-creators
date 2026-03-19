@@ -59,9 +59,9 @@ export function Settings() {
     setIsDeleting(true);
     try {
       await deleteAccount();
+      toast.success('Account deleted');
       logout();
       navigate('/');
-      toast.success('Account deleted');
     } catch {
       toast.error('Failed to delete account');
       setIsDeleting(false);

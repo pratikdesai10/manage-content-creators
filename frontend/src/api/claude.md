@@ -39,6 +39,14 @@ api/
 - **getAgencyCampaignDetail(agencyId, campaignId)** — GET `/agencies/:id/campaigns/:campaignId` → `AgencyCampaign`
 - **getAgencyMessageThread(agencyId, messageId)** — GET `/agencies/:id/messages/:messageId/thread` → `AgencyMessageWithThread`
 - **getAgencyTopCreators(agencyId)** — GET `/agencies/:id/top-creators` → `TopCreator[]`
+- **getCreatorProfile(id)** — GET `/creators/:id` → `CreatorProfile`
+- **getAgencyProfile(id)** — GET `/agencies/:id` → `AgencyProfile`
+- **updateCreatorProfile(id, payload)** — PATCH `/creators/:id` → `CreatorProfile`
+- **updateAgencyProfile(id, payload)** — PATCH `/agencies/:id` → `AgencyProfile`
+- **changePassword(data)** — Mocked (no backend), logs + 500ms delay
+- **updateAccountEmail(data)** — Mocked (no backend), logs + 500ms delay
+- **deleteAccount()** — Mocked (no backend), logs + 500ms delay
+- **resendVerificationEmail()** — Mocked (no backend), logs + 500ms delay
 
 ## Types Defined in endpoints.ts
 - **DashboardStats** — `{profileViews, collaborationCount, messageCount}`
@@ -62,7 +70,7 @@ api/
 - External: `axios`
 
 ## Integration
-- Used by signup pages, Login page, CreatorDashboard, AgencyDashboard, PersonalInfoStep (username/email checks)
+- Used by signup pages, Login page, CreatorDashboard, AgencyDashboard, PersonalInfoStep (username/email checks), CreatorDiscovery, CreatorPublicProfile, AgencyPublicProfile, CreatorEditProfile, AgencyEditProfile, Settings, EmailVerification
 - Token sourced from Zustand store (not React context)
 
 ## Conventions

@@ -162,7 +162,7 @@ export function CreatorDiscovery() {
       // Location: city
       if (
         filters.city.trim() &&
-        !c.city.toLowerCase().includes(filters.city.trim().toLowerCase())
+        !(c.city ?? '').toLowerCase().includes(filters.city.trim().toLowerCase())
       ) {
         return false;
       }
@@ -170,7 +170,7 @@ export function CreatorDiscovery() {
       // Location: state
       if (
         filters.state.trim() &&
-        !c.state.toLowerCase().includes(filters.state.trim().toLowerCase())
+        !(c.state ?? '').toLowerCase().includes(filters.state.trim().toLowerCase())
       ) {
         return false;
       }

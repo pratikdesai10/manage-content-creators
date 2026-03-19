@@ -26,3 +26,6 @@ lerna-debug.log*
 
 # Git worktrees
 .worktrees/
+
+# Superpowers brainstorm sessions
+.superpowers/

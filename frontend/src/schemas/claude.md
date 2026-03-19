@@ -13,7 +13,10 @@
 schemas/
 ├── creatorSignupSchema.ts — 5-step creator Zod schemas
 ├── agencySignupSchema.ts  — 5-step agency Zod schemas
-└── loginSchema.ts         — Login form schema (email + password min 8)
+├── loginSchema.ts         — Login form schema (email + password min 8)
+├── creatorEditSchema.ts   — Creator profile edit form schema
+├── agencyEditSchema.ts    — Agency profile edit form schema
+└── settingsSchema.ts      — Change password + update email schemas
 ```
 
 ## Key Components
@@ -30,6 +33,10 @@ schemas/
   3. Location + audience (city/state/country, targetAgeGroups, genders, locations, languages)
   4. Campaign prefs (platforms, contentTypes, budget, payment, followerRange, categories 1-5)
   5. Terms (5 required booleans, 1 optional)
+- **creatorEditSchema** — subset of creator signup (no email/password/terms): firstName, lastName, bio, profileImageUrl, socialAccounts (array min 1), categories (1-3), languages, city/state/country, contentTypes, portfolioUrl, rateRange, collaborationTypes, availability, willingToTravel, travelScope, previousCollaborations, notableBrands. Exports `CreatorEditFormData`.
+- **agencyEditSchema** — subset of agency signup (no email/password/terms): contact person fields, brand details, brandSocials (nested URLs), location, targetAudience fields (flattened), campaignPreferences fields (flattened). Exports `AgencyEditFormData`.
+- **changePasswordSchema** — currentPassword, newPassword (8+ chars, uppercase, lowercase, number, special char), confirmNewPassword with `.refine()` match. Exports `ChangePasswordFormData`.
+- **updateEmailSchema** — `{newEmail: string().email()}`. Exports `UpdateEmailFormData`.
 
 ## Dependencies
 - Internal: `types/creator.types`, `types/agency.types` (for enum arrays)
@@ -38,6 +45,9 @@ schemas/
 ## Integration
 - `loginSchema` imported by `Login.tsx`
 - `creatorStepSchemas` / `agencyStepSchemas` imported by `CreatorSignup.tsx` / `AgencySignup.tsx`
+- `creatorEditSchema` imported by `CreatorEditProfile.tsx`
+- `agencyEditSchema` imported by `AgencyEditProfile.tsx`
+- `changePasswordSchema` / `updateEmailSchema` imported by `Settings.tsx`
 - Used with `@hookform/resolvers/zod` for per-step validation
 - Schema index matches step index (0-based)
 
