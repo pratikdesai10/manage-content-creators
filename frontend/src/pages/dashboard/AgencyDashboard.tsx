@@ -583,6 +583,7 @@ function AgencyChatPanel({
 // ── Agency Profile Card ───────────────────────────────────────────────────────
 
 function AgencyProfileCard({ profile, userEmail }: { profile: AgencyProfile; userEmail: string | undefined }) {
+  const [imgError, setImgError] = useState(false);
   const initials = profile.brandName
     ? profile.brandName[0].toUpperCase()
     : userEmail?.[0]?.toUpperCase() ?? '?';
@@ -597,8 +598,8 @@ function AgencyProfileCard({ profile, userEmail }: { profile: AgencyProfile; use
   return (
     <div className="rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 via-white/5 to-purple-500/10 backdrop-blur-sm p-6 flex flex-col gap-4">
       <div className="flex flex-col items-center gap-2">
-        {profile.logoUrl ? (
-          <img src={profile.logoUrl} alt={profile.brandName} className="w-20 h-20 rounded-full object-cover" />
+        {profile.logoUrl && !imgError ? (
+          <img src={profile.logoUrl} alt={profile.brandName} className="w-20 h-20 rounded-full object-cover" onError={() => setImgError(true)} />
         ) : (
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
             {initials}

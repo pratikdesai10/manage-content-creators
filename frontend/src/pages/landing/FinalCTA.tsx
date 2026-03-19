@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../hooks/useAuth';
 
 export function FinalCTA() {
+  const { isAuthenticated, user } = useAuth();
+  const dashboardPath = user?.role === 'CREATOR' ? '/dashboard/creator' : '/dashboard/agency';
+
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
       <motion.div
@@ -39,18 +43,37 @@ export function FinalCTA() {
             Join thousands of creators and brands already growing together on CollabHub.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/signup/creator"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/40 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
-            >
-              Get Started Free
-            </Link>
-            <Link
-              to="/login"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold border border-white/20 text-white hover:bg-white/10 hover:border-white/40 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 hover:-translate-y-0.5"
-            >
-              Sign In
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/creators"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/40 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
+                >
+                  Explore Creators
+                </Link>
+                <Link
+                  to={dashboardPath}
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold border border-white/20 text-white hover:bg-white/10 hover:border-white/40 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 hover:-translate-y-0.5"
+                >
+                  Go to Dashboard
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/signup/creator"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/40 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
+                >
+                  Get Started Free
+                </Link>
+                <Link
+                  to="/login"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold border border-white/20 text-white hover:bg-white/10 hover:border-white/40 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 hover:-translate-y-0.5"
+                >
+                  Sign In
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </motion.div>

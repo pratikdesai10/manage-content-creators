@@ -18,7 +18,6 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  IsUrl,
   MaxLength,
   Min,
   MinLength,
@@ -65,7 +64,7 @@ class UpdateCreatorBase {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsString()
   profileImageUrl?: string;
 
   @ApiPropertyOptional({ type: [String] })

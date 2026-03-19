@@ -16,7 +16,7 @@ class UpdateAgencyBase {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsString()
   logoUrl?: string;
 
   @ApiPropertyOptional()

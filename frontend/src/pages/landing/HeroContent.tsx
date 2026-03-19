@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../hooks/useAuth';
 
 export function HeroContent() {
+  const { isAuthenticated, user } = useAuth();
+  const dashboardPath = user?.role === 'CREATOR' ? '/dashboard/creator' : '/dashboard/agency';
+
   return (
     <motion.div
       className="flex flex-col justify-center"
@@ -21,18 +25,37 @@ export function HeroContent() {
         meaningful collaborations that drive growth.
       </p>
       <div className="flex flex-col sm:flex-row gap-4">
-        <Link
-          to="/signup/creator"
-          className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5"
-        >
-          Join as Creator
-        </Link>
-        <Link
-          to="/signup/agency"
-          className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold border border-white/20 text-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm hover:-translate-y-0.5"
-        >
-          Join as Agency
-        </Link>
+        {isAuthenticated ? (
+          <>
+            <Link
+              to={dashboardPath}
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5"
+            >
+              Go to Dashboard
+            </Link>
+            <Link
+              to="/creators"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold border border-white/20 text-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm hover:-translate-y-0.5"
+            >
+              Discover Creators
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              to="/signup/creator"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5"
+            >
+              Join as Creator
+            </Link>
+            <Link
+              to="/signup/agency"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-xl text-lg font-semibold border border-white/20 text-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm hover:-translate-y-0.5"
+            >
+              Join as Agency
+            </Link>
+          </>
+        )}
       </div>
     </motion.div>
   );

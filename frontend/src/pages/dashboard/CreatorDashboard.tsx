@@ -586,6 +586,7 @@ function MessagesList({
 // ── Profile Card ──────────────────────────────────────────────────────────────
 
 function ProfileCard({ profile, userEmail }: { profile: CreatorProfile; userEmail: string | undefined }) {
+  const [imgError, setImgError] = useState(false);
   const initials = profile.displayName
     ? profile.displayName[0].toUpperCase()
     : userEmail?.[0]?.toUpperCase() ?? '?';
@@ -593,9 +594,13 @@ function ProfileCard({ profile, userEmail }: { profile: CreatorProfile; userEmai
   return (
     <div className="rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 via-white/5 to-purple-500/10 backdrop-blur-sm p-6 flex flex-col gap-4">
       <div className="flex flex-col items-center gap-2">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
-          {initials}
-        </div>
+        {profile.profileImageUrl && !imgError ? (
+          <img src={profile.profileImageUrl} alt={profile.displayName} className="w-20 h-20 rounded-full object-cover" onError={() => setImgError(true)} />
+        ) : (
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+            {initials}
+          </div>
+        )}
         <div className="text-center">
           <p className="font-bold text-white text-lg">{profile.displayName}</p>
           <p className="text-sm text-gray-500">@{profile.displayName}</p>

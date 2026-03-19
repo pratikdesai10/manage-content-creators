@@ -10,6 +10,7 @@ import { creatorEditSchema, type CreatorEditFormData } from '../../schemas/creat
 import { getCreatorProfiles, updateCreatorProfile } from '../../api/endpoints';
 import { useAuth } from '../../hooks/useAuth';
 import type { CreatorProfile } from '../../types';
+import { ImageUpload } from '../signup/components/shared/ImageUpload';
 import {
   CREATOR_CATEGORIES,
   CATEGORY_LABELS,
@@ -197,9 +198,13 @@ export function CreatorEditProfile() {
             {errors.bio && <p className={errorClass}>{errors.bio.message}</p>}
           </div>
           <div className="mt-4">
-            <label className={labelClass}>Profile Image URL</label>
-            <input {...register('profileImageUrl')} className={inputClass} placeholder="https://..." />
-            {errors.profileImageUrl && <p className={errorClass}>{errors.profileImageUrl.message}</p>}
+            <label className={labelClass}>Profile Image</label>
+            <ImageUpload
+              value={watch('profileImageUrl')}
+              onChange={(url) => setValue('profileImageUrl', url, { shouldValidate: true })}
+              shape="circle"
+              error={errors.profileImageUrl?.message}
+            />
           </div>
         </div>
 

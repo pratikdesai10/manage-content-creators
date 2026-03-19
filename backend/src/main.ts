@@ -8,6 +8,7 @@ import { AppModule } from './app.module';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
+  app.useBodyParser('json', { limit: '10mb' });
   app.use(helmet());
   app.use(compression());
 

@@ -8,6 +8,7 @@ import {
   User, Building2, MapPin, Target, Megaphone, Globe, Loader2,
   AlertCircle, ArrowLeft, Instagram, Youtube, Twitter, Facebook, Linkedin,
 } from 'lucide-react';
+import { ImageUpload } from '../signup/components/shared/ImageUpload';
 
 import { agencyEditSchema, type AgencyEditFormData } from '../../schemas/agencyEditSchema';
 import { getAgencyProfiles, updateAgencyProfile } from '../../api/endpoints';
@@ -323,9 +324,19 @@ export function AgencyEditProfile() {
                 <FieldError message={errors.website?.message} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Logo URL</label>
-                <input {...register('logoUrl')} className={inputCls} placeholder="https://..." />
-                <FieldError message={errors.logoUrl?.message} />
+                <label className="block text-sm font-medium text-gray-400 mb-1">Logo</label>
+                <Controller
+                  name="logoUrl"
+                  control={control}
+                  render={({ field }) => (
+                    <ImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      shape="square"
+                      error={errors.logoUrl?.message}
+                    />
+                  )}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">Industry *</label>
