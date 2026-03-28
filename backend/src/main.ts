@@ -3,12 +3,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import compression = require('compression');
+import * as express from 'express';
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
-  app.useBodyParser('json', { limit: '10mb' });
+  app.use(express.json({ limit: '10mb' }));
   app.use(helmet());
   app.use(compression());
 
