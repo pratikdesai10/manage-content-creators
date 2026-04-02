@@ -21,7 +21,7 @@ function StatItem({ target, suffix, label, prefix }: { target: number; suffix: s
 
 export function StatsBar() {
   return (
-    <section className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <section className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
       <div className="grid grid-cols-3 gap-4 sm:gap-8 p-4 sm:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
         {stats.map((stat) => (
           <StatItem key={stat.label} {...stat} />

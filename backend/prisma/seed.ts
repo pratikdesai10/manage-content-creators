@@ -42,30 +42,142 @@ function randFloat(min: number, max: number, decimals = 1): number {
 // DATA POOLS
 // ═══════════════════════════════════════════════════════════════════════════════
 const MALE_FIRST_NAMES = [
-  'Aarav', 'Arjun', 'Rohan', 'Vikram', 'Karan', 'Siddharth', 'Aditya', 'Rahul',
-  'Dev', 'Nikhil', 'Varun', 'Harsh', 'Pranav', 'Gaurav', 'Rishi', 'Sahil',
-  'Manish', 'Ankit', 'Tarun', 'Deepak', 'Yash', 'Akash', 'Vishal', 'Kunal',
-  'Rajesh', 'Suresh', 'Amit', 'Mohit', 'Vivek', 'Ajay', 'Sanjay', 'Naveen',
-  'Ramesh', 'Abhishek', 'Pankaj', 'Tushar', 'Ishaan', 'Kabir', 'Lakshya', 'Om',
-  'Reyansh', 'Shaurya', 'Dhruv', 'Arnav', 'Parth', 'Vihaan', 'Krish', 'Atharv',
-  'Rudra', 'Advait',
+  'Aarav',
+  'Arjun',
+  'Rohan',
+  'Vikram',
+  'Karan',
+  'Siddharth',
+  'Aditya',
+  'Rahul',
+  'Dev',
+  'Nikhil',
+  'Varun',
+  'Harsh',
+  'Pranav',
+  'Gaurav',
+  'Rishi',
+  'Sahil',
+  'Manish',
+  'Ankit',
+  'Tarun',
+  'Deepak',
+  'Yash',
+  'Akash',
+  'Vishal',
+  'Kunal',
+  'Rajesh',
+  'Suresh',
+  'Amit',
+  'Mohit',
+  'Vivek',
+  'Ajay',
+  'Sanjay',
+  'Naveen',
+  'Ramesh',
+  'Abhishek',
+  'Pankaj',
+  'Tushar',
+  'Ishaan',
+  'Kabir',
+  'Lakshya',
+  'Om',
+  'Reyansh',
+  'Shaurya',
+  'Dhruv',
+  'Arnav',
+  'Parth',
+  'Vihaan',
+  'Krish',
+  'Atharv',
+  'Rudra',
+  'Advait',
 ];
 
 const FEMALE_FIRST_NAMES = [
-  'Priya', 'Ananya', 'Sneha', 'Deepika', 'Nisha', 'Meera', 'Kavya', 'Divya',
-  'Riya', 'Neha', 'Pooja', 'Shruti', 'Tanvi', 'Isha', 'Aisha', 'Sanya',
-  'Trisha', 'Kritika', 'Zara', 'Avni', 'Aditi', 'Sakshi', 'Muskan', 'Kiara',
-  'Manya', 'Simran', 'Diya', 'Palak', 'Bhavna', 'Jasmine', 'Swati', 'Rashmi',
-  'Anjali', 'Komal', 'Megha', 'Nandini', 'Payal', 'Sonal', 'Tara', 'Urvi',
-  'Vidya', 'Yamini', 'Jhanvi', 'Khushi', 'Lavanya', 'Mallika', 'Nimisha', 'Oorja',
-  'Pihu', 'Ridhi',
+  'Priya',
+  'Ananya',
+  'Sneha',
+  'Deepika',
+  'Nisha',
+  'Meera',
+  'Kavya',
+  'Divya',
+  'Riya',
+  'Neha',
+  'Pooja',
+  'Shruti',
+  'Tanvi',
+  'Isha',
+  'Aisha',
+  'Sanya',
+  'Trisha',
+  'Kritika',
+  'Zara',
+  'Avni',
+  'Aditi',
+  'Sakshi',
+  'Muskan',
+  'Kiara',
+  'Manya',
+  'Simran',
+  'Diya',
+  'Palak',
+  'Bhavna',
+  'Jasmine',
+  'Swati',
+  'Rashmi',
+  'Anjali',
+  'Komal',
+  'Megha',
+  'Nandini',
+  'Payal',
+  'Sonal',
+  'Tara',
+  'Urvi',
+  'Vidya',
+  'Yamini',
+  'Jhanvi',
+  'Khushi',
+  'Lavanya',
+  'Mallika',
+  'Nimisha',
+  'Oorja',
+  'Pihu',
+  'Ridhi',
 ];
 
 const LAST_NAMES = [
-  'Sharma', 'Verma', 'Iyer', 'Singh', 'Gupta', 'Patel', 'Menon', 'Deshmukh',
-  'Agarwal', 'Joshi', 'Reddy', 'Nair', 'Mehta', 'Khan', 'Kapoor', 'Bhatia',
-  'Choudhary', 'Pillai', 'Saxena', 'Mishra', 'Banerjee', 'Mukherjee', 'Das',
-  'Rao', 'Pandey', 'Tiwari', 'Srivastava', 'Chauhan', 'Yadav', 'Thakur',
+  'Sharma',
+  'Verma',
+  'Iyer',
+  'Singh',
+  'Gupta',
+  'Patel',
+  'Menon',
+  'Deshmukh',
+  'Agarwal',
+  'Joshi',
+  'Reddy',
+  'Nair',
+  'Mehta',
+  'Khan',
+  'Kapoor',
+  'Bhatia',
+  'Choudhary',
+  'Pillai',
+  'Saxena',
+  'Mishra',
+  'Banerjee',
+  'Mukherjee',
+  'Das',
+  'Rao',
+  'Pandey',
+  'Tiwari',
+  'Srivastava',
+  'Chauhan',
+  'Yadav',
+  'Thakur',
 ];
 
 const CITIES: { city: string; state: string }[] = [
@@ -97,28 +209,59 @@ const CITIES: { city: string; state: string }[] = [
 ];
 
 const LANGUAGES_POOL = [
-  'Hindi', 'English', 'Tamil', 'Telugu', 'Kannada', 'Malayalam', 'Marathi',
-  'Bengali', 'Gujarati', 'Punjabi', 'Rajasthani', 'Odia', 'Assamese',
+  'Hindi',
+  'English',
+  'Tamil',
+  'Telugu',
+  'Kannada',
+  'Malayalam',
+  'Marathi',
+  'Bengali',
+  'Gujarati',
+  'Punjabi',
+  'Rajasthani',
+  'Odia',
+  'Assamese',
 ];
 
 const ALL_CATEGORIES: CreatorCategory[] = [
-  CreatorCategory.ENTERTAINMENT, CreatorCategory.EDUCATION, CreatorCategory.FINANCE,
-  CreatorCategory.TECHNOLOGY, CreatorCategory.LIFESTYLE, CreatorCategory.FITNESS,
-  CreatorCategory.TRAVEL, CreatorCategory.FOOD, CreatorCategory.FASHION,
-  CreatorCategory.GAMING, CreatorCategory.MUSIC, CreatorCategory.PHOTOGRAPHY,
-  CreatorCategory.AI_TOOLS, CreatorCategory.PARENTING, CreatorCategory.PETS,
-  CreatorCategory.SPORTS, CreatorCategory.COMEDY, CreatorCategory.MOTIVATION,
-  CreatorCategory.DIY, CreatorCategory.AUTOMOTIVE,
+  CreatorCategory.ENTERTAINMENT,
+  CreatorCategory.EDUCATION,
+  CreatorCategory.FINANCE,
+  CreatorCategory.TECHNOLOGY,
+  CreatorCategory.LIFESTYLE,
+  CreatorCategory.FITNESS,
+  CreatorCategory.TRAVEL,
+  CreatorCategory.FOOD,
+  CreatorCategory.FASHION,
+  CreatorCategory.GAMING,
+  CreatorCategory.MUSIC,
+  CreatorCategory.PHOTOGRAPHY,
+  CreatorCategory.AI_TOOLS,
+  CreatorCategory.PARENTING,
+  CreatorCategory.PETS,
+  CreatorCategory.SPORTS,
+  CreatorCategory.COMEDY,
+  CreatorCategory.MOTIVATION,
+  CreatorCategory.DIY,
+  CreatorCategory.AUTOMOTIVE,
 ];
 
 const ALL_INDUSTRIES: IndustryCategory[] = [
-  IndustryCategory.FASHION_APPAREL, IndustryCategory.FOOD_BEVERAGE,
-  IndustryCategory.TECHNOLOGY_ELECTRONICS, IndustryCategory.FINANCE_FINTECH,
-  IndustryCategory.TRAVEL_HOSPITALITY, IndustryCategory.BEAUTY_PERSONAL_CARE,
-  IndustryCategory.FITNESS_SPORTS, IndustryCategory.GAMING_ENTERTAINMENT,
-  IndustryCategory.EDUCATION_EDTECH, IndustryCategory.HEALTH_PHARMA,
-  IndustryCategory.AUTOMOTIVE, IndustryCategory.REAL_ESTATE,
-  IndustryCategory.D2C_ECOMMERCE, IndustryCategory.OTHER,
+  IndustryCategory.FASHION_APPAREL,
+  IndustryCategory.FOOD_BEVERAGE,
+  IndustryCategory.TECHNOLOGY_ELECTRONICS,
+  IndustryCategory.FINANCE_FINTECH,
+  IndustryCategory.TRAVEL_HOSPITALITY,
+  IndustryCategory.BEAUTY_PERSONAL_CARE,
+  IndustryCategory.FITNESS_SPORTS,
+  IndustryCategory.GAMING_ENTERTAINMENT,
+  IndustryCategory.EDUCATION_EDTECH,
+  IndustryCategory.HEALTH_PHARMA,
+  IndustryCategory.AUTOMOTIVE,
+  IndustryCategory.REAL_ESTATE,
+  IndustryCategory.D2C_ECOMMERCE,
+  IndustryCategory.OTHER,
 ];
 
 const CONTENT_TYPES_ALL = Object.values(ContentType);
@@ -275,51 +418,267 @@ const BIO_TEMPLATES: Record<string, string[]> = {
 
 // Notable Indian brands per category
 const NOTABLE_BRANDS: Record<string, string[]> = {
-  ENTERTAINMENT: ['Netflix India', 'Amazon Prime', 'Disney+ Hotstar', 'Jio Cinema', 'Sony LIV', 'MX Player'],
-  EDUCATION: ['Unacademy', 'Byju\'s', 'Testbook', 'Physics Wallah', 'Vedantu', 'upGrad'],
+  ENTERTAINMENT: [
+    'Netflix India',
+    'Amazon Prime',
+    'Disney+ Hotstar',
+    'Jio Cinema',
+    'Sony LIV',
+    'MX Player',
+  ],
+  EDUCATION: [
+    'Unacademy',
+    "Byju's",
+    'Testbook',
+    'Physics Wallah',
+    'Vedantu',
+    'upGrad',
+  ],
   FINANCE: ['Groww', 'Zerodha', 'CRED', 'Smallcase', 'Paytm Money', 'Fi Money'],
-  TECHNOLOGY: ['Samsung India', 'OnePlus', 'Realme', 'Boat', 'Noise', 'Xiaomi India'],
-  LIFESTYLE: ['Myntra', 'Nykaa', 'Urban Company', 'Pepperfry', 'FabIndia', 'Chumbak'],
-  FITNESS: ['Cult.fit', 'HealthifyMe', 'MyProtein India', 'MuscleBlaze', 'Decathlon India', 'Nike India'],
-  TRAVEL: ['MakeMyTrip', 'Airbnb India', 'Goibibo', 'Thomas Cook India', 'Cleartrip', 'Yatra'],
+  TECHNOLOGY: [
+    'Samsung India',
+    'OnePlus',
+    'Realme',
+    'Boat',
+    'Noise',
+    'Xiaomi India',
+  ],
+  LIFESTYLE: [
+    'Myntra',
+    'Nykaa',
+    'Urban Company',
+    'Pepperfry',
+    'FabIndia',
+    'Chumbak',
+  ],
+  FITNESS: [
+    'Cult.fit',
+    'HealthifyMe',
+    'MyProtein India',
+    'MuscleBlaze',
+    'Decathlon India',
+    'Nike India',
+  ],
+  TRAVEL: [
+    'MakeMyTrip',
+    'Airbnb India',
+    'Goibibo',
+    'Thomas Cook India',
+    'Cleartrip',
+    'Yatra',
+  ],
   FOOD: ['Swiggy', 'Zomato', 'Haldiram', 'MDH', 'Prestige', 'Pigeon'],
-  FASHION: ['Myntra', 'Ajio', 'H&M India', 'Zara India', 'FabAlley', 'Bewakoof'],
-  GAMING: ['Asus ROG', 'Red Bull Gaming', 'HyperX', 'Logitech India', 'SteelSeries', 'MSI India'],
-  MUSIC: ['Spotify India', 'JioSaavn', 'Gaana', 'T-Series', 'Sony Music India', 'Fender India'],
-  PHOTOGRAPHY: ['Canon India', 'Sony Alpha', 'Nikon India', 'GoPro India', 'DJI India', 'Adobe India'],
-  AI_TOOLS: ['Notion', 'Canva', 'Adobe', 'Google India', 'Microsoft India', 'Zoho'],
-  PARENTING: ['FirstCry', 'Mamaearth', 'The Moms Co', 'BabyChakra', 'Pampers India', 'Johnson & Johnson India'],
-  PETS: ['Drools', 'Pedigree India', 'Heads Up For Tails', 'Supertails', 'Wiggles', 'Royal Canin India'],
-  SPORTS: ['Puma India', 'Adidas India', 'Dream11', 'MPL', 'Star Sports', 'Nike India'],
-  COMEDY: ['Netflix India', 'Amazon Prime', 'Cred', 'Swiggy', 'Dunzo', 'Zomato'],
-  MOTIVATION: ['Headspace', 'Kuku FM', 'Audible India', 'LinkedIn India', 'Skillshare', 'Coursera'],
-  DIY: ['Asian Paints', 'Pidilite', 'Bosch India', 'Stanley India', 'Ikea India', 'HomeCentre'],
-  AUTOMOTIVE: ['Maruti Suzuki', 'Hyundai India', 'Tata Motors', 'Royal Enfield', 'Hero MotoCorp', 'TVS'],
+  FASHION: [
+    'Myntra',
+    'Ajio',
+    'H&M India',
+    'Zara India',
+    'FabAlley',
+    'Bewakoof',
+  ],
+  GAMING: [
+    'Asus ROG',
+    'Red Bull Gaming',
+    'HyperX',
+    'Logitech India',
+    'SteelSeries',
+    'MSI India',
+  ],
+  MUSIC: [
+    'Spotify India',
+    'JioSaavn',
+    'Gaana',
+    'T-Series',
+    'Sony Music India',
+    'Fender India',
+  ],
+  PHOTOGRAPHY: [
+    'Canon India',
+    'Sony Alpha',
+    'Nikon India',
+    'GoPro India',
+    'DJI India',
+    'Adobe India',
+  ],
+  AI_TOOLS: [
+    'Notion',
+    'Canva',
+    'Adobe',
+    'Google India',
+    'Microsoft India',
+    'Zoho',
+  ],
+  PARENTING: [
+    'FirstCry',
+    'Mamaearth',
+    'The Moms Co',
+    'BabyChakra',
+    'Pampers India',
+    'Johnson & Johnson India',
+  ],
+  PETS: [
+    'Drools',
+    'Pedigree India',
+    'Heads Up For Tails',
+    'Supertails',
+    'Wiggles',
+    'Royal Canin India',
+  ],
+  SPORTS: [
+    'Puma India',
+    'Adidas India',
+    'Dream11',
+    'MPL',
+    'Star Sports',
+    'Nike India',
+  ],
+  COMEDY: [
+    'Netflix India',
+    'Amazon Prime',
+    'Cred',
+    'Swiggy',
+    'Dunzo',
+    'Zomato',
+  ],
+  MOTIVATION: [
+    'Headspace',
+    'Kuku FM',
+    'Audible India',
+    'LinkedIn India',
+    'Skillshare',
+    'Coursera',
+  ],
+  DIY: [
+    'Asian Paints',
+    'Pidilite',
+    'Bosch India',
+    'Stanley India',
+    'Ikea India',
+    'HomeCentre',
+  ],
+  AUTOMOTIVE: [
+    'Maruti Suzuki',
+    'Hyundai India',
+    'Tata Motors',
+    'Royal Enfield',
+    'Hero MotoCorp',
+    'TVS',
+  ],
 };
 
 // Agency brand name prefixes per industry
 const AGENCY_NAME_PARTS: Record<string, string[]> = {
-  FASHION_APPAREL: ['StyleVerse', 'TrendCraft', 'VogueConnect', 'FashionPulse', 'ChicMedia'],
-  FOOD_BEVERAGE: ['FoodNation', 'TasteHub', 'FlavorWorks', 'SpiceDigital', 'BiteMedia'],
-  TECHNOLOGY_ELECTRONICS: ['TechWave', 'ByteForce', 'PixelBridge', 'CircuitMedia', 'CodeCraft'],
-  FINANCE_FINTECH: ['FinPulse', 'WealthBridge', 'MoneyMinds', 'CashFlow', 'InvestHub'],
-  TRAVEL_HOSPITALITY: ['WanderLab', 'TripCraft', 'RouteMedia', 'ExploreHub', 'NomadDigital'],
-  BEAUTY_PERSONAL_CARE: ['GlowUp', 'BeautyVerse', 'RadiantMedia', 'BloomAgency', 'PureGlow'],
-  FITNESS_SPORTS: ['FitFluence', 'ActiveMedia', 'PeakPerform', 'VitalHub', 'StrideDigital'],
-  GAMING_ENTERTAINMENT: ['GameForge', 'PixelPlay', 'ArcadeMedia', 'QuestHub', 'LevelUp'],
-  EDUCATION_EDTECH: ['EduRise', 'LearnBridge', 'SkillCraft', 'MindSpark', 'ClassHub'],
-  HEALTH_PHARMA: ['HealthFirst', 'MediConnect', 'WellnessHub', 'CareMedia', 'VitaAgency'],
-  AUTOMOTIVE: ['AutoPulse', 'DriveMedia', 'GearShift', 'MotorHub', 'SpeedCraft'],
-  REAL_ESTATE: ['PropMedia', 'NestConnect', 'HomeVerse', 'SpaceHub', 'BuildCraft'],
-  D2C_ECOMMERCE: ['BrandBoost', 'ShopMedia', 'CartCraft', 'D2CHub', 'ClickConnect'],
-  OTHER: ['NexGen', 'HorizonMedia', 'PivotAgency', 'SynergyHub', 'SparkDigital'],
+  FASHION_APPAREL: [
+    'StyleVerse',
+    'TrendCraft',
+    'VogueConnect',
+    'FashionPulse',
+    'ChicMedia',
+  ],
+  FOOD_BEVERAGE: [
+    'FoodNation',
+    'TasteHub',
+    'FlavorWorks',
+    'SpiceDigital',
+    'BiteMedia',
+  ],
+  TECHNOLOGY_ELECTRONICS: [
+    'TechWave',
+    'ByteForce',
+    'PixelBridge',
+    'CircuitMedia',
+    'CodeCraft',
+  ],
+  FINANCE_FINTECH: [
+    'FinPulse',
+    'WealthBridge',
+    'MoneyMinds',
+    'CashFlow',
+    'InvestHub',
+  ],
+  TRAVEL_HOSPITALITY: [
+    'WanderLab',
+    'TripCraft',
+    'RouteMedia',
+    'ExploreHub',
+    'NomadDigital',
+  ],
+  BEAUTY_PERSONAL_CARE: [
+    'GlowUp',
+    'BeautyVerse',
+    'RadiantMedia',
+    'BloomAgency',
+    'PureGlow',
+  ],
+  FITNESS_SPORTS: [
+    'FitFluence',
+    'ActiveMedia',
+    'PeakPerform',
+    'VitalHub',
+    'StrideDigital',
+  ],
+  GAMING_ENTERTAINMENT: [
+    'GameForge',
+    'PixelPlay',
+    'ArcadeMedia',
+    'QuestHub',
+    'LevelUp',
+  ],
+  EDUCATION_EDTECH: [
+    'EduRise',
+    'LearnBridge',
+    'SkillCraft',
+    'MindSpark',
+    'ClassHub',
+  ],
+  HEALTH_PHARMA: [
+    'HealthFirst',
+    'MediConnect',
+    'WellnessHub',
+    'CareMedia',
+    'VitaAgency',
+  ],
+  AUTOMOTIVE: [
+    'AutoPulse',
+    'DriveMedia',
+    'GearShift',
+    'MotorHub',
+    'SpeedCraft',
+  ],
+  REAL_ESTATE: [
+    'PropMedia',
+    'NestConnect',
+    'HomeVerse',
+    'SpaceHub',
+    'BuildCraft',
+  ],
+  D2C_ECOMMERCE: [
+    'BrandBoost',
+    'ShopMedia',
+    'CartCraft',
+    'D2CHub',
+    'ClickConnect',
+  ],
+  OTHER: [
+    'NexGen',
+    'HorizonMedia',
+    'PivotAgency',
+    'SynergyHub',
+    'SparkDigital',
+  ],
 };
 
 const AGENCY_SUFFIXES = ['Media', 'Studios', 'Agency', 'Digital', 'Co.'];
 
-// Avatar background colors
-const FEMALE_AVATAR_COLORS = ['F9A8D4', 'FDA4AF', 'F0ABFC', 'FCA5A5', 'FDBA74'];
-const MALE_AVATAR_COLORS = ['93C5FD', '6EE7B7', '67E8F9', '7DD3FC', 'A5B4FC'];
+// pravatar.cc verified gender map (manually inspected all 70 images)
+const FEMALE_AVATAR_INDICES = [
+  5, 9, 10, 16, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 34, 35,
+  36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+];
+const MALE_AVATAR_INDICES = [
+  1, 3, 4, 6, 7, 8, 11, 12, 13, 14, 15, 17, 18, 33, 50, 51, 52, 53, 54, 55, 56,
+  57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
+];
 
 const INDUSTRY_LOGO_COLORS: Record<string, string> = {
   FASHION_APPAREL: 'E879A8',
@@ -338,14 +697,27 @@ const INDUSTRY_LOGO_COLORS: Record<string, string> = {
   OTHER: '818CF8',
 };
 
-function makeAvatarUrl(name: string, bg: string, rounded = false): string {
+function makePravatarUrl(isFemale: boolean): string {
+  const pool = isFemale ? FEMALE_AVATAR_INDICES : MALE_AVATAR_INDICES;
+  const idx = pool[Math.floor(seededRandom() * pool.length)];
+  return `https://i.pravatar.cc/256?img=${idx}`;
+}
+
+function makeLogoUrl(name: string, bg: string): string {
   const encoded = encodeURIComponent(name);
-  return `https://ui-avatars.com/api/?name=${encoded}&size=256&background=${bg}&color=fff&bold=true${rounded ? '&rounded=true' : ''}`;
+  return `https://ui-avatars.com/api/?name=${encoded}&size=256&background=${bg}&color=fff&bold=true&rounded=true`;
 }
 const DESIGNATIONS = [
-  'Founder & CEO', 'Head of Partnerships', 'VP Brand Partnerships',
-  'Managing Director', 'Creative Director', 'Head of Creator Relations',
-  'Chief Marketing Officer', 'Partnership Manager', 'Business Head', 'Co-Founder',
+  'Founder & CEO',
+  'Head of Partnerships',
+  'VP Brand Partnerships',
+  'Managing Director',
+  'Creative Director',
+  'Head of Creator Relations',
+  'Chief Marketing Officer',
+  'Partnership Manager',
+  'Business Head',
+  'Co-Founder',
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -359,7 +731,11 @@ function nextPhone(): string {
 }
 
 const usedDisplayNames = new Set<string>();
-function makeDisplayName(firstName: string, lastName: string, category: string): string {
+function makeDisplayName(
+  firstName: string,
+  lastName: string,
+  category: string,
+): string {
   const tag = category.toLowerCase().replace('_', '');
   const candidates = [
     `${firstName.toLowerCase()}_${tag}`,
@@ -382,13 +758,17 @@ function makeDisplayName(firstName: string, lastName: string, category: string):
 
 function generateCreatorData(index: number, category: CreatorCategory) {
   const isFemale = seededRandom() > 0.45;
-  const firstName = isFemale ? pick(FEMALE_FIRST_NAMES) : pick(MALE_FIRST_NAMES);
+  const firstName = isFemale
+    ? pick(FEMALE_FIRST_NAMES)
+    : pick(MALE_FIRST_NAMES);
   const lastName = pick(LAST_NAMES);
   const loc = pick(CITIES);
   const catKey = category as string;
   const displayName = makeDisplayName(firstName, lastName, catKey);
   const emailLocal = displayName.replace(/[^a-z0-9]/g, '');
-  const bio = pick(BIO_TEMPLATES[catKey] || BIO_TEMPLATES.ENTERTAINMENT).replace('{city}', loc.city);
+  const bio = pick(
+    BIO_TEMPLATES[catKey] || BIO_TEMPLATES.ENTERTAINMENT,
+  ).replace('{city}', loc.city);
 
   // Secondary category
   const otherCats = ALL_CATEGORIES.filter((c) => c !== category);
@@ -401,36 +781,51 @@ function generateCreatorData(index: number, category: CreatorCategory) {
   const availability = pick(AVAILABILITY_ALL);
   const willingToTravel = seededRandom() > 0.35;
   const travelScope = willingToTravel ? pick(TRAVEL_SCOPES_ALL) : null;
-  const langs = ['Hindi', 'English', ...pickN(LANGUAGES_POOL.slice(2), randInt(0, 2))];
+  const langs = [
+    'Hindi',
+    'English',
+    ...pickN(LANGUAGES_POOL.slice(2), randInt(0, 2)),
+  ];
   const uniqueLangs = Array.from(new Set(langs));
   const prevCollabs = randInt(0, 80);
-  const brands = pickN(NOTABLE_BRANDS[catKey] || NOTABLE_BRANDS.ENTERTAINMENT, randInt(1, 4));
+  const brands = pickN(
+    NOTABLE_BRANDS[catKey] || NOTABLE_BRANDS.ENTERTAINMENT,
+    randInt(1, 4),
+  );
   const hasPortfolio = seededRandom() > 0.5;
   const dob = new Date(randInt(1990, 2003), randInt(0, 11), randInt(1, 28));
-  const avatarBg = isFemale ? pick(FEMALE_AVATAR_COLORS) : pick(MALE_AVATAR_COLORS);
-  const profileImageUrl = makeAvatarUrl(`${firstName} ${lastName}`, avatarBg);
+  const profileImageUrl = makePravatarUrl(isFemale);
 
   // Social accounts (2-4)
   const socialCount = randInt(2, 4);
   const platforms = pickN(PLATFORMS_ALL, socialCount);
   const socials = platforms.map((platform) => {
     const followerCount = pick([
-      randInt(5000, 15000),     // nano
-      randInt(15000, 80000),    // micro
-      randInt(80000, 300000),   // mid-tier
-      randInt(300000, 800000),  // macro
+      randInt(5000, 15000), // nano
+      randInt(15000, 80000), // micro
+      randInt(80000, 300000), // mid-tier
+      randInt(300000, 800000), // macro
       randInt(800000, 2500000), // mega
     ]);
     return {
       platform,
-      handle: platform === SocialPlatform.BLOG
-        ? `${displayName.replace(/_/g, '')}.com`
-        : `@${displayName}`,
+      handle:
+        platform === SocialPlatform.BLOG
+          ? `${displayName.replace(/_/g, '')}.com`
+          : `@${displayName}`,
       followerCount,
       engagementRate: randFloat(1.5, 12.0),
       avgLikes: Math.round(followerCount * randFloat(0.02, 0.08)),
       growthPercent: randFloat(-2.0, 35.0),
-      topContentType: pick(['Reels', 'Long-form video', 'Short video', 'Static posts', 'Stories', 'Tutorials', 'Live streams']),
+      topContentType: pick([
+        'Reels',
+        'Long-form video',
+        'Short video',
+        'Static posts',
+        'Stories',
+        'Tutorials',
+        'Live streams',
+      ]),
     };
   });
 
@@ -454,7 +849,9 @@ function generateCreatorData(index: number, category: CreatorCategory) {
     previousCollaborations: prevCollabs,
     notableBrands: brands,
     profileImageUrl,
-    portfolioUrl: hasPortfolio ? `https://${displayName.replace(/_/g, '')}.in` : null,
+    portfolioUrl: hasPortfolio
+      ? `https://${displayName.replace(/_/g, '')}.in`
+      : null,
     dateOfBirth: dob,
     gender: isFemale ? 'Female' : 'Male',
     socials,
@@ -484,7 +881,9 @@ function generateAgencyData(index: number, industry: IndustryCategory) {
 
   const loc = pick(CITIES);
   const isFemale = seededRandom() > 0.5;
-  const firstName = isFemale ? pick(FEMALE_FIRST_NAMES) : pick(MALE_FIRST_NAMES);
+  const firstName = isFemale
+    ? pick(FEMALE_FIRST_NAMES)
+    : pick(MALE_FIRST_NAMES);
   const lastName = pick(LAST_NAMES);
   const slug = brandName.toLowerCase().replace(/[^a-z0-9]/g, '');
   const emailDomain = `${slug}.test`;
@@ -497,8 +896,13 @@ function generateAgencyData(index: number, industry: IndustryCategory) {
   const relatedContentTypes = pickN(CONTENT_TYPES_ALL, randInt(2, 4));
 
   const logoColor = INDUSTRY_LOGO_COLORS[indKey] || INDUSTRY_LOGO_COLORS.OTHER;
-  const initials = brandName.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
-  const logoUrl = makeAvatarUrl(initials, logoColor, true);
+  const initials = brandName
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+  const logoUrl = makeLogoUrl(initials, logoColor);
 
   const description = `${brandName} is a ${loc.city}-based agency specializing in influencer marketing for the ${indKey.toLowerCase().replace(/_/g, ' ')} sector. We connect brands with authentic content creators to drive engagement and measurable ROI across India.`;
 
@@ -524,25 +928,86 @@ function generateAgencyData(index: number, industry: IndustryCategory) {
     brandSocials: {
       instagram: `https://instagram.com/${slug}`,
       linkedin: `https://linkedin.com/company/${slug}`,
-      ...(seededRandom() > 0.4 ? { twitter: `https://twitter.com/${slug}` } : {}),
-      ...(seededRandom() > 0.5 ? { youtube: `https://youtube.com/${slug}` } : {}),
+      ...(seededRandom() > 0.4
+        ? { twitter: `https://twitter.com/${slug}` }
+        : {}),
+      ...(seededRandom() > 0.5
+        ? { youtube: `https://youtube.com/${slug}` }
+        : {}),
     },
     targetAudience: {
-      ageGroups: pickN(['16-18', '18-24', '25-34', '35-44', '45-54'], randInt(2, 3)),
+      ageGroups: pickN(
+        ['16-18', '18-24', '25-34', '35-44', '45-54'],
+        randInt(2, 3),
+      ),
       genders: pick([['All'], ['Male', 'Female'], ['Female'], ['Male']]),
-      locations: pickN(['Metro cities', 'Tier 1 cities', 'Tier 2 cities', 'Pan India', 'Tier 3 cities'], randInt(1, 3)),
-      languages: pickN(['Hindi', 'English', 'Tamil', 'Telugu', 'Bengali', 'Kannada', 'Marathi'], randInt(2, 4)),
-      targetIncomeBracket: pick(['Lower Middle Income', 'Middle Income', 'Upper Middle Income', 'High Income']),
+      locations: pickN(
+        [
+          'Metro cities',
+          'Tier 1 cities',
+          'Tier 2 cities',
+          'Pan India',
+          'Tier 3 cities',
+        ],
+        randInt(1, 3),
+      ),
+      languages: pickN(
+        [
+          'Hindi',
+          'English',
+          'Tamil',
+          'Telugu',
+          'Bengali',
+          'Kannada',
+          'Marathi',
+        ],
+        randInt(2, 4),
+      ),
+      targetIncomeBracket: pick([
+        'Lower Middle Income',
+        'Middle Income',
+        'Upper Middle Income',
+        'High Income',
+      ]),
     },
     campaignPreferences: {
       platforms: relatedPlatforms,
       contentTypes: relatedContentTypes,
-      budgetRange: pick(['BUDGET_5K_20K', 'BUDGET_20K_1L', 'BUDGET_1L_5L', 'BUDGET_5L_PLUS', 'VARIES']),
-      paymentTypes: pickN(['FIXED', 'AFFILIATE', 'PRODUCT_EXCHANGE', 'HYBRID', 'PERFORMANCE_BASED'], randInt(1, 3)),
-      paymentTimeline: pick(['UPFRONT', 'ON_DELIVERY', 'FIFTEEN_DAYS', 'THIRTY_DAYS', 'MILESTONE_BASED']),
-      followerRange: pickN(['NANO', 'MICRO', 'MID_TIER', 'MACRO', 'MEGA'], randInt(2, 3)),
+      budgetRange: pick([
+        'BUDGET_5K_20K',
+        'BUDGET_20K_1L',
+        'BUDGET_1L_5L',
+        'BUDGET_5L_PLUS',
+        'VARIES',
+      ]),
+      paymentTypes: pickN(
+        [
+          'FIXED',
+          'AFFILIATE',
+          'PRODUCT_EXCHANGE',
+          'HYBRID',
+          'PERFORMANCE_BASED',
+        ],
+        randInt(1, 3),
+      ),
+      paymentTimeline: pick([
+        'UPFRONT',
+        'ON_DELIVERY',
+        'FIFTEEN_DAYS',
+        'THIRTY_DAYS',
+        'MILESTONE_BASED',
+      ]),
+      followerRange: pickN(
+        ['NANO', 'MICRO', 'MID_TIER', 'MACRO', 'MEGA'],
+        randInt(2, 3),
+      ),
       creatorCategories: relatedCategories,
-      collaborationFrequency: pick(['Weekly', 'Bi-weekly', 'Monthly', 'Quarterly']),
+      collaborationFrequency: pick([
+        'Weekly',
+        'Bi-weekly',
+        'Monthly',
+        'Quarterly',
+      ]),
     },
   };
 }
@@ -560,21 +1025,62 @@ const COLLAB_BRANDS = [
 ];
 
 const MESSAGE_BRANDS = [
-  { name: 'Nike India', preview: 'Hi! We loved your recent content and would love to discuss a campaign...', threads: [
-    { sender: 'BRAND', text: 'Hi! We loved your recent content and would love to discuss a potential campaign for our new product line.' },
-    { sender: 'CREATOR', text: 'Hey! Thanks so much. Would love to hear more about the campaign. What kind of content are you looking for?' },
-    { sender: 'BRAND', text: 'We are thinking 2 Reels and 5 Stories over a 2-week window. Budget is around 60K. Would that work?' },
-    { sender: 'CREATOR', text: 'That sounds great! Let me check my calendar and get back to you by EOD.' },
-  ]},
-  { name: 'Nykaa', preview: 'We are launching a new product line and think you would be a great fit...', threads: [
-    { sender: 'BRAND', text: 'We are launching a new skincare line next month and think you would be a perfect fit. Interested?' },
-    { sender: 'CREATOR', text: 'Hi! Yes, definitely interested. Could you share more details about the deliverables?' },
-    { sender: 'BRAND', text: 'We need 1 YouTube review (10+ min), 3 Instagram Reels, and a blog post. Full product kit will be sent.' },
-  ]},
-  { name: 'Lenskart', preview: 'Partnership opportunity for our upcoming collection...', threads: [
-    { sender: 'BRAND', text: 'Hello! We have an exciting partnership opportunity for our upcoming summer collection.' },
-    { sender: 'CREATOR', text: 'Hi! That sounds fun. What is the timeline looking like?' },
-  ]},
+  {
+    name: 'Nike India',
+    preview:
+      'Hi! We loved your recent content and would love to discuss a campaign...',
+    threads: [
+      {
+        sender: 'BRAND',
+        text: 'Hi! We loved your recent content and would love to discuss a potential campaign for our new product line.',
+      },
+      {
+        sender: 'CREATOR',
+        text: 'Hey! Thanks so much. Would love to hear more about the campaign. What kind of content are you looking for?',
+      },
+      {
+        sender: 'BRAND',
+        text: 'We are thinking 2 Reels and 5 Stories over a 2-week window. Budget is around 60K. Would that work?',
+      },
+      {
+        sender: 'CREATOR',
+        text: 'That sounds great! Let me check my calendar and get back to you by EOD.',
+      },
+    ],
+  },
+  {
+    name: 'Nykaa',
+    preview:
+      'We are launching a new product line and think you would be a great fit...',
+    threads: [
+      {
+        sender: 'BRAND',
+        text: 'We are launching a new skincare line next month and think you would be a perfect fit. Interested?',
+      },
+      {
+        sender: 'CREATOR',
+        text: 'Hi! Yes, definitely interested. Could you share more details about the deliverables?',
+      },
+      {
+        sender: 'BRAND',
+        text: 'We need 1 YouTube review (10+ min), 3 Instagram Reels, and a blog post. Full product kit will be sent.',
+      },
+    ],
+  },
+  {
+    name: 'Lenskart',
+    preview: 'Partnership opportunity for our upcoming collection...',
+    threads: [
+      {
+        sender: 'BRAND',
+        text: 'Hello! We have an exciting partnership opportunity for our upcoming summer collection.',
+      },
+      {
+        sender: 'CREATOR',
+        text: 'Hi! That sounds fun. What is the timeline looking like?',
+      },
+    ],
+  },
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -663,7 +1169,7 @@ async function main() {
     }
 
     creatorProfiles.push(profile);
-    if ((creatorProfiles.length) % 20 === 0) {
+    if (creatorProfiles.length % 20 === 0) {
       console.log(`  ${creatorProfiles.length}/100 creators created...`);
     }
   }
@@ -731,8 +1237,19 @@ async function main() {
 
   // ── Collaborations for first 10 creators ──
   console.log('Seeding collaborations for first 10 creators...');
-  const collabStatuses = [CollaborationStatus.COMPLETED, CollaborationStatus.ACTIVE, CollaborationStatus.COMPLETED];
-  const collabBudgets = ['45,000', '1,20,000 total', 'Products worth 3,500', '75,000', '50,000', '30,000'];
+  const collabStatuses = [
+    CollaborationStatus.COMPLETED,
+    CollaborationStatus.ACTIVE,
+    CollaborationStatus.COMPLETED,
+  ];
+  const collabBudgets = [
+    '45,000',
+    '1,20,000 total',
+    'Products worth 3,500',
+    '75,000',
+    '50,000',
+    '30,000',
+  ];
 
   for (const creator of creatorProfiles.slice(0, 10)) {
     const collabCount = randInt(2, 4);
@@ -744,9 +1261,21 @@ async function main() {
           brandName: brand.name,
           type: pick(COLLAB_TYPES_ALL),
           status: collabStatuses[j % collabStatuses.length],
-          createdAt: new Date(`2026-0${randInt(1, 3)}-${String(randInt(1, 28)).padStart(2, '0')}`),
+          createdAt: new Date(
+            `2026-0${randInt(1, 3)}-${String(randInt(1, 28)).padStart(2, '0')}`,
+          ),
           brief: `Campaign collaboration with ${brand.name} for content creation and brand promotion.`,
-          deliverables: pickN(['3 Instagram Reels', '5 Stories', '1 YouTube Short', '1 YouTube Review (8+ min)', '2 Blog Posts', '1 Unboxing Video'], randInt(2, 4)),
+          deliverables: pickN(
+            [
+              '3 Instagram Reels',
+              '5 Stories',
+              '1 YouTube Short',
+              '1 YouTube Review (8+ min)',
+              '2 Blog Posts',
+              '1 Unboxing Video',
+            ],
+            randInt(2, 4),
+          ),
           timeline: `${pick(['Jan', 'Feb', 'Mar'])} 2026`,
           budget: `INR ${collabBudgets[j % collabBudgets.length]}`,
           contactPerson: brand.person,
@@ -788,8 +1317,12 @@ async function main() {
   console.log('='.repeat(60));
   console.log('SEED COMPLETE');
   console.log('='.repeat(60));
-  console.log(`  Creators:        ${creatorProfiles.length} (5 per category x 20 categories)`);
-  console.log(`  Agencies:        ${agencyCount} (5 per industry x 14 industries)`);
+  console.log(
+    `  Creators:        ${creatorProfiles.length} (5 per category x 20 categories)`,
+  );
+  console.log(
+    `  Agencies:        ${agencyCount} (5 per industry x 14 industries)`,
+  );
   console.log(`  Collaborations:  seeded for first 10 creators`);
   console.log(`  Messages:        seeded for first 10 creators`);
   console.log('');

@@ -1,0 +1,213 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e6]:
+      - link "CollabHub" [ref=e7] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e8]:
+        - link "Home" [ref=e9] [cursor=pointer]:
+          - /url: /
+        - link "Discover" [ref=e10] [cursor=pointer]:
+          - /url: /creators
+        - link "Dashboard" [ref=e11] [cursor=pointer]:
+          - /url: /dashboard/creator
+        - button "Account menu" [ref=e13] [cursor=pointer]: A
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - heading "Where Creators Meet Opportunity" [level=1] [ref=e19]:
+            - text: Where Creators
+            - text: Meet Opportunity
+          - paragraph [ref=e20]: CollabHub connects content creators with agencies and brands for meaningful collaborations that drive growth.
+          - generic [ref=e21]:
+            - link "Go to Dashboard" [ref=e22] [cursor=pointer]:
+              - /url: /dashboard/creator
+            - link "Discover Creators" [ref=e23] [cursor=pointer]:
+              - /url: /creators
+        - generic [ref=e25]:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Post Content
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Grow Audience
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Earn Revenue
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Find Creators
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Launch Campaigns
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Measure Results
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Go Global
+          - img [ref=e29]
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - paragraph [ref=e91]: 0K+
+          - paragraph [ref=e92]: Creators
+        - generic [ref=e93]:
+          - paragraph [ref=e94]: 0+
+          - paragraph [ref=e95]: Brands
+        - generic [ref=e96]:
+          - paragraph [ref=e97]: $0M+
+          - paragraph [ref=e98]: Paid Out
+      - generic [ref=e99]:
+        - heading "How It Works" [level=2] [ref=e100]
+        - paragraph [ref=e101]: Three simple steps to start collaborating
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - generic [ref=e104]:
+              - img [ref=e106]
+              - generic [ref=e109]: "1"
+            - heading "Create Profile" [level=3] [ref=e110]
+            - paragraph [ref=e111]: Set up your creator or brand profile in minutes with our guided signup flow.
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - img [ref=e115]
+              - generic [ref=e118]: "2"
+            - heading "Get Discovered" [level=3] [ref=e119]
+            - paragraph [ref=e120]: Our matching engine connects you with the perfect collaboration partners.
+          - generic [ref=e121]:
+            - generic [ref=e122]:
+              - img [ref=e124]
+              - generic [ref=e129]: "3"
+            - heading "Collaborate & Grow" [level=3] [ref=e130]
+            - paragraph [ref=e131]: Work together on campaigns, track results, and scale your impact.
+      - generic [ref=e132]:
+        - heading "Everything You Need" [level=2] [ref=e133]
+        - paragraph [ref=e134]: Powerful tools for creators and brands to collaborate effectively
+        - generic [ref=e135]:
+          - generic [ref=e138]:
+            - img [ref=e140]
+            - heading "Smart Matching" [level=3] [ref=e142]
+            - paragraph [ref=e143]: AI-powered algorithm finds your ideal collaboration partners based on niche, audience, and goals. Get matched with brands and creators that align with your values and content style.
+          - generic [ref=e146]:
+            - img [ref=e148]
+            - heading "Analytics Dashboard" [level=3] [ref=e150]
+            - paragraph [ref=e151]: Real-time insights on reach, engagement, and campaign performance.
+          - generic [ref=e154]:
+            - img [ref=e156]
+            - heading "Secure Payments" [level=3] [ref=e158]
+            - paragraph [ref=e159]: Escrow-protected payments ensure fair compensation for every collaboration.
+          - generic [ref=e162]:
+            - img [ref=e164]
+            - heading "Built-in Messaging" [level=3] [ref=e166]
+            - paragraph [ref=e167]: Communicate directly with brands and creators without leaving the platform.
+          - generic [ref=e170]:
+            - img [ref=e172]
+            - heading "Global Reach" [level=3] [ref=e175]
+            - paragraph [ref=e176]: Connect with creators and brands worldwide.
+          - generic [ref=e179]:
+            - img [ref=e181]
+            - heading "Portfolio Showcase" [level=3] [ref=e187]
+            - paragraph [ref=e188]: Display your best work with beautiful, customizable profiles.
+      - generic [ref=e189]:
+        - heading "Trusted by Creators Who Mean Business" [level=2] [ref=e190]
+        - paragraph [ref=e191]: Don't take our word for it — hear from the creators already growing with CollabHub
+        - generic [ref=e193]:
+          - generic [ref=e194]:
+            - img "Alex Rivera" [ref=e195]
+            - generic [ref=e196]:
+              - paragraph [ref=e197]: Alex Rivera
+              - paragraph [ref=e198]: Tech Reviews
+            - paragraph [ref=e199]: 🚀 CollabHub connected me with three brand deals in my first week. The platform just gets what creators need — no fluff, pure results.
+          - generic [ref=e200]:
+            - img "Priya Sharma" [ref=e201]
+            - generic [ref=e202]:
+              - paragraph [ref=e203]: Priya Sharma
+              - paragraph [ref=e204]: Lifestyle & Fashion
+            - paragraph [ref=e205]: ✨ I used to chase brands on LinkedIn for months. Now they come to me. CollabHub completely changed how I do business.
+          - generic [ref=e206]:
+            - img "Jordan Lee" [ref=e207]
+            - generic [ref=e208]:
+              - paragraph [ref=e209]: Jordan Lee
+              - paragraph [ref=e210]: Fitness & Wellness
+            - paragraph [ref=e211]: 💪 The campaign workflow is seamless. From proposal to payment it's all in one place. I save hours every single week.
+          - generic [ref=e212]:
+            - img "Maya Johnson" [ref=e213]
+            - generic [ref=e214]:
+              - paragraph [ref=e215]: Maya Johnson
+              - paragraph [ref=e216]: Beauty & Skincare
+            - paragraph [ref=e217]: 💄 My revenue doubled in 6 months. CollabHub helped me find the right brand partners — not just any brand, the right ones.
+          - generic [ref=e218]:
+            - img "Chris Park" [ref=e219]
+            - generic [ref=e220]:
+              - paragraph [ref=e221]: Chris Park
+              - paragraph [ref=e222]: Gaming & Esports
+            - paragraph [ref=e223]: 🎮 Finally a platform built for creators, not agencies. The transparency in deal terms is honestly a game changer.
+          - generic [ref=e224]:
+            - img "Sofia Martinez" [ref=e225]
+            - generic [ref=e226]:
+              - paragraph [ref=e227]: Sofia Martinez
+              - paragraph [ref=e228]: Travel & Adventure
+            - paragraph [ref=e229]: 🌍 I've tried every creator platform out there. CollabHub is the only one where I genuinely feel like a priority.
+          - generic [ref=e230]:
+            - img "Alex Rivera" [ref=e231]
+            - generic [ref=e232]:
+              - paragraph [ref=e233]: Alex Rivera
+              - paragraph [ref=e234]: Tech Reviews
+            - paragraph [ref=e235]: 🚀 CollabHub connected me with three brand deals in my first week. The platform just gets what creators need — no fluff, pure results.
+          - generic [ref=e236]:
+            - img "Priya Sharma" [ref=e237]
+            - generic [ref=e238]:
+              - paragraph [ref=e239]: Priya Sharma
+              - paragraph [ref=e240]: Lifestyle & Fashion
+            - paragraph [ref=e241]: ✨ I used to chase brands on LinkedIn for months. Now they come to me. CollabHub completely changed how I do business.
+          - generic [ref=e242]:
+            - img "Jordan Lee" [ref=e243]
+            - generic [ref=e244]:
+              - paragraph [ref=e245]: Jordan Lee
+              - paragraph [ref=e246]: Fitness & Wellness
+            - paragraph [ref=e247]: 💪 The campaign workflow is seamless. From proposal to payment it's all in one place. I save hours every single week.
+          - generic [ref=e248]:
+            - img "Maya Johnson" [ref=e249]
+            - generic [ref=e250]:
+              - paragraph [ref=e251]: Maya Johnson
+              - paragraph [ref=e252]: Beauty & Skincare
+            - paragraph [ref=e253]: 💄 My revenue doubled in 6 months. CollabHub helped me find the right brand partners — not just any brand, the right ones.
+          - generic [ref=e254]:
+            - img "Chris Park" [ref=e255]
+            - generic [ref=e256]:
+              - paragraph [ref=e257]: Chris Park
+              - paragraph [ref=e258]: Gaming & Esports
+            - paragraph [ref=e259]: 🎮 Finally a platform built for creators, not agencies. The transparency in deal terms is honestly a game changer.
+          - generic [ref=e260]:
+            - img "Sofia Martinez" [ref=e261]
+            - generic [ref=e262]:
+              - paragraph [ref=e263]: Sofia Martinez
+              - paragraph [ref=e264]: Travel & Adventure
+            - paragraph [ref=e265]: 🌍 I've tried every creator platform out there. CollabHub is the only one where I genuinely feel like a priority.
+      - generic [ref=e272]:
+        - heading "Ready to Start Collaborating?" [level=2] [ref=e273]:
+          - text: Ready to Start
+          - generic [ref=e274]:
+            - text: Collaborating?
+            - generic [ref=e275]: Collaborating?
+        - paragraph [ref=e276]: Join thousands of creators and brands already growing together on CollabHub.
+        - generic [ref=e277]:
+          - link "Explore Creators" [ref=e278] [cursor=pointer]:
+            - /url: /creators
+          - link "Go to Dashboard" [ref=e279] [cursor=pointer]:
+            - /url: /dashboard/creator
+  - contentinfo [ref=e280]:
+    - paragraph [ref=e282]: © 2026 CollabHub. All rights reserved.

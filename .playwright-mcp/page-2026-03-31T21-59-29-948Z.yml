@@ -1,0 +1,193 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e6]:
+      - link "CollabHub" [ref=e7] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e8]:
+        - link "Home" [ref=e9] [cursor=pointer]:
+          - /url: /
+        - link "Login" [ref=e10] [cursor=pointer]:
+          - /url: /login
+        - link "Sign Up" [ref=e11] [cursor=pointer]:
+          - /url: /signup/creator
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - heading "Where Creators Meet Opportunity" [level=1] [ref=e17]:
+            - text: Where Creators
+            - text: Meet Opportunity
+          - paragraph [ref=e18]: CollabHub connects content creators with agencies and brands for meaningful collaborations that drive growth.
+          - generic [ref=e19]:
+            - link "Join as Creator" [ref=e20] [cursor=pointer]:
+              - /url: /signup/creator
+            - link "Join as Agency" [ref=e21] [cursor=pointer]:
+              - /url: /signup/agency
+        - generic [ref=e23]:
+          - generic:
+            - generic:
+              - generic:
+                - generic: Find Creators
+          - generic:
+            - generic:
+              - generic:
+                - generic: Get Matched
+          - generic:
+            - generic:
+              - generic:
+                - generic: Track Growth
+          - generic:
+            - generic:
+              - generic:
+                - generic: Chat Directly
+          - generic:
+            - generic:
+              - generic:
+                - generic: Go Global
+          - generic:
+            - generic:
+              - generic:
+                - generic: Top Creators
+          - generic:
+            - generic:
+              - generic:
+                - generic: Smart Match
+          - img [ref=e27]
+      - generic [ref=e87]:
+        - generic [ref=e88]:
+          - paragraph [ref=e89]: 0K+
+          - paragraph [ref=e90]: Creators
+        - generic [ref=e91]:
+          - paragraph [ref=e92]: 0+
+          - paragraph [ref=e93]: Brands
+        - generic [ref=e94]:
+          - paragraph [ref=e95]: $0M+
+          - paragraph [ref=e96]: Paid Out
+      - generic [ref=e97]:
+        - heading "How It Works" [level=2] [ref=e98]
+        - paragraph [ref=e99]: Three simple steps to start collaborating
+        - generic [ref=e100]:
+          - generic [ref=e101]:
+            - generic [ref=e102]:
+              - img [ref=e104]
+              - generic [ref=e107]: "1"
+            - heading "Create Profile" [level=3] [ref=e108]
+            - paragraph [ref=e109]: Set up your creator or brand profile in minutes with our guided signup flow.
+          - generic [ref=e110]:
+            - generic [ref=e111]:
+              - img [ref=e113]
+              - generic [ref=e116]: "2"
+            - heading "Get Discovered" [level=3] [ref=e117]
+            - paragraph [ref=e118]: Our matching engine connects you with the perfect collaboration partners.
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - img [ref=e122]
+              - generic [ref=e127]: "3"
+            - heading "Collaborate & Grow" [level=3] [ref=e128]
+            - paragraph [ref=e129]: Work together on campaigns, track results, and scale your impact.
+      - generic [ref=e130]:
+        - heading "Everything You Need" [level=2] [ref=e131]
+        - paragraph [ref=e132]: Powerful tools for creators and brands to collaborate effectively
+        - generic [ref=e133]:
+          - generic [ref=e136]:
+            - img [ref=e138]
+            - heading "Smart Matching" [level=3] [ref=e140]
+            - paragraph [ref=e141]: AI-powered algorithm finds your ideal collaboration partners based on niche, audience, and goals. Get matched with brands and creators that align with your values and content style.
+          - generic [ref=e144]:
+            - img [ref=e146]
+            - heading "Analytics Dashboard" [level=3] [ref=e148]
+            - paragraph [ref=e149]: Real-time insights on reach, engagement, and campaign performance.
+          - generic [ref=e152]:
+            - img [ref=e154]
+            - heading "Secure Payments" [level=3] [ref=e156]
+            - paragraph [ref=e157]: Escrow-protected payments ensure fair compensation for every collaboration.
+          - generic [ref=e160]:
+            - img [ref=e162]
+            - heading "Built-in Messaging" [level=3] [ref=e164]
+            - paragraph [ref=e165]: Communicate directly with brands and creators without leaving the platform.
+          - generic [ref=e168]:
+            - img [ref=e170]
+            - heading "Global Reach" [level=3] [ref=e173]
+            - paragraph [ref=e174]: Connect with creators and brands worldwide.
+          - generic [ref=e177]:
+            - img [ref=e179]
+            - heading "Portfolio Showcase" [level=3] [ref=e185]
+            - paragraph [ref=e186]: Display your best work with beautiful, customizable profiles.
+      - generic [ref=e187]:
+        - heading "Top Creators on CollabHub" [level=2] [ref=e188]
+        - paragraph [ref=e189]: Join thousands of creators already growing with us
+        - generic [ref=e191]:
+          - generic [ref=e192]:
+            - generic [ref=e193]: AR
+            - heading "Alex Rivera" [level=3] [ref=e194]
+            - paragraph [ref=e195]: Tech Reviews
+            - paragraph [ref=e196]: 890K followers
+          - generic [ref=e197]:
+            - generic [ref=e198]: PS
+            - heading "Priya Sharma" [level=3] [ref=e199]
+            - paragraph [ref=e200]: Lifestyle
+            - paragraph [ref=e201]: 1.2M followers
+          - generic [ref=e202]:
+            - generic [ref=e203]: JL
+            - heading "Jordan Lee" [level=3] [ref=e204]
+            - paragraph [ref=e205]: Fitness
+            - paragraph [ref=e206]: 650K followers
+          - generic [ref=e207]:
+            - generic [ref=e208]: MJ
+            - heading "Maya Johnson" [level=3] [ref=e209]
+            - paragraph [ref=e210]: Beauty
+            - paragraph [ref=e211]: 2.1M followers
+          - generic [ref=e212]:
+            - generic [ref=e213]: CP
+            - heading "Chris Park" [level=3] [ref=e214]
+            - paragraph [ref=e215]: Gaming
+            - paragraph [ref=e216]: 1.5M followers
+          - generic [ref=e217]:
+            - generic [ref=e218]: SM
+            - heading "Sofia Martinez" [level=3] [ref=e219]
+            - paragraph [ref=e220]: Travel
+            - paragraph [ref=e221]: 780K followers
+          - generic [ref=e222]:
+            - generic [ref=e223]: AR
+            - heading "Alex Rivera" [level=3] [ref=e224]
+            - paragraph [ref=e225]: Tech Reviews
+            - paragraph [ref=e226]: 890K followers
+          - generic [ref=e227]:
+            - generic [ref=e228]: PS
+            - heading "Priya Sharma" [level=3] [ref=e229]
+            - paragraph [ref=e230]: Lifestyle
+            - paragraph [ref=e231]: 1.2M followers
+          - generic [ref=e232]:
+            - generic [ref=e233]: JL
+            - heading "Jordan Lee" [level=3] [ref=e234]
+            - paragraph [ref=e235]: Fitness
+            - paragraph [ref=e236]: 650K followers
+          - generic [ref=e237]:
+            - generic [ref=e238]: MJ
+            - heading "Maya Johnson" [level=3] [ref=e239]
+            - paragraph [ref=e240]: Beauty
+            - paragraph [ref=e241]: 2.1M followers
+          - generic [ref=e242]:
+            - generic [ref=e243]: CP
+            - heading "Chris Park" [level=3] [ref=e244]
+            - paragraph [ref=e245]: Gaming
+            - paragraph [ref=e246]: 1.5M followers
+          - generic [ref=e247]:
+            - generic [ref=e248]: SM
+            - heading "Sofia Martinez" [level=3] [ref=e249]
+            - paragraph [ref=e250]: Travel
+            - paragraph [ref=e251]: 780K followers
+      - generic [ref=e258]:
+        - heading "Ready to Start Collaborating?" [level=2] [ref=e259]:
+          - text: Ready to Start
+          - generic [ref=e260]:
+            - text: Collaborating?
+            - generic [ref=e261]: Collaborating?
+        - paragraph [ref=e262]: Join thousands of creators and brands already growing together on CollabHub.
+        - generic [ref=e263]:
+          - link "Get Started Free" [ref=e264] [cursor=pointer]:
+            - /url: /signup/creator
+          - link "Sign In" [ref=e265] [cursor=pointer]:
+            - /url: /login
+  - contentinfo [ref=e266]:
+    - paragraph [ref=e268]: © 2026 CollabHub. All rights reserved.
