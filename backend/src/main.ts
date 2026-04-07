@@ -14,12 +14,18 @@ async function bootstrap(): Promise<void> {
   app.use(compression());
 
   app.enableCors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5174',
-      'http://localhost:3000',
-      'http://localhost:8082',
-    ],
+    origin: (origin, callback) => {
+      const allowedOrigins = (
+        process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173'
+      )
+        .split(',')
+        .map((o) => o.trim());
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked: ${origin}`));
+      }
+    },
     credentials: true,
   });
 
