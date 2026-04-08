@@ -14,7 +14,7 @@ async function bootstrap(): Promise<void> {
   app.use(compression());
 
   app.enableCors({
-    origin: (origin, callback) => {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
       const allowedOrigins = (
         process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173'
       )
