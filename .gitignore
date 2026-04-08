@@ -31,4 +31,5 @@ lerna-debug.log*
 .superpowers/
 
 users.md
+CREDENTIALS.md
 .playwright-mcp

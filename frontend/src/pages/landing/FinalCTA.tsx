@@ -15,8 +15,8 @@ export function FinalCTA() {
         transition={{ duration: 0.6 }}
         className="relative overflow-hidden rounded-3xl p-16 sm:p-20 text-center"
       >
-        {/* Animated gradient border */}
-        <div className="absolute inset-0 rounded-3xl bg-gradient-conic from-indigo-500 via-purple-500 via-pink-500 via-indigo-500 to-indigo-500 animate-spin-slow opacity-30" />
+        {/* Animated border beam */}
+        <div className="absolute inset-0 rounded-3xl animate-border-beam" />
         <div className="absolute inset-[1px] rounded-3xl bg-[#0a0a1a]" />
 
         {/* Background layers */}

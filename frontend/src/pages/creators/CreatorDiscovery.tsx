@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Search, SlidersHorizontal, Loader2, X } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { getCreatorProfiles } from '../../api/endpoints';
+import { getCreatorProfiles, getLocationSuggestions } from '../../api/endpoints';
 import type { CreatorProfile } from '../../types';
 import {
   CREATOR_CATEGORIES,
@@ -83,6 +83,21 @@ function getInitials(firstName: string, lastName: string): string {
 export function CreatorDiscovery() {
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [showFilters, setShowFilters] = useState(false);
+  const [locationSuggestions, setLocationSuggestions] = useState<{ city: string[]; state: string[] }>({ city: [], state: [] });
+  const [activeSuggestion, setActiveSuggestion] = useState<'city' | 'state' | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const fetchLocationSuggestions = (field: 'city' | 'state', q: string) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!q.trim()) {
+      setLocationSuggestions((prev) => ({ ...prev, [field]: [] }));
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      const results = await getLocationSuggestions(field, q);
+      setLocationSuggestions((prev) => ({ ...prev, [field]: results }));
+    }, 300);
+  };
 
   const {
     data: creators,
@@ -213,10 +228,10 @@ export function CreatorDiscovery() {
           </p>
         </div>
 
-        {/* Search row */}
-        <div className="flex items-center gap-3 mb-4">
+        {/* Search row + filter popover */}
+        <div className="relative flex items-center gap-3 mb-8">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
             <input
               type="text"
               placeholder="Search by name..."
@@ -224,190 +239,221 @@ export function CreatorDiscovery() {
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, search: e.target.value }))
               }
-              className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg text-sm outline-none transition-colors"
+              className="w-full pl-9 pr-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg text-sm outline-none transition-colors"
             />
           </div>
           <button
             onClick={() => setShowFilters((prev) => !prev)}
-            className="relative flex items-center gap-2 px-4 py-2.5 border border-white/20 rounded-lg text-sm font-medium text-white hover:bg-white/10 backdrop-blur-sm transition-all"
+            className={`relative flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              showFilters || activeFilterCount > 0
+                ? 'bg-indigo-500/20 border border-indigo-500/40 text-indigo-400'
+                : 'border border-white/20 text-white hover:bg-white/10'
+            }`}
           >
             <SlidersHorizontal className="h-4 w-4" />
             Filters
             {activeFilterCount > 0 && (
-              <span className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center bg-indigo-500/20 text-indigo-400 text-xs rounded-full">
+              <span className="ml-0.5 px-1.5 py-0.5 bg-indigo-500 text-white text-xs rounded-full leading-none">
                 {activeFilterCount}
               </span>
             )}
           </button>
-        </div>
 
-        {/* Collapsible filter panel */}
-        <div
-          className="overflow-hidden transition-all duration-300 ease-in-out"
-          style={{ maxHeight: showFilters ? '600px' : '0px' }}
-        >
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 mb-6 space-y-5">
-            {/* Categories */}
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">
-                Category
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {CREATOR_CATEGORIES.map((cat) => (
+          {/* Floating popover */}
+          {showFilters && (
+            <>
+              {/* Backdrop */}
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setShowFilters(false)}
+              />
+              {/* Panel */}
+              <div className="absolute right-0 top-full mt-2 z-50 w-[420px] rounded-2xl border border-white/10 bg-[#0d0d1f] shadow-2xl shadow-black/40">
+                {/* Panel header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+                  <span className="text-sm font-semibold text-white">Filters</span>
+                  {activeFilterCount > 0 && (
+                    <button
+                      onClick={clearFilters}
+                      className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition"
+                    >
+                      <X className="h-3 w-3" />
+                      Clear all
+                    </button>
+                  )}
+                </div>
+
+                {/* Scrollable body */}
+                <div className="overflow-y-auto max-h-[60vh] px-4 py-4 space-y-5">
+                  {/* Categories */}
+                  <div>
+                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Category</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {CREATOR_CATEGORIES.map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => toggleChip('categories', cat)}
+                          className={`px-2.5 py-1 rounded-full text-xs border cursor-pointer transition ${
+                            filters.categories.includes(cat)
+                              ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400'
+                              : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/[0.08]'
+                          }`}
+                        >
+                          {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Platforms */}
+                  <div>
+                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Platform</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {SOCIAL_PLATFORMS.map((plat) => (
+                        <button
+                          key={plat}
+                          onClick={() => toggleChip('platforms', plat)}
+                          className={`px-2.5 py-1 rounded-full text-xs border cursor-pointer transition ${
+                            filters.platforms.includes(plat)
+                              ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400'
+                              : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/[0.08]'
+                          }`}
+                        >
+                          {PLATFORM_LABELS[plat as keyof typeof PLATFORM_LABELS]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Rate Range */}
+                  <div>
+                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Rate Range</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {RATE_RANGES.map((r) => (
+                        <button
+                          key={r}
+                          onClick={() =>
+                            setFilters((prev) => ({
+                              ...prev,
+                              rateRange: prev.rateRange === r ? '' : r,
+                            }))
+                          }
+                          className={`px-2.5 py-1 rounded-full text-xs border cursor-pointer transition ${
+                            filters.rateRange === r
+                              ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400'
+                              : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/[0.08]'
+                          }`}
+                        >
+                          {RATE_RANGE_LABELS[r as keyof typeof RATE_RANGE_LABELS]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Availability */}
+                  <div>
+                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Availability</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {AVAILABILITY_OPTIONS.map((a) => (
+                        <button
+                          key={a}
+                          onClick={() =>
+                            setFilters((prev) => ({
+                              ...prev,
+                              availability: prev.availability === a ? '' : a,
+                            }))
+                          }
+                          className={`px-2.5 py-1 rounded-full text-xs border cursor-pointer transition ${
+                            filters.availability === a
+                              ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400'
+                              : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/[0.08]'
+                          }`}
+                        >
+                          {AVAILABILITY_LABELS[a as keyof typeof AVAILABILITY_LABELS]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Follower Range */}
+                  <div>
+                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Follower Range</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {FOLLOWER_RANGES.map((f) => (
+                        <button
+                          key={f}
+                          onClick={() =>
+                            setFilters((prev) => ({
+                              ...prev,
+                              followerRange: prev.followerRange === f ? '' : f,
+                            }))
+                          }
+                          className={`px-2.5 py-1 rounded-full text-xs border cursor-pointer transition ${
+                            filters.followerRange === f
+                              ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400'
+                              : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/[0.08]'
+                          }`}
+                        >
+                          {FOLLOWER_RANGE_LABELS[f] ?? f}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {(['city', 'state'] as const).map((field) => (
+                      <div key={field} className="relative">
+                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">
+                          {field === 'city' ? 'City' : 'State'}
+                        </p>
+                        <input
+                          type="text"
+                          placeholder={field === 'city' ? 'e.g. Mumbai' : 'e.g. Maharashtra'}
+                          value={filters[field]}
+                          onChange={(e) => {
+                            setFilters((prev) => ({ ...prev, [field]: e.target.value }));
+                            fetchLocationSuggestions(field, e.target.value);
+                          }}
+                          onFocus={() => setActiveSuggestion(field)}
+                          onBlur={() => setTimeout(() => setActiveSuggestion(null), 150)}
+                          className="w-full bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg px-3 py-1.5 text-xs outline-none transition-colors"
+                        />
+                        {activeSuggestion === field && locationSuggestions[field].length > 0 && (
+                          <div className="absolute z-10 top-full mt-1 w-full bg-[#0d0d1f] border border-white/10 rounded-lg overflow-hidden shadow-xl">
+                            {locationSuggestions[field].map((suggestion) => (
+                              <button
+                                key={suggestion}
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => {
+                                  setFilters((prev) => ({ ...prev, [field]: suggestion }));
+                                  setLocationSuggestions((prev) => ({ ...prev, [field]: [] }));
+                                  setActiveSuggestion(null);
+                                }}
+                                className="w-full text-left px-3 py-2 text-xs text-white/80 hover:bg-white/10 transition"
+                              >
+                                {suggestion}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Panel footer */}
+                <div className="px-4 py-3 border-t border-white/10">
                   <button
-                    key={cat}
-                    onClick={() => toggleChip('categories', cat)}
-                    className={`px-3 py-1.5 rounded-full text-sm border cursor-pointer transition ${
-                      filters.categories.includes(cat)
-                        ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400'
-                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/[0.08]'
-                    }`}
+                    onClick={() => setShowFilters(false)}
+                    className="w-full py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition"
                   >
-                    {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS]}
+                    Apply
                   </button>
-                ))}
+                </div>
               </div>
-            </div>
-
-            {/* Platforms */}
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">
-                Platform
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {SOCIAL_PLATFORMS.map((plat) => (
-                  <button
-                    key={plat}
-                    onClick={() => toggleChip('platforms', plat)}
-                    className={`px-3 py-1.5 rounded-full text-sm border cursor-pointer transition ${
-                      filters.platforms.includes(plat)
-                        ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400'
-                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/[0.08]'
-                    }`}
-                  >
-                    {PLATFORM_LABELS[plat as keyof typeof PLATFORM_LABELS]}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Dropdowns row */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* Rate Range */}
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Rate Range
-                </label>
-                <select
-                  value={filters.rateRange}
-                  onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, rateRange: e.target.value }))
-                  }
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm outline-none"
-                >
-                  <option value="">All Rates</option>
-                  {RATE_RANGES.map((r) => (
-                    <option key={r} value={r}>
-                      {RATE_RANGE_LABELS[r as keyof typeof RATE_RANGE_LABELS]}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Availability */}
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Availability
-                </label>
-                <select
-                  value={filters.availability}
-                  onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      availability: e.target.value,
-                    }))
-                  }
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm outline-none"
-                >
-                  <option value="">Any Availability</option>
-                  {AVAILABILITY_OPTIONS.map((a) => (
-                    <option key={a} value={a}>
-                      {AVAILABILITY_LABELS[a as keyof typeof AVAILABILITY_LABELS]}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Follower Range */}
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Follower Range
-                </label>
-                <select
-                  value={filters.followerRange}
-                  onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      followerRange: e.target.value,
-                    }))
-                  }
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm outline-none"
-                >
-                  <option value="">All Sizes</option>
-                  {FOLLOWER_RANGES.map((f) => (
-                    <option key={f} value={f}>
-                      {FOLLOWER_RANGE_LABELS[f] ?? f}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Location row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  City
-                </label>
-                <input
-                  type="text"
-                  placeholder="Filter by city..."
-                  value={filters.city}
-                  onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, city: e.target.value }))
-                  }
-                  className="w-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg px-3 py-2 text-sm outline-none transition-colors"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  State
-                </label>
-                <input
-                  type="text"
-                  placeholder="Filter by state..."
-                  value={filters.state}
-                  onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, state: e.target.value }))
-                  }
-                  className="w-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 rounded-lg px-3 py-2 text-sm outline-none transition-colors"
-                />
-              </div>
-            </div>
-
-            {/* Clear filters */}
-            {activeFilterCount > 0 && (
-              <div className="flex justify-end">
-                <button
-                  onClick={clearFilters}
-                  className="flex items-center gap-1 text-sm text-indigo-400 hover:text-indigo-300 transition"
-                >
-                  <X className="h-4 w-4" />
-                  Clear All Filters
-                </button>
-              </div>
-            )}
-          </div>
+            </>
+          )}
         </div>
 
         {/* Loading state */}
