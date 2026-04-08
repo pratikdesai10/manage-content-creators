@@ -106,6 +106,13 @@ export interface DashboardMessage {
   createdAt: string;
 }
 
+export async function getLocationSuggestions(field: 'city' | 'state', q: string): Promise<string[]> {
+  const { data } = await apiClient.get<{ data: string[] }>('/creators/locations', {
+    params: { field, q },
+  });
+  return data.data;
+}
+
 export async function getCreatorProfiles(): Promise<CreatorProfile[]> {
   const { data } = await apiClient.get<{ data: CreatorProfile[] }>('/creators');
   return data.data;

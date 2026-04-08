@@ -273,7 +273,7 @@ model Collaboration {
   contactPerson  String?
   contactEmail   String?
 
-  @@index([creatorId])
+  @@index([creatorId, createdAt(sort: Desc)])
 }
 
 model Message {
@@ -286,7 +286,7 @@ model Message {
   createdAt DateTime       @default(now())
   threads   MessageThread[]
 
-  @@index([creatorId])
+  @@index([creatorId, createdAt(sort: Desc)])
 }
 
 model MessageThread {
@@ -297,7 +297,7 @@ model MessageThread {
   text      String
   sentAt    DateTime @default(now())
 
-  @@index([messageId])
+  @@index([messageId, sentAt])
 }
 
 model RefreshToken {

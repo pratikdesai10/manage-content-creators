@@ -118,6 +118,23 @@ export class CreatorService {
     return message;
   }
 
+  async getLocationSuggestions(
+    field: 'city' | 'state',
+    q: string,
+  ): Promise<string[]> {
+    if (!q.trim()) return [];
+    const profiles = await this.prisma.creatorProfile.findMany({
+      where: { [field]: { contains: q.trim(), mode: 'insensitive' } },
+      select: { [field]: true },
+      distinct: [field],
+      orderBy: { [field]: 'asc' },
+      take: 8,
+    });
+    return profiles
+      .map((p) => p[field] as string | null)
+      .filter((v): v is string => v !== null);
+  }
+
   async getSocialAccountDetail(creatorId: string, accountId: string) {
     await this.findOne(creatorId);
     const account = await this.prisma.socialAccount.findUnique({

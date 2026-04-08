@@ -1,4 +1,13 @@
-import { Body, Controller, ForbiddenException, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Param,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import type { User } from '@prisma/client';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -17,6 +26,12 @@ export class CreatorController {
   @Get()
   findAll() {
     return this.creatorService.findAll();
+  }
+
+  @Public()
+  @Get('locations')
+  getLocations(@Query('field') field: 'city' | 'state', @Query('q') q: string) {
+    return this.creatorService.getLocationSuggestions(field, q ?? '');
   }
 
   @Public()

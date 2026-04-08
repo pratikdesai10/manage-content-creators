@@ -53,6 +53,30 @@
   animation: spin-slow 8s linear infinite;
 }
 
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes border-beam {
+  to { --border-angle: 360deg; }
+}
+
+.animate-border-beam {
+  animation: border-beam 4s linear infinite;
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 0%,
+    transparent 65%,
+    #6366f1 75%,
+    #a855f7 80%,
+    #ec4899 85%,
+    #6366f1 90%,
+    transparent 100%
+  );
+}
+
 .bg-gradient-conic {
   background: conic-gradient(from 0deg, #6366f1, #a855f7, #ec4899, #6366f1);
 }
